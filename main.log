@@ -1,0 +1,936 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.9.7)  4 APR 2011 21:34
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**main.tex
+(./main.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, loaded.
+(/usr/share/texmf-texlive/tex/latex/memoir/memoir.cls
+Document Class: memoir 2009/09/21 v1.61803398b configurable book, report, artic
+le document class
+\onelineskip=\skip41
+\lxvchars=\skip42
+\xlvchars=\skip43
+\@memcnta=\count79
+\c@@memmarkcntra=\count80
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+Class memoir Info: An `ifetex' package is being emulated on input line 251.
+
+(/usr/share/texmf-texlive/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2009/01/23 v0.5 Provides ifxetex conditional
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2009/04/17 v1.2 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+\stockheight=\skip44
+\stockwidth=\skip45
+\trimtop=\skip46
+\trimedge=\skip47
+
+(/usr/share/texmf-texlive/tex/latex/etex-pkg/etex.sty
+Package: etex 1998/03/26 v2.0 eTeX basic definition package (PEB)
+\et@xins=\count81
+)
+(/usr/share/texmf-texlive/tex/latex/memoir/mem11.clo
+File: mem11.clo 2008/01/30 v0.3 memoir class 11pt size option
+)
+\binding=\skip48
+\spinemargin=\skip49
+\foremargin=\skip50
+\uppermargin=\skip51
+\lowermargin=\skip52
+\headdrop=\skip53
+\normalrulethickness=\skip54
+\headwidth=\skip55
+\c@storedpagenumber=\count82
+\memPD=\dimen102
+\m@mabparskip=\skip56
+\thanksmarkwidth=\skip57
+\thanksmarksep=\skip58
+\droptitle=\skip59
+\c@book=\count83
+\c@part=\count84
+\c@chapter=\count85
+\c@section=\count86
+\c@subsection=\count87
+\c@subsubsection=\count88
+\c@paragraph=\count89
+\c@subparagraph=\count90
+\beforechapskip=\skip60
+\midchapskip=\skip61
+\afterchapskip=\skip62
+\chapindent=\skip63
+\bottomsectionskip=\skip64
+\secindent=\skip65
+\beforesecskip=\skip66
+\aftersecskip=\skip67
+\subsecindent=\skip68
+\beforesubsecskip=\skip69
+\aftersubsecskip=\skip70
+\subsubsecindent=\skip71
+\beforesubsubsecskip=\skip72
+\aftersubsubsecskip=\skip73
+\paraindent=\skip74
+\beforeparaskip=\skip75
+\afterparaskip=\skip76
+\subparaindent=\skip77
+\beforesubparaskip=\skip78
+\aftersubparaskip=\skip79
+\pfbreakskip=\skip80
+\c@@ppsavesec=\count91
+\c@@ppsaveapp=\count92
+\ragrparindent=\dimen103
+\everylistparindent=\dimen104
+\parsepi=\skip81
+\topsepi=\skip82
+\itemsepi=\skip83
+\parsepii=\skip84
+\topsepii=\skip85
+\topsepiii=\skip86
+\itemsepii=\skip87
+\itemsepiii=\skip88
+\partopsepii=\skip89
+\partopsepiii=\skip90
+\m@msavetopsep=\skip91
+\m@msavepartopsep=\skip92
+\@enLab=\toks14
+\abstitleskip=\skip93
+\absleftindent=\skip94
+\abs@leftindent=\dimen105
+\absrightindent=\skip95
+\absparindent=\skip96
+\absparsep=\skip97
+\c@vslineno=\count93
+\c@poemline=\count94
+\c@modulo@vs=\count95
+\c@memfvsline=\count96
+\vleftskip=\skip98
+\vrightskip=\skip99
+\stanzaskip=\skip100
+\versewidth=\skip101
+\vgap=\skip102
+\vindent=\skip103
+\vleftmargin=\dimen106
+\c@verse=\count97
+\c@chrsinstr=\count98
+\beforepoemtitleskip=\skip104
+\afterpoemtitleskip=\skip105
+\c@poem=\count99
+\beforePoemTitleskip=\skip106
+\midPoemTitleskip=\skip107
+\afterPoemTitleskip=\skip108
+\col@sep=\dimen107
+\extrarowheight=\dimen108
+\NC@list=\toks15
+\extratabsurround=\skip109
+\backup@length=\skip110
+\TX@col@width=\dimen109
+\TX@old@table=\dimen110
+\TX@old@col=\dimen111
+\TX@target=\dimen112
+\TX@delta=\dimen113
+\TX@cols=\count100
+\TX@ftn=\toks16
+\heavyrulewidth=\dimen114
+\lightrulewidth=\dimen115
+\cmidrulewidth=\dimen116
+\belowrulesep=\dimen117
+\belowbottomsep=\dimen118
+\aboverulesep=\dimen119
+\abovetopsep=\dimen120
+\cmidrulesep=\dimen121
+\cmidrulekern=\dimen122
+\defaultaddspace=\dimen123
+\@cmidla=\count101
+\@cmidlb=\count102
+\@aboverulesep=\dimen124
+\@belowrulesep=\dimen125
+\@thisruleclass=\count103
+\@lastruleclass=\count104
+\@thisrulewidth=\dimen126
+\ctableftskip=\skip111
+\ctabrightskip=\skip112
+\abovecolumnspenalty=\count105
+\@linestogo=\count106
+\@cellstogo=\count107
+\@cellsincolumn=\count108
+\crtok=\toks17
+\@mincolumnwidth=\dimen127
+\c@newflo@tctr=\count109
+\@contcwidth=\skip113
+\@contindw=\skip114
+\abovecaptionskip=\skip115
+\belowcaptionskip=\skip116
+\subfloattopskip=\skip117
+\subfloatcapskip=\skip118
+\subfloatcaptopadj=\skip119
+\subfloatbottomskip=\skip120
+\subfloatlabelskip=\skip121
+\subfloatcapmargin=\dimen128
+\c@@contsubnum=\count110
+\m@mscap@capbox=\box26
+\m@mscap@fbox=\box27
+\sidecapsep=\dimen129
+\sidecapwidth=\dimen130
+\m@m@tempdima=\dimen131
+\m@mscapraise=\dimen132
+\sidecapraise=\dimen133
+\m@mscapmainwidth=\dimen134
+\m@mscaplkern=\dimen135
+\beforeepigraphskip=\skip122
+\afterepigraphskip=\skip123
+\epigraphwidth=\skip124
+\epigraphrule=\skip125
+LaTeX Info: Redefining \em on input line 7000.
+LaTeX Info: Redefining \emph on input line 7008.
+\tocentryskip=\skip126
+\tocbaseline=\skip127
+\cftparskip=\skip128
+\cftbeforebookskip=\skip129
+\cftbookindent=\dimen136
+\cftbooknumwidth=\dimen137
+\cftbeforepartskip=\skip130
+\cftpartindent=\skip131
+\cftpartnumwidth=\skip132
+\cftbeforechapterskip=\skip133
+\cftchapterindent=\skip134
+\cftchapternumwidth=\skip135
+\cftbeforesectionskip=\skip136
+\cftsectionindent=\skip137
+\cftsectionnumwidth=\skip138
+\cftbeforesubsectionskip=\skip139
+\cftsubsectionindent=\skip140
+\cftsubsectionnumwidth=\skip141
+\cftbeforesubsubsectionskip=\skip142
+\cftsubsubsectionindent=\skip143
+\cftsubsubsectionnumwidth=\skip144
+\cftbeforeparagraphskip=\skip145
+\cftparagraphindent=\skip146
+\cftparagraphnumwidth=\skip147
+\cftbeforesubparagraphskip=\skip148
+\cftsubparagraphindent=\skip149
+\cftsubparagraphnumwidth=\skip150
+\prechapterprecisshift=\dimen138
+\c@maxsecnumdepth=\count111
+\bibindent=\dimen139
+\bibitemsep=\skip151
+\indexcolsep=\skip152
+\indexrule=\skip153
+\indexmarkstyle=\toks18
+\@indexbox=\insert233
+\glossarycolsep=\dimen140
+\glossaryrule=\dimen141
+\sideparvshift=\skip154
+\sideins=\insert232
+\sidebartopsep=\skip155
+\sidebarhsep=\skip156
+\sidebarvsep=\skip157
+\sidebarwidth=\skip158
+\footmarkwidth=\skip159
+\footmarksep=\skip160
+\footparindent=\skip161
+\footinsdim=\skip162
+\footinsv@r=\insert231
+\@mpfootinsv@r=\insert230
+\m@m@k=\count112
+\m@m@h=\dimen142
+\m@mipn@skip=\skip163
+\c@pagenote=\count113
+\every@verbatim=\toks19
+\afterevery@verbatim=\toks20
+\verbatim@line=\toks21
+\tab@position=\count114
+\verbatim@in@stream=\read1
+\verbatimindent=\skip164
+\verbatim@out=\write3
+\bvboxsep=\skip165
+\c@memfbvline=\count115
+\c@bvlinectr=\count116
+\bvnumlength=\skip166
+\fb@frw=\dimen143
+\fb@frh=\dimen144
+\FrameRule=\dimen145
+\FrameSep=\dimen146
+\c@cp@cntr=\count117
+LaTeX Info: Redefining \: on input line 10864.
+LaTeX Info: Redefining \! on input line 10866.
+\c@ism@mctr=\count118
+\c@xsm@mctr=\count119
+\c@csm@mctr=\count120
+\c@ksm@mctr=\count121
+\c@xksm@mctr=\count122
+\c@cksm@mctr=\count123
+\c@msm@mctr=\count124
+\c@xmsm@mctr=\count125
+\c@cmsm@mctr=\count126
+\c@bsm@mctr=\count127
+\c@workm@mctr=\count128
+\c@sheetsequence=\count129
+\c@lastsheet=\count130
+\c@lastpage=\count131
+\c@figure=\count132
+\c@lofdepth=\count133
+\cftbeforefigureskip=\skip167
+\cftfigureindent=\skip168
+\cftfigurenumwidth=\skip169
+\c@table=\count134
+\c@lotdepth=\count135
+\cftbeforetableskip=\skip170
+\cfttableindent=\skip171
+\cfttablenumwidth=\skip172
+Package abstract [2008/07/23] emulated by memoir.
+Package appendix [2008/07/23] emulated by memoir.
+Package array [2008/07/23] emulated by memoir.
+Package booktabs [2008/07/23] emulated by memoir.
+Package ccaption [2008/07/23] emulated by memoir.
+Package changepage [2008/07/23] emulated by memoir.
+Package chngcntr [2008/07/23] emulated by memoir.
+Package chngpage [2008/07/23] emulated by memoir.
+Package crop emulated by memoir.
+Package dcolumn [2008/07/23] emulated by memoir.
+Package delarray [2008/07/23] emulated by memoir.
+Package enumerate [2008/07/23] emulated by memoir.
+Package epigraph [2008/07/23] emulated by memoir.
+Package ifmtarg [2008/07/23] emulated by memoir.
+Package ifetex [2008/07/23] emulated by memoir.
+Package index [2008/07/23] emulated by memoir.
+Package makeidx [2008/07/23] emulated by memoir.
+Package moreverb [2008/07/23] emulated by memoir.
+Package mparhack [2008/07/23] emulated by memoir.
+Package needspace [2008/07/23] emulated by memoir.
+Package newfile [2008/07/23] emulated by memoir.
+Package nextpage [2008/07/23] emulated by memoir.
+Package pagenote [2008/07/23] emulated by memoir.
+Package parskip [2008/07/23] emulated by memoir.
+Package patchcmd [2008/07/23] emulated by memoir.
+Package setspace [2008/07/23] emulated by memoir.
+Package shortvrb [2008/07/23] emulated by memoir.
+Package showidx [2008/07/23] emulated by memoir.
+Package tabularx [2008/07/23] emulated by memoir.
+Package titleref [2008/07/23] emulated by memoir.
+Package titling [2008/07/23] emulated by memoir.
+Package tocbibind [2008/07/23] emulated by memoir.
+Package tocloft [2008/07/23] emulated by memoir.
+Package verbatim [2008/07/23] emulated by memoir.
+Package verse [2008/07/23] emulated by memoir.
+
+(/usr/share/texmf-texlive/tex/latex/memoir/mempatch.sty
+Package: mempatch 2009/07/24 v6.0f Patches for memoir class v1.6180339
+)) (./format106.sty
+(/usr/share/texmf/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
+(/etc/texmf/tex/latex/config/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2009/08/25 v0.04m Graphics/color for pdfTeX
+\Gread@gobject=\count136
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+)
+(/usr/share/texmf-texlive/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip173
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks22
+\ex@=\dimen147
+))
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen148
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count137
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count138
+\leftroot@=\count139
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count140
+\DOTSCASE@=\count141
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box28
+\strutbox@=\box29
+\big@size=\dimen149
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count142
+\c@MaxMatrixCols=\count143
+\dotsspace@=\muskip10
+\c@parentequation=\count144
+\dspbrk@lvl=\count145
+\tag@help=\toks23
+\row@=\count146
+\column@=\count147
+\maxfields@=\count148
+\andhelp@=\toks24
+\eqnshift@=\dimen150
+\alignsep@=\dimen151
+\tagshift@=\dimen152
+\tagwidth@=\dimen153
+\totwidth@=\dimen154
+\lineht@=\dimen155
+\@envbody=\toks25
+\multlinegap=\skip174
+\multlinetaggap=\skip175
+\mathdisplay@stack=\toks26
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+(/usr/share/texmf-texlive/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen156
+\WF@size=\dimen157
+\c@WF@wrappedlines=\count149
+\WF@box=\box30
+\WF@everypar=\toks27
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/share/texmf-texlive/tex/latex/listings/listings.sty
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks28
+)
+\lst@mode=\count150
+\lst@gtempboxa=\box31
+\lst@token=\toks29
+\lst@length=\count151
+\lst@currlwidth=\dimen158
+\lst@column=\count152
+\lst@pos=\count153
+\lst@lostspace=\dimen159
+\lst@width=\dimen160
+\lst@newlines=\count154
+\lst@lineno=\count155
+\lst@maxwidth=\dimen161
+
+(/usr/share/texmf-texlive/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count156
+\lst@skipnumbers=\count157
+\lst@framebox=\box32
+)
+(/usr/share/texmf-texlive/tex/latex/listings/listings.cfg
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+)
+\Gin@req@height=\dimen162
+\Gin@req@width=\dimen163
+)
+(/usr/share/texmf-texlive/tex/latex/tools/calc.sty
+Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count158
+\calc@Bcount=\count159
+\calc@Adimen=\dimen164
+\calc@Bdimen=\dimen165
+\calc@Askip=\skip176
+\calc@Bskip=\skip177
+LaTeX Info: Redefining \setlength on input line 76.
+LaTeX Info: Redefining \addtolength on input line 77.
+\calc@Ccount=\count160
+\calc@Cskip=\skip178
+)
+\c@prob=\count161
+) (./main.aux
+(./microscopic_interactions.aux) (./macroscopic_interactions.aux)
+(./shielding_and_moderation.aux) (./neutron_detection_and_spectroscopy.aux)
+(./nuclear_data.aux) (./r_matrix_theory.aux) (./neutron_thermalization.aux)
+(./scattering_laws.aux) (./probability_and_statistics.aux)
+(./monte_carlo_methods.aux) (./collision_physics.aux)
+(./tallies_and_uncertainties.aux) (./variance_reduction.aux) (./criticality.aux
+) (./transport_equation.aux) (./boundary_conditions.aux)
+(./analytical_solutions.aux) (./the_integral_form.aux)
+(./collision_probability_method.aux) (./discrete_ordinates.aux)
+(./pn_method_and_diffusion.aux) (./linearity_and_reciprocity.aux)
+(./the_adjoint_and_perturbation_theory.aux) (./variational_methods.aux)
+(./nomenclature.aux))
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 26.
+ (/usr/share/texmf-texlive/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+(/usr/share/texmf/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count162
+\scratchdimen=\dimen166
+\scratchbox=\box33
+\nofMPsegments=\count163
+\nofMParguments=\count164
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count165
+\MPscratchDim=\dimen167
+\MPnumerator=\count166
+\everyMPtoPDFconversion=\toks31
+)
+\c@lstlisting=\count167
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 31.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 31.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
+
+]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+ (./main.toc
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
+LaTeX Font Info:    Try loading font information for U+msa on input line 2.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 2.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+Underfull \vbox (badness 5316) has occurred while \output is active []
+
+ [1])
+[2]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20.74> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+ [1
+
+
+]
+\openout2 = `microscopic_interactions.aux'.
+
+ (./microscopic_interactions.tex) [2
+
+
+]
+\openout2 = `macroscopic_interactions.aux'.
+
+ (./macroscopic_interactions.tex)
+[3
+
+
+
+]
+\openout2 = `shielding_and_moderation.aux'.
+
+ (./shielding_and_moderation.tex) [4
+
+
+
+]
+\openout2 = `neutron_detection_and_spectroscopy.aux'.
+
+
+(./neutron_detection_and_spectroscopy.tex) [5
+
+
+
+]
+\openout2 = `nuclear_data.aux'.
+
+ (./nuclear_data.tex) [6
+
+
+
+]
+\openout2 = `r_matrix_theory.aux'.
+
+
+(./r_matrix_theory.tex) [7
+
+
+
+]
+\openout2 = `neutron_thermalization.aux'.
+
+ (./neutron_thermalization.tex) [8
+
+
+
+]
+\openout2 = `scattering_laws.aux'.
+
+
+(./scattering_laws.tex) [9
+
+
+
+] [10
+
+
+]
+\openout2 = `probability_and_statistics.aux'.
+
+ (./probability_and_statistics.tex) [11
+
+
+]
+\openout2 = `monte_carlo_methods.aux'.
+
+
+(./monte_carlo_methods.tex) [12
+
+
+
+]
+\openout2 = `collision_physics.aux'.
+
+ (./collision_physics.tex) [13
+
+
+
+]
+\openout2 = `tallies_and_uncertainties.aux'.
+
+
+(./tallies_and_uncertainties.tex
+(/usr/share/texmf-texlive/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+(/usr/share/texmf-texlive/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 5.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+) (./MonteCarloSlab.f90
+LaTeX Font Info:    Font shape `OT1/pcr/bx/n' in size <7> not available
+(Font)              Font shape `OT1/pcr/b/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <7> not available
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 2.
+
+[14
+
+
+
+]) (./MonteCarloSlabRoutines.f90 [15]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [16]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [17]))
+[18]
+\openout2 = `variance_reduction.aux'.
+
+ (./variance_reduction.tex) [19
+
+
+
+]
+\openout2 = `criticality.aux'.
+
+ (./criticality.tex) [20
+
+
+
+] [21
+
+
+]
+\openout2 = `transport_equation.aux'.
+
+
+(./transport_equation.tex [22
+
+
+]
+<phase_space.pdf, id=95, 399.4925pt x 419.5675pt>
+File: phase_space.pdf Graphic file (type pdf)
+ <use phase_space.pdf>
+Overfull \hbox (10.62877pt too wide) in paragraph at lines 33--34
+ [] 
+ []
+
+[23 <./phase_space.pdf>]
+Underfull \hbox (badness 3179) in paragraph at lines 60--61
+[]|\OT1/ptm/m/n/10.95 expected num-ber of par-ti-cles
+ []
+
+[24] [25]
+
+LaTeX Warning: Reference `lec:macro' on page 26 undefined on input line 153.
+
+[26] [27]) [28]
+\openout2 = `boundary_conditions.aux'.
+
+ (./boundary_conditions.tex [29
+
+
+
+]
+<squarecylinder.jpg, id=126, 248.93pt x 248.93pt>
+File: squarecylinder.jpg Graphic file (type jpg)
+ <use squarecylinder.jpg>
+Underfull \hbox (badness 4913) in paragraph at lines 35--44
+\OT1/ptm/m/n/10.95 where $[]$ is the unit \OT1/ptm/m/it/10.95 out-ward nor-mal 
+\OT1/ptm/m/n/10.95 vec-tor to the sur-face of in-ter-est.
+ []
+
+[30 <./squarecylinder.jpg>]
+<reflectiveperiodic.pdf, id=130, 247.92625pt x 128.48pt>
+File: reflectiveperiodic.pdf Graphic file (type pdf)
+
+<use reflectiveperiodic.pdf> [31 <./reflectiveperiodic.pdf>]
+<wignerseitz.pdf, id=137, 274.02374pt x 153.57375pt>
+File: wignerseitz.pdf Graphic file (type pdf)
+ <use wignerseitz.pdf>
+[32 <./wignerseitz.pdf>] [33]) [34]
+\openout2 = `analytical_solutions.aux'.
+
+ (./analytical_solutions.tex [35
+
+
+
+] [36]
+<spherical_phase_space.pdf, id=157, 382.42876pt x 409.53pt>
+File: spherical_phase_space.pdf Graphic file (type pdf)
+
+<use spherical_phase_space.pdf> [37 <./spherical_phase_space.pdf>]
+<spherical_angle_with_r.pdf, id=163, 274.02374pt x 167.62625pt>
+File: spherical_angle_with_r.pdf Graphic file (type pdf)
+
+<use spherical_angle_with_r.pdf> [38 <./spherical_angle_with_r.pdf>]
+<sphere_example.pdf, id=169, 205.76875pt x 95.35625pt>
+File: sphere_example.pdf Graphic file (type pdf)
+
+<use sphere_example.pdf> [39]
+<sphere_psi_radius.pdf, id=174, 557.08125pt x 217.81375pt>
+File: sphere_psi_radius.pdf Graphic file (type pdf)
+
+<use sphere_psi_radius.pdf>
+<sphere_psi_mu.pdf, id=175, 557.08125pt x 239.89626pt>
+File: sphere_psi_mu.pdf Graphic file (type pdf)
+ <use sphere_psi_mu.pdf>
+[40 <./sphere_example.pdf>] [41 <./sphere_psi_radius.pdf> <./sphere_psi_mu.pdf>
+] <slab_example_psi.pdf, id=189, 557.08125pt x 247.92625pt>
+File: slab_example_psi.pdf Graphic file (type pdf)
+
+<use slab_example_psi.pdf>
+<slab_example_phi_current.pdf, id=190, 557.08125pt x 229.85875pt>
+File: slab_example_phi_current.pdf Graphic file (type pdf)
+
+<use slab_example_phi_current.pdf> [42] [43 <./slab_example_psi.pdf> <./slab_ex
+ample_phi_current.pdf>]
+<slab_example_exp_functions.pdf, id=201, 557.08125pt x 235.88126pt>
+File: slab_example_exp_functions.pdf Graphic file (type pdf)
+
+<use slab_example_exp_functions.pdf> [44 <./slab_example_exp_functions.pdf>])
+[45]
+\openout2 = `the_integral_form.aux'.
+
+ (./the_integral_form.tex [46
+
+
+
+] [47] [48] [49]
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 155.
+
+
+LaTeX Warning: Reference `lec:linearity' on page 50 undefined on input line 155
+.
+
+[50] [51] [52] (/usr/share/texmf-texlive/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+(./neumann_slab.m [53])
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [54]
+[55]) [56]
+\openout2 = `collision_probability_method.aux'.
+
+ (./collision_probability_method.tex) [57
+
+
+
+]
+\openout2 = `discrete_ordinates.aux'.
+
+ (./discrete_ordinates.tex) [58
+
+
+
+]
+\openout2 = `pn_method_and_diffusion.aux'.
+
+ (./pn_method_and_diffusion.tex
+Overfull \hbox (15.58855pt too wide) in paragraph at lines 18--19
+[]\OT1/ptm/b/n/10.95 Defining the Scat-ter-ing An-gle\OT1/ptm/m/n/10.95 . Prove
+ $\OML/cmm/m/it/10.95 ^^V[] \OT1/cmr/m/n/10.95 = [](\OML/cmm/m/it/10.95 ^^R\OT1
+/cmr/m/n/10.95 ) [](\OML/cmm/m/it/10.95 ^^R[]\OT1/cmr/m/n/10.95 ) + [](\OML/cmm
+/m/it/10.95 ^^R\OT1/cmr/m/n/10.95 ) [](\OML/cmm/m/it/10.95 ^^R[]\OT1/cmr/m/n/10
+.95 ) [](\OML/cmm/m/it/10.95 ^^^ \OMS/cmsy/m/n/10.95 ^^@
+ []
+
+) [59
+
+
+
+]
+\openout2 = `linearity_and_reciprocity.aux'.
+
+ (./linearity_and_reciprocity.tex) [60
+
+
+
+]
+\openout2 = `the_adjoint_and_perturbation_theory.aux'.
+
+
+(./the_adjoint_and_perturbation_theory.tex [61
+
+
+
+] [62] [63]
+Overfull \hbox (0.35114pt too wide) in paragraph at lines 133--134
+\OT1/ptm/m/n/10.95 As an-other ex-am-ple of per-tur-ba-tion the-ory, con-sider 
+the un-per-turbed eigen-value prob-
+ []
+
+[64] [65] [66]) [67]
+\openout2 = `variational_methods.aux'.
+
+ (./variational_methods.tex [68
+
+
+
+] [69] [70] [71]) [72]
+[73
+
+
+] (./main.bbl
+bibitemlist
+[74
+
+]) [75]
+\openout2 = `nomenclature.aux'.
+
+ (./nomenclature.tex) [76
+
+
+]
+\tf@toc=\write4
+\openout4 = `main.toc'.
+
+ (./main.aux
+(./microscopic_interactions.aux) (./macroscopic_interactions.aux)
+(./shielding_and_moderation.aux) (./neutron_detection_and_spectroscopy.aux)
+(./nuclear_data.aux) (./r_matrix_theory.aux) (./neutron_thermalization.aux)
+(./scattering_laws.aux) (./probability_and_statistics.aux)
+(./monte_carlo_methods.aux) (./collision_physics.aux)
+(./tallies_and_uncertainties.aux) (./variance_reduction.aux) (./criticality.aux
+) (./transport_equation.aux) (./boundary_conditions.aux)
+(./analytical_solutions.aux) (./the_integral_form.aux)
+(./collision_probability_method.aux) (./discrete_ordinates.aux)
+(./pn_method_and_diffusion.aux) (./linearity_and_reciprocity.aux)
+(./the_adjoint_and_perturbation_theory.aux) (./variational_methods.aux)
+(./nomenclature.aux))
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 8144 strings out of 495061
+ 108298 string characters out of 1182622
+ 316792 words of memory out of 3000000
+ 11033 multiletter control sequences out of 15000+50000
+ 42796 words of font info for 103 fonts, out of 3000000 for 9000
+ 28 hyphenation exceptions out of 8191
+ 38i,26n,51p,892b,2113s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/ty
+pe1/public/amsfonts/cm/cmbx8.pfb></usr/share/texmf-texlive/fonts/type1/public/a
+msfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cme
+xtra/cmex8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.
+pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/s
+hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmr5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></
+usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
+s/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/sha
+re/texmf-texlive/fonts/type1/urw/courier/ucrb8a.pfb></usr/share/texmf-texlive/f
+onts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/cou
+rier/ucrro8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></u
+sr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texli
+ve/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (80 pages, 759095 bytes).
+PDF statistics:
+ 395 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
+

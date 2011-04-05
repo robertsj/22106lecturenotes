@@ -1,0 +1,13 @@
+22.106 NOTES -- LaTeX files
+
+The main.tex file includes all the individual chapter files
+that have been given preliminary names.  The formatting is
+in pretty good shape (w/ some obvious things in headers,
+etc. to be removed).
+
+A BibTeX file has also been started and includes several
+entries that are either cited or may be of use later on.
+
+A nomenclature appendix has been started, but it's really
+just a place holder for now.  When new terms are added in
+the main body, add them to the nomenclature if warranted.

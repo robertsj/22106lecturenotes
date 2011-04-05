@@ -1,0 +1,150 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% format106.sty
+%
+% This LaTeX style sheet collects a number of commands 
+% and definitions for use with the 22106 notes.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{ xcolor, times, amsmath, wrapfig, listings,
+             amstext, amssymb, graphicx, booktabs }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter Style
+% This is a modified form of the ``VZ36'' style from a 
+% collection of styles for use with the memoir class. Those
+% styles may be found, e.g. at
+% www.tex.ac.uk/tex-archive/info/ ...
+% ... MemoirChapStyles/MemoirChapStyles.pdf
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{calc}
+\newif\ifNoChapNumber
+\makeatletter
+\makechapterstyle{106}{
+  \renewcommand\chaptername{Lecture}
+  \renewcommand\chapternamenum{}
+  \renewcommand\printchaptername{}
+  \renewcommand\printchapternum{}
+  \renewcommand\chapnumfont{\Large\bfseries}
+  \renewcommand\chaptitlefont{\Large\bfseries\raggedright}
+  \renewcommand\printchaptertitle[1]{%
+    \begin{tabular}{@{\Large\bfseries\chaptername}@{ }p{1.0cm}|!{\quad}p{\textwidth-4cm-2em-4\tabcolsep }}
+      \ifNoChapNumber\relax\else\chapnumfont \thechapter\fi
+      & \chaptitlefont ##1
+    \end{tabular}
+    \NoChapNumberfalse
+  }
+  \renewcommand\printchapternonum{\NoChapNumbertrue}
+}
+\chapterstyle{106}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This shrinks the section titles a bit from the default
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+                     {-3.5ex \@plus -1ex \@minus -.2ex}%
+                     {2.3ex \@plus.2ex}%
+                     {\normalfont\large\bfseries}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title Page
+% This formatting borrows from the ``TH'' title format in
+% http://sunsite.bilkent.edu.tr/pub/tex/ctan/ ...
+% ... info/latex-samples/titlepages.pdf
+\usepackage{color}
+\definecolor{Dark}{gray}{.2}
+\definecolor{Medium}{gray}{.6}
+\definecolor{Light}{gray}{.8}
+\newcommand*{\plogo}{\fbox{$\mathcal{MIT}$}}
+\newcommand*{\titleTH}{
+  \begingroup% T&H Typography
+  \raggedleft
+  \vspace*{\baselineskip}
+   { {\huge Prof. Benoit Forget} \\
+       w/ the help \\
+       of his minions} \\[0.167\textheight]
+  {\bfseries\Large 22.106}\\[\baselineskip]
+  {\textcolor{Medium}{\Huge Neutron Interactions and Applications}}\\[\baselineskip]
+  {\large Lecture Notes and Problems}\par
+  \vfill
+  {\huge Massachusetts Institute of Technology }\par
+  \vspace*{3\baselineskip}
+  \endgroup
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TOC MODIFICATIONS
+% PART
+\addtolength{\cftpartnumwidth}{0.25cm}           % space between e.g. I and Nuclear Data
+%\renewcommand{\cftpartdotsep}{\cftdotsep}       % dots for part
+%\renewcommand\cftpartfont{\bfseries\Large}      % part toc font size
+% CHAPTER
+\renewcommand\cftbeforechapterskip{0pt}          % single spacing for lecture list
+\renewcommand\cftchapterindent{0.5cm}            % indent of Lecture
+\renewcommand\cftchapterfont{\normalfont}        % chapter listing font
+%\renewcommand\cftchapterdotsep{\cftdotsep}
+\renewcommand\cftchaptername{Lecture }           % adds the Lecture name
+\renewcommand\cftchapterformatpnum{\normalfont}  % sets the chapter page number style
+%\renewcommand{\cftdot}{\tiny{.}}                % optional dot size change
+\renewcommand{\cftchapterleader}{\normalfont\cftdotfill{\cftdotsep}} % use dots
+% TOC title
+\renewcommand\printtoctitle{\bfseries\centering\Huge} % contents title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Part Page
+% Reset the part page style to be its own (i.e. part2) 
+% rather than plain or whatever the default is
+\makepagestyle{part2}
+\makeevenhead{part2}{}{}{}
+\makeoddhead{part2}{}{}{}
+\makeevenfoot{part2}{}{\thepage}{}
+\makeoddfoot{part2}{}{\thepage}{}
+\aliaspagestyle{part}{part2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header Style
+% These modify the page headings.  The draft option is
+% included explicitly, but probably won't be used
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifdraftdoc
+  \makeevenfoot{plain}{}{\thepage}{\textit{Draft: \today}}
+  \makeoddfoot{plain}{\textit{Draft: \today}}{\thepage}{}
+  \makeevenfoot{headings}{}{}{\textit{Draft: \today}}
+  \makeoddfoot{headings}{\textit{Draft: \today}}{}{}
+\else
+  \makeevenhead{plain}{}{}{} % {evenplain}{B}{C}
+  \makeoddhead{plain}{}{}{}   % {oddplain}{F}{G} 
+  \makeevenhead{headings}{\leftmark}{}{\thepage}
+  \makeoddhead{headings}{\rightmark}{}{\thepage}
+  \makeevenhead{part2}{}{}{} % {a}{LALA}{b}
+  \makeoddhead{part2}{}{}{}  % {c}{LALA}{d}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problems/exercises
+% Format borrowed from SIAM 
+\newcounter{prob}
+\newenvironment{exercises}
+               {%
+\section*{Exercises}%
+%\addcontentsline{toc}{section}{Problems}%
+\markright{Exercises}
+\begin{list}{{\hfill\upshape \arabic{prob}.}}{\usecounter{prob}
+              \setlength{\leftmargin}{24pt}\labelwidth24pt\labelsep.5em%
+              \itemsep2pt\parsep0pt
+              \setlength{\itemindent}{0pt}}}{\end{list}}
+
+% Use symbols for footnotes
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+% Code listings
+\definecolor{light-gray}{gray}{0.95}
+\lstset{basicstyle=\tiny\ttfamily,
+       % numbers=left,
+        backgroundcolor=\color{light-gray},
+        frame=shadowbox, 
+        rulesepcolor=\color{blue}}

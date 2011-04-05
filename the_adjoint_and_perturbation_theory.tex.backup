@@ -1,0 +1,206 @@
+\chapter{The Adjoint and Perturbation Theory}
+\label{lec:adjoint}
+
+In this lecture, we introduce the \textit{ adjoint} form of the transport equation and describe what it represents physically.  We then apply the adjoint equation in a useful technique known as \textit{first order} or \textit{linear perturbation theory}.  In the next lecture, we make further use of the adjoint in the context of variational approximations.
+
+\section*{The Adjoint Function}
+
+We define the \textit{ inner product} of two  functions $\phi(x)$ and $\psi(x)$ to be
+\begin{equation}
+  \langle \phi, \psi \rangle \equiv \int \phi(x) \psi(x) dx \, ,
+\end{equation}
+where $\phi$ and $\psi$ satisfy appropriate continuity and boundary conditions.  A \textit{self-adjoint} operator $M$ satisfies
+\begin{equation}
+  \langle \phi, M \psi \rangle \equiv  \langle M \phi, \psi \rangle  \, .
+\end{equation}
+As an example, the operator corresponding to one-speed diffusion can be shown to be self-adjoint, an exercise left to the reader.  Note, self-adjoint and \textit{hermitian} are synonymous.  You may be familiar with the latter term from quantum physics, and you might recall that such operators (say the Hamiltonian) have real eigenvalues (like the energy) and orthogonal eigenfunctions (such as the nice sines and cosines of the infinite well).
+
+If an operator $L$ is not self-adjoint, it is possible to define an operator $L^*$ that is adjoint to $L$.  Then $L^*$ will operate on adjoint functions $\psi^*(x)$ that may satisfy different boundary conditions than those of $\psi(x)$ on which $L$ operates.  The adjoint operator $L^*$ must satisfy
+\begin{equation}
+  \langle \psi^*, L \psi \rangle =  \langle \psi, L^* \psi^* \rangle  \, ,
+  \label{eq:adjointidentity}
+\end{equation}
+which we refer to as the \textit{adjoint identity} (and which is actually a special case of a generalized Green's theorem).
+
+\section*{Transport Operator}
+We now define the transport equation in operator form.  Defining the operator 
+\begin{equation}
+  \begin{split}
+     L\psi & \equiv -\hat{\Omega} \cdot \nabla \psi(\mathbf{r},\mathbf{\Omega},E) \\
+           & -\Sigma_t \psi + \int^{\infty}_{0} dE' \int_{4\pi} d\Omega' \Sigma_s(\mathbf{r},\mathbf{\Omega}\cdot\mathbf{\Omega}',E'\to E)\psi(\mathbf{r},\mathbf{\Omega'},E') \, ,
+  \end{split}
+  \label{eq:transportoperator}
+\end{equation}
+the transport equation is simply $L \psi = -Q$, for some source $Q$; note the sign of the right hand side.  The transport operator $L$ is \textit{not self-adjoint}.  Convince yourself that this is indeed the case by evaluating the adjoint identity and paying specific attention to the terms corresponding to streaming and scattering.  For convenience, we assume $\psi$ is also subject to vacuum conditions on all external surfaces, i.e. $\psi(\mathbf{r},\mathbf{\Omega},E)=0$ for $\hat{n}\cdot \hat{\Omega} < 0$ where $\hat{n}$ is the outward normal vector.
+
+The adjoint transport operator $L^*$ will satisify $\langle \psi^*, L \psi \rangle =  \langle \psi, L^* \psi^* \rangle $, if and only if we define it such that
+\begin{equation}
+  \begin{split}
+     L^*\psi^* & \equiv \hat{\Omega} \cdot \nabla \psi^*(\mathbf{r},\mathbf{\Omega},E) \\
+               & -\Sigma_t \psi^* + \int^{\infty}_{0} dE' \int_{4\pi} d\Omega' \Sigma_s(\mathbf{r},\mathbf{\Omega}\cdot\mathbf{\Omega}',E\to E')\psi^*(\mathbf{r},\mathbf{\Omega'},E') \, ,
+   \end{split}
+   \label{eq:adjointoperator}
+\end{equation}
+with the further restriction that $\psi^*(\mathbf{r},\mathbf{\Omega},E)=0$ for $\hat{n}\cdot \hat{\Omega} > 0$. It's worth noting we could have chosen conditions other than vacuum boundaries for $\psi$, which would yield different conditions for $\psi^*$; see the exercises for the case of reflecting boundaries.
+
+\section*{Interpreting the Adjoint}
+
+Let's consider a subcritical, time-independent system containing an arbitrary source.  Suppose we are interested in a detector response with an associated cross-section $\Sigma_d(\mathbf{r},E)$.  Then we have the forward equation
+\begin{equation}
+  \begin{split}
+     &\hat{\Omega} \cdot \nabla \psi(\mathbf{r},\mathbf{\Omega},E) + \Sigma_t \psi = \\
+     &\int^{\infty}_{0} dE' \int_{4\pi} d\Omega' \Sigma_s(\mathbf{r},\mathbf{\Omega}\cdot\mathbf{\Omega}',E'\to E)\psi(\mathbf{r},\mathbf{\Omega'},E') + Q(\mathbf{r},\mathbf{\Omega},E)  \, ,
+  \end{split}
+  \label{eq:foreq}
+\end{equation}
+subject to vacuum conditions, and the adjoint equation
+\begin{equation}
+  \begin{split}
+     -&\hat{\Omega} \cdot \nabla \psi^*(\mathbf{r},\mathbf{\Omega},E) + \Sigma_t \psi^* = \\
+     &\int^{\infty}_{0} dE' \int_{4\pi} d\Omega' \Sigma_s(\mathbf{r},\mathbf{\Omega}\cdot\mathbf{\Omega}',E\to E')\psi^*(\mathbf{r},\mathbf{\Omega'},E')  \, ,
+  \end{split}
+  \label{eq:adjeq}
+\end{equation}
+subject to the appropriate conditions.  Here, the detector cross-section, which can be thought of as a ``detector response function'', is the adjoint source.  Now, we multiply Eq. \ref{eq:foreq} by $\psi^*$ and Eq. \ref{eq:adjeq} by $\psi$, subtract the latter from the former, and integrate over all variables to get (operator and inner-product notation)
+\begin{equation}
+ \langle \psi^*, L \psi \rangle - \langle \psi, L^* \psi^* \rangle = - \langle \psi^*, Q \rangle +  \langle \psi, \Sigma_d \rangle \, ,
+\end{equation}
+but by the adjoint identity, the left hand side vanishes, and we are left with a most important result:
+\begin{equation}
+ \langle \psi^*, Q \rangle =  \langle \psi, \Sigma_d \rangle \, .
+ \label{eq:adjrule}
+\end{equation}
+Suppose our forward source is a unit monoenergetic, unidirectional point source, i.e. $Q(\mathbf{r},\mathbf{\Omega},E) = \delta(\mathbf{r}-\mathbf{r}_0)\delta(\mathbf{\Omega}-\mathbf{\Omega}_0)\delta(E-E_0)$.  From Eq. \ref{eq:adjrule}, we find
+\begin{equation}
+ \psi^*(\mathbf{r}_0,\mathbf{\Omega}_0,E_0) = \int_V d^3r \int_{E} dE \int_{4\pi} d\Omega \Sigma_d(\mathbf{r},E') \psi(\mathbf{r},\mathbf{\Omega},E) = R \, ,
+\end{equation}
+where $R$ is the total detector response.  In this case, $\psi^*(\mathbf{r}_0,\mathbf{\Omega}_0,E_0)$ is the expected contribution to the detector response due to a unit delta source located at $(\mathbf{r}_0,\mathbf{\Omega}_0,E_0)$ in phase space.  More broadly, $\psi^*$ represents the importance of neutrons in a particular region of phase space to a given detector response.
+
+\section*{Perturbation Theory --- Fixed Source}
+
+In this and the next section, we apply the adjoint in determining the change to an integral system parameter\footnote{Here, an ``integral'' parameter is any integrated quantity, e.g. a reaction rate in a volume, or $k_{e\!f\!f}$ in a reactor.} due to a small perturbation in the system.  We begin with a fixed source example and follow with an eigenvalue example.
+
+Suppose we have a system described by\footnote{Note, the operators in this section have absorbed the minus sign of the right hand side sources above.}
+\begin{equation}
+ L_0 \psi_0 = Q_0 \, 
+\end{equation}
+with vacuum boundaries.  Our goal is to evaluate a detector response that takes the form
+\begin{equation}
+ R_0 = \int \int \int d^3r d\Omega dE \Sigma_d(\mathbf{r},E) Q(\mathbf{r},E,\mathbf{\Omega}) \, .
+\end{equation}
+
+Suppose we now introduce some small change.  Perturbation theory can allow us to determine the detector response, to first order accuracy, for a ``small'' perturbation to the system.  Let us define a new, perturbed system to be
+\begin{equation}
+ L \psi = Q \, ,
+\end{equation}
+also subject to vacuum conditions, and where $L = L_0 + \delta L_0$, $Q = Q_0 + \delta Q_0$, and $\psi = \psi_0 + \delta \psi_0$.  We assume we know $L$ and $Q$ (we're making the perturbation), and we want to know $\psi$ (and eventually, its effect on $R$). Rewriting the system, we have
+\begin{equation}
+\begin{split}
+ ( L_0 + \delta L_0)(\psi_0 + \delta \psi_0) &= Q_0 + \delta Q_0 \\
+  L_0 \psi_0 + \delta L_0 \psi_0 + L_0 \delta \psi_0 + \theta(\delta^2) &= Q_0 + \delta Q_0 \, ,
+\end{split}
+\end{equation}
+but noting our original equation is contained, we are left with two separate equations,
+\begin{equation}
+ L_0 \psi_0 = Q_0 \, ,
+ \label{eq:pertzeroth}
+\end{equation}
+and
+\begin{equation}
+ \delta L_0 \psi_0 + L_0 \delta \psi_0 = \delta Q_0 \, ,
+ \label{eq:pertfirst}
+\end{equation}
+where we have neglected terms of order $\delta^2$; hence the theory is known as ``first order'' or ``linear'' perturbation theory.
+
+We now introduce the adjoint to the \textit{original equation}, with the adjoint source being our detector response function $\Sigma_d$, i.e.
+\begin{equation}
+ L^*_0 \psi^*_0 = \Sigma_d \, ,
+ \label{eq:pertadj}
+\end{equation}
+and as before, we have $\langle \psi^*_0, Q_0 \rangle =  \langle \psi_0, \Sigma_d \rangle = R_0$.  Our goal is to determine $\delta R_0$, or $R-R_0 = \delta R_0 =  \langle \delta \psi_0, \Sigma_d \rangle$.  To do so, we multiply Eq. \ref{eq:pertfirst} by $\psi^*_0$ and Eq. \ref{eq:pertadj} by $\delta \psi_0$, subtract the latter from the former, and integrate over all phase space, yielding
+\begin{equation}
+  \langle \psi^*_0, \delta L_0 \psi_0 \rangle + \langle \psi^*_0, L_0 \delta \psi_0 \rangle - \langle L^*_0 \psi^*_0, \delta \psi_0 \rangle = \langle \psi^*_0, \delta Q_0 \rangle - \langle \delta \psi_0, \Sigma_d \rangle \, .
+\end{equation}
+The second and third terms on the left hand side cancel by way of the adjoint identity, and the second term on the right hand side is $\delta R_0$.  Thus, we have
+\begin{equation}
+ \delta R_0 = \langle \psi^*_0, \delta Q_0 \rangle - \langle \psi^*_0, \delta L_0 \psi_0 \rangle \, .
+ \label{eq:fixedpertresp}
+\end{equation}
+From Eq. \ref{eq:fixedpertresp}, we see that an increased source gives rise to a \textit{greater} response, and an increase in $L$, corresponding to greater leakage or interaction, produces a \textit{lower} response, as is expected.
+
+\section*{Perturbation Theory --- Eigenvalue}
+
+As another example of perturbation theory, consider the unperturbed eigenvalue problem
+\begin{equation}
+ H_0 \psi_0 = \lambda_0 F_0 \psi_0 \, 
+\end{equation}
+subject to vacuum conditions.  As above, suppose we introduce some small change, and let a new, perturbed system be
+\begin{equation}
+  H \psi = \lambda F \psi \, .
+\end{equation}
+where $H = H_0 + \delta H_0$, $F = F_0 + \delta F_0$, $\psi = \psi_0 + \delta \psi_0$, and $\lambda =\lambda_0 + \delta \lambda_0$.  Our goal is to find $\delta \lambda_0$ due to the perturbation.  
+
+We rewrite the perturbed system
+\begin{equation}
+ (H_0 + \delta H_0)(\psi_0 + \delta \psi_0) = (\lambda_0 + \delta \lambda_0)(F_0 + \delta F_0)(\psi_0 + \delta \psi_0) 
+\end{equation}
+and expand
+\begin{equation}
+\begin{split}
+  H_0 \psi_0 + \delta H_0 \psi_0 &+ H_0 \delta \psi_0 + \theta(\delta^2) \\
+      &= \lambda_0 F_0 \psi_0 + \lambda_0 F_0 \delta \psi_0 + \lambda_0 \delta F_0 \psi_0 + \delta \lambda_0 F_0 \psi_0 + \theta(\delta^2)  \, .
+\end{split}
+\end{equation}
+Again, we recognize our original equation and a second equation with first-order perturbations,
+\begin{equation}
+ (H_0 - \lambda_0 F_0) \delta \psi_0 = (\lambda_0 \delta F_0 \psi_0 ) - (\delta H_0 - \delta \lambda_0 F_0)\psi_0 \, .
+ \label{eq:eigenpertfirst}
+\end{equation}
+
+We define the adjoint problem
+\begin{equation}
+ H^*_0 \psi^*_0 = \lambda_0 F^*_0 \psi^*_0 \, 
+ \label{eq:eigenpertadj}
+\end{equation}
+subject to the appropriate boundary conditions.  Similar to our treatment in the fixed source example, we multiply Eq. \ref{eq:eigenpertfirst} by $\psi^*_0$ and Eq. \ref{eq:eigenpertadj} by $\delta \psi_0$, subtract the latter from the former, and integrate over all phase space.  After a bit of rearranging, we find
+\begin{equation}
+ \delta \lambda_0 = \frac{\langle \psi^*_0,(\delta H_0 - \lambda_0 \delta F_0)\psi_0 \rangle}{\langle \psi^*_0, F_0 \psi_0 \rangle} \, .
+ \label{eq:eigenpertresp}
+\end{equation}
+
+\section*{Further Reading}
+
+Most of the development here follows that of Bell and Glasstone \cite{bell1970nrt}, Chapter 6.  Duderstadt and Hamilton \cite{duderstadt1976nra} develop the adjoint within the diffusion framework and apply it to problems of reactor physics in Chapters 5 and 7.  A particularly appealing description of the physical interpretation of the adjoint, albeit with a reactor physics flavor, is given by Henry \cite{henry1975nra}.  
+
+It's worth noting that the adjoint was developed first by Lagrange as a mathematical construct; however, its physical utility was first realized much later in the context of quantum mechanical perturbation theory, and later yet in reactor physics.  This history and more is to be found in Marchuk's treatise on adjoint methods \cite{marchuk1995aea}.  That first application of the adjoint in reactor physics was due to the ``father of nuclear engineering,'' Eugene Wigner \cite{wigner1945esp}.  
+
+The available literature on perturbation theory is quite large.  One important recent effort has been to couple sensitivities defined by perturbation theory to cross-section uncertainties in order to estimate the uncertainty of integral system parameters including the eigenvalue \cite{broadhead2004sau} and various worths \cite{williams2007sau} due to the underlying data uncertainty.  
+
+\begin{exercises}
+
+  \item \textbf{Self-adjointness}. Prove the one-speed diffusion operator, i.e. $L\phi = D\phi_xx - \Sigma_a\phi(x) = -S$ is self-adjoint.  You may assume a homogeneous medium with zero-flux boundary conditions, neglecting extrapolation distances.
+
+  \item \textbf{Adjoint Transport Equation}. Demonstrate that the adjoint operator $L^*$ defined by Eq. \ref{eq:adjointoperator} really is the adjoint to the forward operator $L$ for the given boundary conditions.
+
+  \item \textbf{Adjoint Boundary Conditions}. (a) For the case that $\psi$ satisfies vacuum conditions, we found that $\psi^*(\mathbf{r},\mathbf{\Omega},E)=0$ for $\hat{n}\cdot \hat{\Omega} > 0$.  What does this mean physically?  (b) For the one-speed transport equation, derive the boundary conditions for $\psi^*$ when $\psi$ satisfies reflecting conditions.
+
+  \item \textbf{Using the Adjoint}. (a) Briefly describe the physical meaning of the adjoint flux. (b) Suppose we have a known shield with a known detector on one side.  Suppose further that the particle source on the opposite side of the shield is not known \textit{a priori} and can take widely varying forms.  (An example of this might be a shielding analysis for a fusion reactor, where we think we have a good shield and then we try using it for several possible sources).  How could the adjoint be used so that only one ``transport'' calculation would be needed to compute the detector dose given an arbitrary source?
+
+  \item \textbf{A Point Detector}. Repeat the process used to obtain $\psi^* = R$ but for the case of a point detector, $\Sigma_d = \delta(\mathbf{r}-\mathbf{r}_0)\delta(\mathbf{\Omega}-\mathbf{\Omega}_0)\delta(E-E_0)$.  Clearly, one obtains an expression for $\psi(\mathbf{r}_0,\mathbf{\Omega}_0,E_0)$.  What does $\psi^*(\mathbf{r},\mathbf{\Omega},E)$ represent in this case?  This result is a generalization of reciprocity relations previously discussed for one-speed transport.
+
+  \item \textbf{The ``Contributon'' Flux}. In 1-d and one-speed, define the quantity 
+  \begin{equation*}
+   C(x,\mu) = \psi(x,\mu)\psi^*(x,\mu) \, ,
+  \end{equation*}
+  where $\psi$ and $\psi^*$ are the forward and adjoint angular fluxes.  Take the forward problem to have vacuum boundaries.  (a) Mathematically, express the vacuum boundary condition for $\psi$ at a general external boundary $x_b$.  (b) With your knowledge of the corresponding adjoint boundary condition, write down the mathematical expression for the boundary condition of $C(x,\mu)$.  (c) Taking the adjoint source to be a flux-to-dose factor, what are the units of $\psi$, $\psi^*$, and $C$?  Can you interpret $C$ physically?  (For more information on this mysterious quantity, see the paper by Williams \cite{williams1991gcr}.)
+
+  \item \textbf{Eigenvalue Perturbation}.  Prove Eq. \ref{eq:eigenpertresp}.  Also, describe what possible changes in the system coincide with the perturbations $\delta H_0$ and $\delta F_0$ and how such changes impact the eigenvalue perturbation.  Remember that $k_{e\!f\!f}$ is $\lambda^{-1}$.
+
+  \item \textbf{Eigenvalue Sensitivity}.  Defining the sensitivity of $k_{e\!f\!f}$ to a cross-section $\Sigma_x$ to be
+  \begin{equation*}
+   S_{k,\Sigma_x} = \frac{\Sigma_x}{k_{e\!f\!f} }\frac{\partial k_{e\!f\!f}}{ \partial \Sigma_x} \, ,
+  \end{equation*}
+  find an expression for $S_{k,\Sigma_x}$ in terms of the partial derivatives of $H_0$ and $F_0$ with respect to $\Sigma_x$.
+
+
+\end{exercises}

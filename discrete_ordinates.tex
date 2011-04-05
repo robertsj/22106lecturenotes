@@ -1,0 +1,20 @@
+
+\chapter{Discrete Ordinates Method}
+\label{lec:discreteordinates}
+
+% References
+\section*{Further Reading}
+
+A good introduction to the discrete ordinates method in 1-d can be found in Chapter 3 in the text of Lewis and Miller; higher dimensions are covered in Chapter 4 of the same work.  The foundation of the method is credited to Chandreskar (in the context of stellar radiation) and can be found in his monograph.  A review paper by Adams and Larsen provides a survey of the many acceleration techniques available for the discrete ordinates equations.  Recent advances in the discrete ordinates method include employing advanced Krylov subspace methods, outlined by Warsa, Wareing, and Morel, variations of which are implemented in the state-of-the-art code Denovo.  Moreover, the discrete ordinates equations can be parallelized; the most popular approach is that of Koch, Baker, and Alcouffe (also implemented in Denovo).
+
+\begin{exercises}
+
+  \item Write down the general (i.e. complete) continuous $S_4$ equations for slab geometry.  Now, suppose the slab is 10 cm wide with vacuum boundaries.  The source is an incident unit isotropic source at the left boundary.  Using the discretization discussed in class (i.e. compute angular fluxes at cell edges), determine the sweeping step relation
+  \begin{equation*}
+    \psi_{3/2,n} = A \psi_{1/2,n} + B \, ,
+  \end{equation*}
+  where 1/2 and 3/2 denote the first and second edges, respectively, $n$ is the angle index, and $A$ and $B$ are constants to be determined.  Can non-physical values for $\psi_{3/2,n}$ occur?  For $\phi_{1,n}$?
+
+  \item Explain the features of the Gauss-Legendre quadrature set.  How is it used in the discrete ordinates method?  Given a set $\psi_n(x)$, the exact (or numerical) values of $\psi(x,\mu_n)$, define the scalar flux $\phi(x)$ and current $\mathbf{J}(x)$ in terms of a quadrature set (just use basic expressions, no numerical values).
+
+\end{exercises}

@@ -1,0 +1,318 @@
+\chapter{The Integral Form}
+
+In this lecture we consider the integral form of the transport equation in both general coordinates and the specific case of slab geometry.  The integral form is useful in situations where only the scalar flux is required and is the foundation for the collision probabability method, which we cover in the next lecture, as well as the method of characteristics, fast becoming the technique of choice in reactor analysis.  We consider some analytical aspects of the integral equation and finish by discussing a simple numerical approach based on Von Neumann series expansions.
+
+\section*{The Integral Transport Equation}
+
+You may have noticed from the previous two lectures that the angular dependence of the particle density is a relatively unique aspect of transport processes.  Often, this angular dependence is the hardest aspect that we deal with directly, either analytically or numerically\footnote{Energy is by far more complex, as we've noted, and there are very few analytical problems where energy can be handled directly (slowing down in an infinite homogeneous medium problem is one example). Consequently, we typically use only the crudest representation possible in discretizing the energy variable, though much physics goes into generating the discrete data.}  It would be nice to eliminate the angular variable completely, and for certain problems, the \textit{ integral transport equation} allows us to do with a minimum of approximation.
+
+Before we derive the integral form of the transport equation, it helps define a new quantity called the \textit{emission density},
+\begin{equation}
+  Q(\mathbf{r},\mathbf{\Omega}) = \int_{4\pi} d\Omega' \Sigma_s(\mathbf{r},\mathbf{\Omega}\cdot\mathbf{\Omega}')\psi(\mathbf{r},\mathbf{\Omega'}) + S(\mathbf{r},\mathbf{\Omega}) \, .
+  \label{eq:emissiondensity}
+\end{equation}
+Essentially, $Q$ is a generalized source containing any external source $S$ and scattering source; of course, fission could also be included.
+
+Recall the discussion of Eq. \ref{eq:spaceratepsi}, where we consider a distance $s$ from some reference point $\mathbf{r}_0$ along the characteristic $\mathbf{r}_0 +s\mathbf{\Omega}$.  The full transport equation in terms of $s$ is 
+\begin{equation}
+    \frac{d}{ds} \psi(\mathbf{r}_0 +s\mathbf{\Omega},\mathbf{\Omega}) + \Sigma_t(\mathbf{r}_0 +s\mathbf{\Omega})\psi =   Q(\mathbf{r}_0 +s\mathbf{\Omega},\mathbf{\Omega})  \, ,
+    \label{eq:forchareq}
+\end{equation}
+which can be called the \textit{forward characteristic} equation, as we follow neutrons forward from the reference point.  Similar, and which we use below, is the \textit{backward characteristic} form, which represents following neutrons backward along the characteristic from a current point $\mathbf{r}$.  Let $p = -s$.  Then $d/dp = -d/ds$ and Eq. \ref{eq:forchareq} becomes (after dropping the $0$ subscript from $\mathbf{r}$)
+\begin{equation}
+    -\frac{d}{dp} \psi(\mathbf{r} - p\mathbf{\Omega},\mathbf{\Omega}) + \Sigma_t(\mathbf{r} -p\mathbf{\Omega})\psi =   Q(\mathbf{r} -p\mathbf{\Omega},\mathbf{\Omega})  \, .
+    \label{eq:backchareq}
+\end{equation}
+We wish to integrate from $p=0$ to some maximum distance (eventually to be either infinity or a global boundary).  Introducing the integrating factor
+\begin{equation}
+ if = e^{ -\int^p_0 \Sigma_t(\mathbf{r} -p'\mathbf{\Omega}) dp'  } \, 
+\end{equation}
+into Eq. \ref{eq:backchareq}, we have
+\begin{equation}
+    -\frac{d}{dp} \Big ( \psi(\mathbf{r}_0 - p\mathbf{\Omega},\mathbf{\Omega}) e^{ -\int^p_0 \Sigma_t(\mathbf{r} -p'\mathbf{\Omega}) dp'  } \Big ) =  Q(\mathbf{r} -p\mathbf{\Omega}) e^{ -\int^p_0 \Sigma_t(\mathbf{r} -p'\mathbf{\Omega}) dp'  } \, ,
+\end{equation}
+and integrating
+\begin{equation}
+  \begin{split}
+    -\int^{\psi(p'=p)}_{\psi(p=0)}  \Bigg(  d \Big ( \psi(\mathbf{r} &- p'\mathbf{\Omega},\mathbf{\Omega})   e^{ -\int^{p'}_0 \Sigma_t(\mathbf{r} -p''\mathbf{\Omega}) dp''  } \Big ) \Bigg ) = \\
+   & \int^p_0 Q(\mathbf{r} -p'\mathbf{\Omega},\mathbf{\Omega})e^{ -\int^{p'}_0 \Sigma_t(\mathbf{r} -p''\mathbf{\Omega}) dp''  }dp'   \\
+  \end{split}
+\end{equation}
+yields
+\begin{equation}
+  \begin{split}
+    \psi(\mathbf{r},\mathbf{\Omega}) - \psi(\mathbf{r} &- p\mathbf{\Omega},\mathbf{\Omega})e^{ -\int^{p}_0 \Sigma_t(\mathbf{r} -p''\mathbf{\Omega}) dp''  }  = \\
+   & \int^p_0 Q(\mathbf{r} -p'\mathbf{\Omega},\mathbf{\Omega})e^{ -\int^{p'}_0 \Sigma_t(\mathbf{r} -p''\mathbf{\Omega}) dp''  }dp'   \, .
+  \end{split}
+\end{equation}
+
+We can simplify the notation somewhat by defining the \textit{optical pathlength} $\tau$, such that
+\begin{equation}
+  \tau ( \mathbf{r} ,\mathbf{r} -p \mathbf{\Omega} ) = \int^p_0 \Sigma_t(\mathbf{r} -p'\mathbf{\Omega}) dp' \, . 
+  \label{eq:opticalpathlength}
+\end{equation}
+Then, the integral equation for the angular flux becomes
+\begin{equation}
+  \begin{split}
+    \psi(\mathbf{r},\mathbf{\Omega}) = \int^p_0 Q(\mathbf{r} -p'\mathbf{\Omega},\mathbf{\Omega})e^{-\tau(\mathbf{r},\mathbf{r}-p'\mathbf{\Omega})}dp'                         +  \psi(\mathbf{r} - p\mathbf{\Omega},\mathbf{\Omega})e^{ -\tau(\mathbf{r},\mathbf{r}-p\mathbf{\Omega}) }   \, .
+  \end{split}
+  \label{eq:inteqpsi}
+\end{equation}
+
+In many cases, the emission density $Q$ is assumed to be isotropic in the lab system.  In this case, we can integrate out the angular dependence and arrive at an integral equation for the scalar flux often referred to as Peierl's equation.  To do so, we let the integration bound $p$ of Eq. \ref{eq:inteqpsi} go to infinity.  We assume the second term on the right hand side to vanish (i.e. either $\psi$ vanishes at infinity, or equivalently, the optical path length $\tau(\mathbf{r},\infty)$ goes to $\infty$, and so the exponential vanishes).  
+
+Letting $Q(\mathbf{r},\mathbf{\Omega}) = Q(\mathbf{r} -p\mathbf{\Omega})/4\pi$, and substituting $\mathbf{r}' = \mathbf{r} - p \mathbf{\Omega}$, we integrate Eq. \ref{eq:inteqpsi} over all angles to get
+\begin{equation}
+ \phi(\mathbf{r}) = \int_{4\pi} d\Omega \int^{\infty}_0  \frac{Q(\mathbf{r}')}{4\pi}e^{-\tau(\mathbf{r},\mathbf{r}')}dp \, .
+ \label{eq:integralphiPRE}
+\end{equation}
+Now note that $p =|\mathbf{\Omega} p|=|\mathbf{r}-\mathbf{r}'|$, and consequently $p^2 = |\mathbf{r}-\mathbf{r}'|^2$.  Multiplying within the integrand by $1=p^2/|\mathbf{r}-\mathbf{r}'|^2$ yields
+\begin{equation}
+ \phi(\mathbf{r}) = \int_{4\pi} d\Omega \int^{\infty}_0  \frac{Q(\mathbf{r}')}{4\pi}e^{-\tau(\mathbf{r},\mathbf{r}')}\frac{p^2dp}{|\mathbf{r}-\mathbf{r}'|^2} \, ,
+\end{equation}
+and if the reader thinks this looks suspiciously like a volume integral in spherical coordinates, she would be right.  Letting $dV' = 4\pi d\Omega dpp^2$, we have
+\begin{equation}
+ \phi(\mathbf{r}) = \int_{V'} \frac{ Q(\mathbf{r}')e^{-\tau(\mathbf{r},\mathbf{r}')} dV'}{4\pi|\mathbf{r}-\mathbf{r}'|^2} \, .
+ \label{eq:integralphi}
+\end{equation}
+
+\section*{Integral Transport in Slab Geometry}
+
+We now look at the special case of Eq. \ref{eq:integralphi} in slab geometry, for which the emission density is a function only of $x$, i.e. $Q(\mathbf{r}) = Q(x)$.  We make use of cylindrical coordinates, with the axis taken to be $x$.  Our goal will be to integrate out the radial ($\rho$) and azimuthal ($\omega$) spatial components, leaving just the $x$ dependence. The differential volume is then
+\begin{equation}
+ dV' = \rho d\rho d\omega dx' ,
+\end{equation}
+and Eq. \ref{eq:integralphi} becomes
+\begin{equation}
+\begin{split}
+ \phi(x) &= \int^{\infty}_{-\infty} dx' \int^{\infty}_0 d\rho \rho \int^{2\pi}_0 \frac{ d\omega' Q(x')e^{-\tau(\mathbf{r},\mathbf{r}')}}{4\pi|\mathbf{r}-\mathbf{r}'|^2} \, \\
+        &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_0 d\rho \rho \frac{ Q(x')e^{-\tau(\mathbf{r},\mathbf{r}')}}{4\pi |\mathbf{r}-\mathbf{r}'|^2} \, .
+\end{split}
+\label{eq:integralphix}
+\end{equation}
+
+We now need to express $\mathbf{r}$ and $\rho$ in terms of $x$.  Since the cross-sections (as quantified by $\tau$) are really dependent only on $x$, we can relate the full distance $|\mathbf{r}' - \mathbf{r}|$ with its projection along the $x$ axis via a directional cosine $\lambda^{-1}$ such that
+\begin{equation}
+ \lambda = \frac{|\mathbf{r}' - \mathbf{r}|}{|x'-x|} \, 
+ \label{eq:projection}
+\end{equation}
+and $\tau(\mathbf{r}',\mathbf{r}) = \lambda \tau(x',x)$.  Moreover,
+\begin{equation}
+ |\mathbf{r}' - \mathbf{r}|^2 = \rho^2 + |x' - x|^2 \, 
+\end{equation}
+which, using Eq. \ref{eq:projection}, can be rewritten as
+\begin{equation}
+ \rho^2 = (\lambda^2 -1 )|x'-x|^2 \, ,
+\end{equation}
+and differentiating, we find
+\begin{equation}
+ \rho d\rho = \lambda d\lambda |x'-x|^2 \, .
+\end{equation}
+Noting that $\rho = 0$ corresponds to $\lambda = 1$, Eq. \ref{eq:integralphix} can be written in terms of $\lambda$ to give
+\begin{equation}
+\begin{split}
+ \phi(x) &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{|x'-x|^2 }{4\pi|\mathbf{r}' - \mathbf{r}|^2}    Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \\
+        &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{1}{4\pi \lambda^2}    Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \\       
+        &=  \int^{\infty}_{-\infty} dx'\frac{1}{2} \int^{\infty}_1 \lambda d\lambda\frac{1}{\lambda}  Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \, 
+\end{split}
+\end{equation}
+or
+\begin{equation}
+ \phi(x) =  \int^{\infty}_{-\infty} dx'\frac{1}{2} E_1(\tau(\mathbf{x},\mathbf{x}'))Q(x') \, ,   
+ \label{eq:integralphislab}     
+\end{equation}
+where we have used the $E_1$ function defined at the end of Lecture \ref{lec:analytical}.  
+
+\section*{First-Flight Kernels and Green's Functions}
+
+Eq. \ref{eq:integralphislab} gives us an example of the use of a \textit{first-flight kernel} for the scalar flux, the general use of which takes the form
+\begin{equation}
+ \phi(\mathbf{r}) = \int d^3\mathbf{r}' k(\mathbf{r},\mathbf{r}')Q(\mathbf{r}') \, 
+\end{equation}
+for a kernel $k(\mathbf{r},\mathbf{r'})$.  For slab geometry, the first-flight kernel is seen to be
+\begin{equation}
+ k_{\text{slab}}(x,x') = \frac{1}{2} E_1(\tau(x,x')) \, .
+ \label{eq:firstflightkernelslab}
+\end{equation}
+
+First-flight kernels have a particularly easy (and important!) physical interpretation. Consider Eq. \ref{eq:integralphislab} for the case of a purely absorbing medium.  Then the emissivity $Q$ consists only of external sources.  To help visualize the problem, take $Q$ to be a delta function at $x_0$, i.e. $Q(x) = Q_0 \delta(x-x_0)$.  Substituting this into Eq. \ref{eq:integralphislab} gives
+\begin{equation}
+ \phi(x) = \frac{1}{2} E_1(\tau(x,x_0)) Q_0 \, . 
+\end{equation}
+Thus, the kernel $k(x,x')$ can be seen to give the contribution of the source particles born at $x'$ to the flux at $x$.  In other words, it gives to us the \textit{uncollided flux}.  For many systems, having the uncollided flux can be a good approximation for the total flux, and in some numerical schemes, it can be a good initial guess to help reduce computational time and numerical artifacts (e.g. the discrete ordinates method, discussed in Lecture \ref{lec:discreteordinates}).
+
+If we look back at the Peierl's equation (Eq. \ref{eq:integralphi}), we find the fundamental first-flight kernel of the point source, 
+\begin{equation}
+ k_{\text{point}}(\mathbf{r},\mathbf{r}') = \frac{e^{-\tau(\mathbf{r},\mathbf{r}')}}{4\pi|\mathbf{r}-\mathbf{r}'|^2} \, .
+ \label{eq:firstflighkernelpoint}
+\end{equation}
+
+Two things are worth noting about Eq. \ref{eq:firstflighkernelpoint}.  First, the first-flight kernels for all other geometrical configurations can be derived from this kernel.  A second point, related to the first, is that the point kernel is closely related to the \textit{Green's function} for the transport equation.  
+
+A Green's function $G(x,x')$ for a linear differential operator\footnote{We'll discuss the linearity of the transport equation in Lecture \ref{lec:linearity}, and we'll use operator notation extensively in Lecture \ref{lec:adjoint}.} $L=L(x)$ is defined
+\begin{equation}
+ LG(x,x') = \delta(x-x') \, .
+ \label{eq:greens}
+\end{equation}
+A linear differential operator is any linear combination of basic differentiation operators.  $L$ could be $d/dx$ or $d^2/dx^2$ or $d^2/dx^2 + d/dx$, and so on.  The utility of $G$ arises when we wish to solve the inhomogeneous differential equation
+\begin{equation}
+ Lu(x) = f(x) \, .
+ \label{eq:diffeq}
+\end{equation}
+If we multiply both sides of Eq. \ref{eq:greens} by $f(x')$ and integrate over $x'$, we find
+\begin{equation}
+ \int LG(x,x')f(x')dx' = \int dx' \delta(x-x') f(x') = f(x) \, ,
+\end{equation}
+but this suggests that
+\begin{equation}
+ Lu(x) = \int LG(x,x')f(x')dx' = L \int G(x,x')f(x')dx'  \, ,
+\end{equation}
+or 
+\begin{equation}
+ u(x) = \int G(x,x')f(x')dx'  \, .
+\end{equation}
+Hence, if we know $G(x,x')$, then we can solve the inhomogeneous equation for $u$.  
+
+What about the transport equation?  Consider again Eq. \ref{eq:inteqpsi}, neglecting the second term, and letting $p\to \infty$, i.e. 
+\begin{equation}
+  \begin{split}
+    \psi(\mathbf{r},\mathbf{\Omega}) = \int^{\infty}_0 Q(\mathbf{r} -p\mathbf{\Omega},\mathbf{\Omega})e^{-\tau(\mathbf{r},\mathbf{r}-p\mathbf{\Omega})}dp                          \, .
+  \end{split}
+  \label{eq:inteqpsi2}
+\end{equation}
+Note that this is still integrating along the characteristic.  It is more convenient to cast this as volume integral, similar to what we did above for Eq. \ref{eq:integralphi}.  However, even in volume form, we still want the integration confined to the characteristic.  By defining
+\begin{equation}
+ \delta(\mathbf{\Omega}\cdot\mathbf{\Omega}') \equiv \delta(\mu-\mu')\delta(\phi-\phi') \, ,
+\end{equation}
+and
+\begin{equation}
+ \mathbf{\Omega}_R \equiv \frac{\mathbf{r} -\mathbf{r}'}{|\mathbf{r}-\mathbf{r}'|} \, ,
+\end{equation}
+and recalling $p = |\mathbf{r}-\mathbf{r}'|$, we can rewrite Eq. \ref{eq:inteqpsi2} as
+\begin{equation}
+    \psi(\mathbf{r},\mathbf{\Omega}) = \int_{4\pi} d\Omega_R \delta(\mathbf{\Omega}\cdot\mathbf{\Omega}_R) \int^{\infty}_0 Q(\mathbf{r}',\mathbf{\Omega}_R)e^{-\tau(\mathbf{r},\mathbf{r'})}dp                          \, .
+\end{equation}
+Using $dV' = p^2dpd\Omega_R$, this becomes
+\begin{equation}
+    \psi(\mathbf{r},\mathbf{\Omega}) = \int_{V'} dV' \frac{1}{|\mathbf{r}-\mathbf{r}'|^2} \delta(\mathbf{\Omega}\cdot\mathbf{\Omega}_R)  Q(\mathbf{r}',\mathbf{\Omega}_R)e^{-\tau(\mathbf{r},\mathbf{r'})}                          \, .
+\end{equation}
+
+Now let $Q$ be a delta source at $\mathbf{r}_0$ emitting particles in direction $\mathbf{\Omega}_0$, or  $Q = \delta(\mathbf{r}-\mathbf{r}_0)\delta(\Omega\cdot\Omega_0)$, similar to the right hand side of Eq. \ref{eq:greens}. Then
+\begin{equation}
+  \begin{split}
+    \psi(\mathbf{r},\mathbf{\Omega}) &= \int_{V'} dV' \frac{e^{-\tau(\mathbf{r},\mathbf{r'})} }{|\mathbf{r}-\mathbf{r}'|^2} \delta(\mathbf{\Omega}\cdot\mathbf{\Omega}_R) \delta(\mathbf{r}-\mathbf{r}_0)\delta(\mathbf{\Omega}\cdot\mathbf{\Omega}_0)                           \\
+    &= \frac{e^{-\tau(\mathbf{r},\mathbf{r}_0)} }{|\mathbf{r}-\mathbf{r}_0|^2} \delta \Bigg (\mathbf{\Omega}\cdot \frac{\mathbf{r} -\mathbf{r}_0}{|\mathbf{r}-\mathbf{r}_0|} \Bigg ) \delta(\mathbf{\Omega}\cdot\mathbf{\Omega}_0) \\
+    &= G_{\text{point}}(\mathbf{r},\mathbf{\Omega};\mathbf{r}_0,\mathbf{\Omega}_0) \, .
+  \end{split}
+  \label{eq:psigreen}
+\end{equation}
+This is the Green's function for the angular flux, with which we can find $\psi$ for any emission density $Q(\mathbf{r},\mathbf{\Omega}$)\footnote{Careful! If $Q$ includes scattering, then it depends on $\psi$, and so a direct solution in this form is not possible}.   We can use $G_{\text{point}}$ to recover the scalar flux point kernel by letting $Q$ be a unit isotropic point source, i.e. $Q = \delta(\mathbf{r}-\mathbf{r}_0)/4\pi$.  Then
+\begin{equation}
+\begin{split}
+    \psi(\mathbf{r},\mathbf{\Omega}) &=  \int_V dV' \int_{4\pi} d\Omega' G_{\text{point}}(\mathbf{r},\mathbf{\Omega};\mathbf{r}',\mathbf{\Omega}') \frac{\delta(\mathbf{r}'-\mathbf{r}_0)}{4\pi} \\
+    &= \frac{e^{-\tau(\mathbf{r},\mathbf{r}_0)} }{4\pi|\mathbf{r}-\mathbf{r}_0|^2} \delta \Bigg (\mathbf{\Omega}\cdot \frac{\mathbf{r} -\mathbf{r}_0}{|\mathbf{r}-\mathbf{r}_0|} \Bigg ) \, .
+\end{split}
+\label{eq:psiisosource}
+\end{equation}
+Integrating $\psi$ over all angles yields
+\begin{equation}
+\begin{split}
+    \phi(\mathbf{r}) &=  \int_{4\pi} d\Omega \frac{e^{-\tau(\mathbf{r},\mathbf{r}_0)} }{4\pi|\mathbf{r}-\mathbf{r}_0|^2} \delta \Bigg (\mathbf{\Omega}\cdot \frac{\mathbf{r} -\mathbf{r}_0}{|\mathbf{r}-\mathbf{r}_0|} \Bigg ) \\
+    &= \frac{e^{-\tau(\mathbf{r},\mathbf{r}_0)} }{4\pi|\mathbf{r}-\mathbf{r}_0|^2} \, ,
+\end{split}
+\end{equation}
+which is indeed our point kernel for the scalar flux.
+
+\section*{Neumann Series}
+
+Lecture \ref{lec:cpm} will cover the widely-used collision probability method that is based on the integral transport equation.  Here, we investigate a less versatile yet quite enlightening method based on expansion of the scalar flux in a so-called Neumann\footnote{Carl Neumann, not to be confused with John von Neumann.} series for slab problems that include scattering.
+
+Consider the integral equation in a slab of length $L$:
+\begin{equation}
+ \phi(x) = \int^L_0 \frac{1}{2} E_1(\tau(x,x'))(S(x') + \phi(x')\Sigma_s(x')) \, .
+\end{equation}
+Defining the operator $K$,
+\begin{equation}
+ K\phi = \int dx' \frac{1}{2} E_1(\tau(x,x'))\phi(x) \Sigma_s(x) \, ,
+\end{equation}
+we can rewrite the integral equation as
+\begin{equation}
+ (I-K)\phi = K\frac{S}{\Sigma_s} \, .
+ \label{eq:integraloperatorform}
+\end{equation}
+Without going into formal detail (though it should seem ``reasonable''), Eq. \ref{eq:integraloperatorform} can be solved by expanding
+\begin{equation}
+ (I-K)^{-1} = I + K + K^2 + \ldots \, ,
+\end{equation}
+where $I$ is the identity operator, so that 
+\begin{equation}
+ \phi(x) = (K \frac{S}{\Sigma_s} + 
+\end{equation}
+If we define $\phi_0 = 
+
+\begin{equation}
+ \phi(x) = \sum^{\infty}_{n=0} K^n \frac{S(x)}{\Sigma_s(x)} \, .
+\end{equation}
+
+
+
+
+
+
+\section*{A Numerical Example}
+
+
+
+See Listing \ref{list:neumann_slab}.
+
+\lstset{language=Octave,caption=Solution of Slab Problem via Neumann Series, label=list:von_neumann_slab}
+\lstinputlisting{von_neumann_slab.m}
+
+\section*{Further Reading}
+
+The derivation of the integral equations generally follow that of Lewis and Miller \cite{lewis1993cmn}.  First-flight kernels, Green's functions, and the formal solutions via Von Neumann series are discussed in Duderstadt and Martin \cite{duderstadt1976tt}.  Any good numerical analysis textbook will provide more information on numerical integration, and the reader is encouraged to explore this fundamental topic.    
+
+\begin{exercises}
+  
+  \item \textbf{Point-to-slab}. Show how $k_{\text{slab}}$ can be generated using $k_{\text{point}}$.
+  \item \textbf{Line source}. Show that the first-flight kernel for an infinite isotropic line source is given by
+        \begin{equation}
+         k_{\text{line}}(r,r') = \frac{1}{2\pi r}Ki_1(\Sigma_t|r-r'|) \, ,
+         \label{eq:linekernel}
+        \end{equation}
+        where
+        \begin{equation}
+         Ki_n(x) = \int^{\pi/2}_0 \cos^{n-1}(\theta) e^{-x/\cos(\theta)}d\theta = \int^{\infty}_0 \frac{e^x \cosh(u)}{\cosh^n(u)} \, 
+        \end{equation}
+        are the Bickley-Naylor function of order $n$, and where $Ki_0(r) = K_0(r)$, the zeroth order modified Bessel function.
+
+  \item \textbf{Spherical shell}. Show that the first-flight kernel for a spherical shell is given by
+        \begin{equation}
+         k_{\text{sph}}(r,r') = \frac{r'}{2r}Ki_1(\Sigma_t|r-r'|-\Sigma_t|r+r'|) \, ,
+         \label{eq:sphericalkernel}
+        \end{equation}
+
+  \item \textbf{Current density kernels}. In the lecture found the flux kernel for a plane source, and the kernels for line and spherical sources are given in the first two exercises.  We can also derive kernels for the current density.  For example, in a slab, there is a current kernel $\gamma_{\text{slab}}(x,x')$ such that
+  \begin{equation}
+   \mathbf{J}(x) = \int^L_0 \gamma_{\text{slab}}(x,x') Q(x') dx' \, .
+  \end{equation}
+  Derive this kernel $\gamma_{\text{slab}}(x,x')$.
+ 
+  \item \textbf{Using kernels}. Use $k_{\text{slab}}$ to find the scalar flux for the example of Lecture \ref{lec:analytical}, and use $\gamma_{\text{slab}}$ to find the corresponding current density.
+
+  \item  \textbf{Von Neumann Series}. Use the Von Neumann series code for the slab in Listing \ref{list:von_neumann_slab} to plot the scalar flux, uncollided flux, and the first five collided fluxes on the same graph using 20 spatial divisions for $L = 10$, $\Sigma_t = 1.0$, and (a) $\Sigma_s = 0.2$ and (b) $\Sigma_s = 0.8$.  What changes for the case with higher scattering?
+
+  \item \textbf{Convergence}. For the same problem, modify the Von Neumann series code to compute as many collided fluxes are necessary so that
+  \begin{equation*}
+   \frac{|\phi_n(x_i)-\phi_n(x_{i-1})|}{\phi_n(x_{i-1}} < \epsilon = 1\times10^{-6} \, \, \, \, \, \, \forall \, x_i \, ,
+  \end{equation*}
+   and comment on the results. (Hint, which norm on the $x$ vector is appropriate?)
+  
+  \item \textbf{Nonuniform medium}. Could the Von Neumann series code be easily modified to handle a nonuniform slab?  Suggest an approach for this.
+
+  \item \textbf{Numerical integration}. Modify the Von Neuman series code to handle both Simpson's rule and Gaussian quadrature.  Overviews of both can be found in numerical analysis texts.  For the purely absorbing slab example of Lecture \ref{lec:analytical}, compare the trapezoid, Simpson's, and Gaussian schemes to the analytical solution.  Comment on which method appears to get it ``right`` with the least effort.
+
+  \item \textbf{Efficiency}.  The Von Neumann code is slow due to the symbolic computation of the $E_n$ functions. Modify the code to precomputing the various coefficients (indexed by $i$ and $j$), and comment on any improvement.  For even greater efficiency, find a way to evaluate the exponential functions numerically (via some form of approximation) that allows you compute $E_n(x)$ rapidly; see for example Hebert's \textit{Applied Reactor Physics}.  How does the numerical evaluation affect the accuracy of the result?
+
+
+\end{exercises}

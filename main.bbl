@@ -1,0 +1,88 @@
+\begin{thebibliography}{10}
+
+\bibitem{bell1970nrt}
+G.I. Bell and S.~Glasstone.
+\newblock {\em {Nuclear Reactor Theory}}.
+\newblock Van Nostrand-Reinhold, New York, 1970.
+
+\bibitem{broadhead2004sau}
+B.L. Broadhead, B.T. Rearden, C.M. Hopper, J.J. Wagschal, and C.V. Parks.
+\newblock {Sensitivity-and Uncertainty-Based Criticality Safety Validation
+  Techniques}.
+\newblock {\em Nucl. Sci. Eng}, 146(3):340--366, 2004.
+
+\bibitem{case1967ltt}
+K.M. Case and P.F. Zweifel.
+\newblock {\em {Linear Transport Theory}}.
+\newblock Addison-Wesley, Reading,MA, 1967.
+
+\bibitem{davison1957ntt}
+B.~Davison.
+\newblock {\em {Neutron Transport Theory}}.
+\newblock Oxford, 1957.
+
+\bibitem{duderstadt1976nra}
+J.J. Duderstadt and L.J. Hamilton.
+\newblock {\em {Nuclear Reactor Analysis}}.
+\newblock John Wiley and Sons, Inc., New York, 1976.
+
+\bibitem{duderstadt1976tt}
+J.J. Duderstadt and W.R. Martin.
+\newblock {\em {Transport Theory}}.
+\newblock John Wiley and Sons, Inc., New York, 1979.
+
+\bibitem{hebert2009arp}
+A.~H{\'e}bert.
+\newblock {\em {Applied Reactor Physics}}.
+\newblock Presses Internationales Polytechnique, 2009.
+
+\bibitem{henry1975nra}
+A.F. Henry.
+\newblock {\em {Nuclear Reactor Analysis}}.
+\newblock MIT Press, Cambridge, MA, 1975.
+
+\bibitem{lewis1993cmn}
+E.E. Lewis and W.F. Miller~Jr.
+\newblock {\em {Computational Methods of Neutron Transport}}.
+\newblock American Nuclear Society, Lagrange Park, IL, 1993.
+
+\bibitem{marchuk1995aea}
+G.I. Marchuk.
+\newblock {\em {Adjoint Equations and Analysis of Complex Systems}}.
+\newblock Springer, 1995.
+
+\bibitem{miller1987nrm}
+W.F. Miller~Jr and E.E. Lewis.
+\newblock {Nonlinear Response Matrix Methods for Radiative Transfer}.
+\newblock In {\em International Topical Meeting on Advances in Reactor Physics,
+  Mathematics and Computation}, Paris, France, April 1987. American Nuclear
+  Society.
+
+\bibitem{stacey1974vmn}
+W.M. Stacey.
+\newblock {\em {Variational Methods in Nuclear Reactor Analysis}}.
+\newblock Academic Press, 1974.
+
+\bibitem{stammler1983mss}
+R.J.J. Stamm'ler and M.J. Abbate.
+\newblock {\em {Methods of Steady-State Reactors Physics in Nuclear Design}}.
+\newblock Academic Press, New York, 1983.
+
+\bibitem{wigner1945esp}
+E.P. Wigner.
+\newblock {Effect of Small Perturbations on Pile Period}.
+\newblock {\em Chicago Report CP-G-3048; see also The Collected Works of Eugene
+  Paul Wigner, Part A.}, 1945.
+
+\bibitem{williams1991gcr}
+M.L. Williams.
+\newblock {Generalized Contributon Response Theory}.
+\newblock {\em Nuclear Science and Engineering}, 108:355--383, 1991.
+
+\bibitem{williams2007sau}
+M.L. Williams.
+\newblock {Sensitivity and Uncertainty Analysis for Eigenvalue-Difference
+  Responses}.
+\newblock {\em Nucl. Sci. Eng.}, 155(1):18--36, 2007.
+
+\end{thebibliography}

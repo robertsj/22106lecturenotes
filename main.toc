@@ -1,0 +1,31 @@
+\thispagestyle {plain}
+\contentsline {part}{\partnumberline {I}Nuclear Data}{1}
+\contentsline {chapter}{\chapternumberline {1}Microscopic Interactions}{2}
+\contentsline {chapter}{\chapternumberline {2}Macroscopic Interactions}{3}
+\contentsline {chapter}{\chapternumberline {3}Shielding and Moderation}{4}
+\contentsline {chapter}{\chapternumberline {4}Neutron Detection and Spectroscopy}{5}
+\contentsline {chapter}{\chapternumberline {5}Nuclear Data: a Black Box?}{6}
+\contentsline {chapter}{\chapternumberline {6}R-Matrix Theory}{7}
+\contentsline {chapter}{\chapternumberline {7}Neutron Thermalization}{8}
+\contentsline {chapter}{\chapternumberline {8}Scattering Laws and S($\alpha $,$\beta $)}{9}
+\contentsline {part}{\partnumberline {II}Monte Carlo Transport}{10}
+\contentsline {chapter}{\chapternumberline {9}Probability and Statistics}{11}
+\contentsline {chapter}{\chapternumberline {10}Monte Carlo Methods}{12}
+\contentsline {chapter}{\chapternumberline {11}Collision Physics and Sampling `Em}{13}
+\contentsline {chapter}{\chapternumberline {12}Tallies and Uncertainties}{14}
+\contentsline {chapter}{\chapternumberline {13}Variance Reduction}{19}
+\contentsline {chapter}{\chapternumberline {14}Criticality}{20}
+\contentsline {part}{\partnumberline {III}Deterministic Transport}{21}
+\contentsline {chapter}{\chapternumberline {15}The Transport Equation}{22}
+\contentsline {chapter}{\chapternumberline {16}Boundary Conditions}{29}
+\contentsline {chapter}{\chapternumberline {17}Analytical Solutions}{35}
+\contentsline {chapter}{\chapternumberline {18}The Integral Form}{46}
+\contentsline {chapter}{\chapternumberline {19}Collision Probability Method}{57}
+\contentsline {chapter}{\chapternumberline {20}Discrete Ordinates Method}{58}
+\contentsline {chapter}{\chapternumberline {21}P$\mathrm {_N}$ Method and Diffusion}{59}
+\contentsline {chapter}{\chapternumberline {22}Linearity and Reciprocity}{60}
+\contentsline {chapter}{\chapternumberline {23}The Adjoint and Perturbation Theory}{61}
+\contentsline {chapter}{\chapternumberline {24}Variational Methods}{68}
+\contentsline {part}{\partnumberline {IV}Bibliography and Appendices}{73}
+\contentsline {chapter}{Bibliography}{74}
+\contentsline {appendix}{\chapternumberline {A}Nomenclature}{76}
