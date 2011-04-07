@@ -299,19 +299,19 @@ The derivation of the integral equations generally follow that of Lewis and Mill
  
   \item \textbf{Using kernels}. Use $k_{\text{slab}}$ to find the scalar flux for the example of Lecture \ref{lec:analytical}, and use $\gamma_{\text{slab}}$ to find the corresponding current density.
 
-  \item  \textbf{Von Neumann Series}. Use the Von Neumann series code for the slab in Listing \ref{list:neumann_slab} to plot the scalar flux, uncollided flux, and the first five collided fluxes on the same graph using 20 spatial divisions for $L = 10$, $\Sigma_t = 1.0$, and (a) $\Sigma_s = 0.2$ and (b) $\Sigma_s = 0.8$.  What changes for the case with higher scattering?
+  \item  \textbf{Neumann Series}. Use the Neumann series code for the slab in Listing \ref{list:neumann_slab} to plot the scalar flux, uncollided flux, and the first five collided fluxes on the same graph using 20 spatial divisions for $L = 10$, $\Sigma_t = 1.0$, and (a) $\Sigma_s = 0.2$ and (b) $\Sigma_s = 0.8$.  What changes for the case with higher scattering?
 
-  \item \textbf{Convergence}. For the same problem, modify the Von Neumann series code to compute as many collided fluxes are necessary so that
+  \item \textbf{Convergence}. For the same problem, modify the Neumann series code to compute as many collided fluxes are necessary so that
   \begin{equation*}
    \frac{|\phi_n(x_i)-\phi_n(x_{i-1})|}{\phi_n(x_{i-1}} < \epsilon = 1\times10^{-6} \, \, \, \, \, \, \forall \, x_i \, ,
   \end{equation*}
    and comment on the results. (Hint, which norm on the $x$ vector is appropriate?)
   
-  \item \textbf{Nonuniform medium}. Could the Von Neumann series code be easily modified to handle a nonuniform slab?  Suggest an approach for this.
+  \item \textbf{Nonuniform medium}. Could the Neumann series code be easily modified to handle a nonuniform slab?  Suggest an approach for this.
 
-  \item \textbf{Numerical integration}. Modify the Von Neuman series code to handle both Simpson's rule and Gaussian quadrature.  Overviews of both can be found in numerical analysis texts.  For the purely absorbing slab example of Lecture \ref{lec:analytical}, compare the trapezoid, Simpson's, and Gaussian schemes to the analytical solution.  Comment on which method appears to get it ``right`` with the least effort.
+  \item \textbf{Numerical integration}. Modify the Neuman series code to handle both Simpson's rule and Gaussian quadrature.  Overviews of both can be found in numerical analysis texts.  For the purely absorbing slab example of Lecture \ref{lec:analytical}, compare the trapezoid, Simpson's, and Gaussian schemes to the analytical solution.  Comment on which method appears to get it ``right`` with the least effort.
 
-  \item \textbf{Efficiency}.  The Von Neumann code is slow due to the symbolic computation of the $E_n$ functions. Modify the code to precomputing the various coefficients (indexed by $i$ and $j$), and comment on any improvement.  For even greater efficiency, find a way to evaluate the exponential functions numerically (via some form of approximation) that allows you compute $E_n(x)$ rapidly; see for example Hebert's \textit{Applied Reactor Physics}.  How does the numerical evaluation affect the accuracy of the result?
+  \item \textbf{Efficiency}.  The Neumann code is slow due to the symbolic computation of the $E_n$ functions. Modify the code to precomputing the various coefficients (indexed by $i$ and $j$), and comment on any improvement.  For even greater efficiency, find a way to evaluate the exponential functions numerically (via some form of approximation) that allows you compute $E_n(x)$ rapidly; see for example Hebert's \textit{Applied Reactor Physics}.  How does the numerical evaluation affect the accuracy of the result?
 
 
 \end{exercises}
