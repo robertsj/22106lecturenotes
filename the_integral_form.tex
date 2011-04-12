@@ -263,13 +263,22 @@ Then we see that $\phi_0 = K(S/\Sigma_s)$, $\phi_1 = K^2(S/\Sigma_s) = K(\phi_0)
 
 We illustrate the use of Neumann iteration in a simple MATLAB code for a homogeneous slab problem with a uniform isotropic source.  The integrals involved are approximated using the trapezoid rule, though the exercises explore other schemes.  Please refer to the code comments in Listing \ref{list:neumann_slab} to understand the exact implementation of the algorithm.
 
+One aspect of the algorithm that should be pointed out is use of the method of \textit{subtraction of singularity}.  In the numerical integration, we select some set of points $x_i$ at which we compute the scalar flux.  In a straight forward integration, this would require several evaluations of the term $E_1(\Sigma|x_i-x_i|)$, which blows up.  As an alternative, one can write
+\begin{equation}
+\begin{split}
+  \phi(x) &= \int^L_0 k_{\text{slab}}(x,x') Q(x')dx' \\
+          &= \int^L_0 k_{\text{slab}}(x,x') (Q(x')-Q(x))dx' +  \int^L_0 k_{\text{slab}}(x,x') Q(x)dx'  \, .
+\end{split}
+\end{equation}
+The second term of the final line can be integrated analytically, and you should do this to obtain the form used in the code.  The first term vanishes identically for $x=x'$, which is why the code has the logical evaluation \textsl{\textbf{if}(i$\sim$=0)} that if unsatisfied leaves $\phi_i = 0$.
+
 
 \lstset{language=Octave,caption=Solution of Slab Problem via Neumann Series, label=list:neumann_slab}
 \lstinputlisting{code/neumann_slab.m}
 
 \section*{Further Reading}
 
-The derivation of the integral equations generally follow that of Lewis and Miller \cite{lewis1993cmn}.  First-flight kernels and Green's functions are covered in Duderstadt and Martin \cite{duderstadt1976tt} and Case and Zweifel \cite{case1967ltt}.  Solving for the scalar flux via Neumann iterations is discussed in Duderstadt and Martin \cite{duderstadt1976tt}, while its use as a general technique for integral equations is described e.g. by Arfken and Weber. Any good numerical analysis textbook will provide more information on numerical integration, and the reader is encouraged to explore this fundamental topic.    
+The derivation of the integral equations generally follow that of Lewis and Miller \cite{lewis1993cmn}.  First-flight kernels and Green's functions are covered in Duderstadt and Martin \cite{duderstadt1976tt} and Case and Zweifel \cite{case1967ltt}.  Solving for the scalar flux via Neumann iterations is discussed in Duderstadt and Martin \cite{duderstadt1976tt}, while its use as a general technique for integral equations is described e.g. by Arfken and Weber \cite{arfken1995mmp}.  Implementation of the code and use of the subtraction of singularities method was inspired by notes of Prof. D. Henderson at Wisconsin. Any good numerical analysis textbook will provide more information on numerical integration, and the reader is encouraged to explore this fundamental topic.    
 
 \begin{exercises}
   
