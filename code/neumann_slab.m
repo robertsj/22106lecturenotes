@@ -1,7 +1,7 @@
 function [phi,phiL] = neumann_slab(L,SigT,SigS,Q,N,M)
 % function phi = neumann_slab(L,SigmaT,SigmaS,Q,N,M)
 %   This function solves the one-speed transport equation in slab geometry
-%   for the scalar flux using a Von Neumann series solution.  The integrals
+%   for the scalar flux using a Neumann series solution.  The integrals
 %   are computed using the trapezoid rule.
 %  
 %   The problem is a slab of width L, with uniform total cross-section
@@ -14,10 +14,10 @@ function [phi,phiL] = neumann_slab(L,SigT,SigS,Q,N,M)
 %       SigS    -- scattering cross-section [1/cm]
 %       Q       -- isotropic source
 %       N       -- number of points for evaluating flux
-%       M       -- number of Von Neumann terms to compute
+%       M       -- number of Neumann terms to compute
 %   Output
 %       phi     -- scalar flux [N,1]
-%       phiL    -- Von Neumann terms [N,M+1] (M=0 yields uncollided only)
+%       phiL    -- Neumann terms [N,M+1] (M=0 yields uncollided only)
 phi  = zeros(N,1);      % scalar flux
 phiL = zeros(N,M+1);    % the Lth collided fluxes
 QL   = Q*ones(N,1);     % source vector
@@ -36,7 +36,7 @@ end % function neumann_slab
 
 function phi = ithcollided(L,N,Q,SigT)
 % function phi = ithcollided(L,N,Q,SigT)
-%   This function computes a Von Neumann term for the given source.  The
+%   This function computes a Neumann term for the given source.  The
 %   exponential integral is computed using Matlab's symbolic function Ei,
 %   which is pretty slow!  The method of subtraction of singularities has
 %   been used.  The flux is computed as follows:
@@ -49,7 +49,7 @@ function phi = ithcollided(L,N,Q,SigT)
 %       Q       -- source
 %       SigT    -- total cross-section [1/cm]
 %   Output
-%       phi     -- the current Von Neumann term
+%       phi     -- the current Neumann term
 phi = zeros(N,1);
 h = L / (N-1);
 % loop through all N
