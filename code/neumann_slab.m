@@ -6,13 +6,13 @@ function [phi,phiL] = neumann_slab(L,SigT,SigS,Q,N,M)
 %  
 %   The problem is a slab of width L, with uniform total cross-section
 %   SigT, uniform (isotropic) scattering cross-section SigS, and
-%   uniform isotropic source Q.
+%   uniform isotropic source of volumetric strength Q.
 %   
 %   Inputs:
 %       L       -- slab width [cm]
 %       SigT    -- total cross-section [1/cm]
 %       SigS    -- scattering cross-section [1/cm]
-%       Q       -- isotropic source
+%       Q       -- uniform isotropic source [1/cm^3-s]
 %       N       -- number of points for evaluating flux
 %       M       -- number of Neumann terms to compute
 %   Output
