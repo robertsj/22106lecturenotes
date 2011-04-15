@@ -1,5 +1,5 @@
 function [phi,phiL] = neumann_slab(L,SigT,SigS,Q,N,M)
-% function phi = neumann_slab(L,SigmaT,SigmaS,Q,N,M)
+% function phi = neumann_slab(L,SigT,SigS,Q,N,M)
 %   This function solves the one-speed transport equation in slab geometry
 %   for the scalar flux using a Neumann series solution.  The integrals
 %   are computed using the trapezoid rule.
@@ -22,7 +22,7 @@ phi  = zeros(N,1);      % scalar flux
 phiL = zeros(N,M+1);    % the Lth collided fluxes
 QL   = Q*ones(N,1);     % source vector
 % uncollided flux
-phiL(:,1) = new_flux_term(L,N,QL,SigT);
+phiL(:,1) = ithcollided(L,N,QL,SigT);
 % collided fluxes
 for i = 1:M
    QL          = SigS*phiL(:,i);     	     % compute new source

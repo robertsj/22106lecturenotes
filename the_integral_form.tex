@@ -1,4 +1,5 @@
 \chapter{The Integral Form}
+\label{lec:integral}
 
 In this lecture we consider the integral form of the transport equation in both general coordinates and the specific case of slab geometry.  The integral form is useful in situations where only the scalar flux is required and is the foundation for the collision probability method, which we cover in the next lecture, as well as the method of characteristics, fast becoming the technique of choice in reactor analysis.  We consider some analytical aspects of the integral equation and finish by discussing a simple numerical approach based on Neumann series expansions.
 
@@ -111,14 +112,14 @@ and differentiating, we find
 Noting that $\rho = 0$ corresponds to $\lambda = 1$, Eq. \ref{eq:integralphix} can be written in terms of $\lambda$ to give
 \begin{equation}
 \begin{split}
- \phi(x) &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{|x'-x|^2 }{4\pi|\mathbf{r}' - \mathbf{r}|^2}    Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \\
-        &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{1}{4\pi \lambda^2}    Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \\       
-        &=  \int^{\infty}_{-\infty} dx'\frac{1}{2} \int^{\infty}_1 \lambda d\lambda\frac{1}{\lambda}  Q(x')e^{-\tau(\mathbf{x},\mathbf{x}')} \, 
+ \phi(x) &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{|x'-x|^2 }{4\pi|\mathbf{r}' - \mathbf{r}|^2}    Q(x')e^{-\tau(x,x')} \\
+        &= 2\pi \int^{\infty}_{-\infty}dx' \int^{\infty}_1 \lambda d\lambda \frac{1}{4\pi \lambda^2}    Q(x')e^{-\tau(x,x')} \\       
+        &=  \int^{\infty}_{-\infty} dx'\frac{1}{2} \int^{\infty}_1 \lambda d\lambda\frac{1}{\lambda}  Q(x')e^{-\tau(x,x')} \, 
 \end{split}
 \end{equation}
 or
 \begin{equation}
- \phi(x) =  \int^{\infty}_{-\infty} dx'\frac{1}{2} E_1(\tau(\mathbf{x},\mathbf{x}'))Q(x') \, ,   
+ \phi(x) =  \int^{\infty}_{-\infty} dx'\frac{1}{2} E_1(\tau(x,x'))Q(x') \, ,   
  \label{eq:integralphislab}     
 \end{equation}
 where we have used the $E_1$ function defined at the end of Lecture \ref{lec:analytical}.  
@@ -230,11 +231,11 @@ which is indeed our point kernel for the scalar flux.
 
 Lecture \ref{lec:cpm} will cover the widely-used collision probability method that is based on the integral transport equation.  Here, we investigate a less versatile yet quite enlightening method based on expansion of the scalar flux in a so-called Neumann\footnote{Carl Neumann, not to be confused with John von Neumann.} series for slab problems that include scattering.
 
-Consider the integral equation in a slab of length $L$:
+Consider the integral equation in a slab of length $L$ subject to vacuum boundary conditions:
 \begin{equation}
  \phi(x) = \int^L_0  dx' \frac{1}{2} E_1(\tau(x,x'))(S(x') + \phi(x')\Sigma_s(x')) \, .
 \end{equation}
-Defining the operator $K$,
+The integration bounds are $0$ and $L$, since all sources must vanish in the outside vacuum.  Defining the operator $K$,
 \begin{equation}
  K\phi = \int^L_0  dx' \frac{1}{2} E_1(\tau(x,x'))\phi(x) \Sigma_s(x) \, ,
 \end{equation}
