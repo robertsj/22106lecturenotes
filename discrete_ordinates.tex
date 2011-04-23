@@ -203,10 +203,10 @@ Despite the algorithmic simplicity of the method, the underlying source iteratio
 
 \section*{Coarse Mesh Rebalance}
 
-CMR was probably the first wide-spread method for acceleration discrete ordinates calculations.  Its foundation rests in the \textit{neutron balance equation}, which we obtain in 1-d by integrating Eq. \ref{eq:slabtransportequation} over angle to obtain
+CMR was probably the first wide-spread method for acceleration discrete ordinates calculations.  Its foundation rests in the \textit{neutron balance equation}, which we obtain in 1-d by integrating Eq. \ref{eq:slabtransportequation} over angle, yielding
 \begin{equation}
 \begin{split}
- \frac{\partial }{\partial x}J(x) + \Sigma_t(x) \phi(x) = \Sigma_{s}(x)\phi(x) + S(x) \, .
+ \frac{\partial }{\partial x}J(x) + \Sigma_t(x) \phi(x) = \Sigma_{s}(x)\phi(x) + S(x) \, ,
 \end{split}
 \label{eq:balance}
 \end{equation}
@@ -300,7 +300,7 @@ Currently, the code is limited to the DD and $S_4$ approximations and vacuum bou
 
 A good introduction to the discrete ordinates method in 1-d can be found in Chapter 3 in Lewis and Miller \cite{lewis1993cmn}; higher dimensions are covered in Chapter 4 of the same work.  The foundation of the method is usually credited to Chandrasekhar (in the context of stellar radiation) and can be found in his monograph \cite{chandrasekhar1950rt}.  
 
-A review paper by Adams and Larsen \cite{adams2002fim} provides a survey of the many acceleration techniques available for the discrete ordinates equations, and with its several hundred references, is the place to look for further information.  Lewis and Miller provides more information on coarse mesh rebalance.  Park and Cho \cite{park2004cma} have suggested angular-dependent rebalance schemes, and their work is a good place to start to find references to other CMR variations.  The discontinuity factors used in CMFD were first proposed by Smith in the context of homogenization \cite{smith1980shm}, and he later proposed their use for acceleration \cite{smith1983nms}. A recent paper by Zhong et al. \cite{zhong2008itl} provides a modern overview and advanced use of the approach along with a relatively detailed set of equations for implementation.  
+A review paper by Adams and Larsen \cite{adams2002fim} provides a survey of the many acceleration techniques available for the discrete ordinates equations, and with its several hundred references, is the place to look for further information.  Lewis and Miller provides more information on coarse mesh rebalance, and Cefus and Larsen have assessed its stability \cite{cefus1990sac}.  Park and Cho \cite{park2004cma} have suggested angular-dependent rebalance schemes, and their work is a good place to start to find references to other CMR variations.  The discontinuity factors used in CMFD were first proposed by Smith in the context of homogenization \cite{smith1980shm}, and he later proposed their use for acceleration \cite{smith1983nms}. A recent paper by Zhong et al. \cite{zhong2008itl} provides a modern overview and advanced use of the approach along with a relatively detailed set of equations for implementation.  
 
 Recent advances in the discrete ordinates method include employing advanced Krylov subspace methods, outlined by Warsa, Wareing, and Morel \cite{warsa2004kim}, variations of which are implemented in the state-of-the-art code Denovo \cite{evans2010dnt}.  Moreover, the discrete ordinates equations can be parallelized; the most popular approach is that of Koch, Baker, and Alcouffe \cite{koch1992sfo} (also implemented in Denovo).
 
