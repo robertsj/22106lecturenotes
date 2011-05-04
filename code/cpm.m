@@ -13,14 +13,15 @@ function phi = cpm(Delta,SigT,SigS,Source)
 tau = comptau(Delta,SigT);  % compute tau
 P = ffcp(Delta,SigT,tau);   % compute collision probabilities
 H = zeros(length(Delta));   % set up H and right hand side
+s = zeros(length(Delta),1); % right hand side
 for i = 1:length(Delta)
     for j = 1:length(Delta)
         H(i,j) = -SigS(j)/SigT(j)*P(i,j);        % add diagonal 1's below
-        s(i) = sum( Source(i)*Delta(i)*P(i,:) ); % right hand side
+        s(i) = s(i) + Source(j)*Delta(j)*P(i,j); % right hand side
     end
 end
 H = H + eye(length(Delta));     % add 1's to the diagonal
-f = ( H \ s');                  % solve for the collision rates
+f = ( H \ s);                   % solve for the collision rates
 phi = f ./ ( SigT .* Delta );   % solve for the flux
 end 
 
