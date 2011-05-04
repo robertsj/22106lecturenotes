@@ -69,7 +69,8 @@ for i = 1:length(Delta)
               mfun('Ei', 3, tau(i,j)+Delta(i)*SigT(i)) - ...
               mfun('Ei', 3, tau(i,j)+Delta(j)*SigT(j)) + ...
               mfun('Ei', 3, tau(i,j)+Delta(j)*SigT(j)+Delta(i)*SigT(i) ));
-        P(j,i) = P(i,j); % reciprocity in action!
+        % reciprocity in action
+        P(j,i) = P(i,j)*(Delta(j)*SigT(j))/(Delta(i)*SigT(i));
     end
 end
 end
