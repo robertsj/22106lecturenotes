@@ -1,4 +1,3 @@
-
 \chapter{Discrete Ordinates Method}
 \label{lec:discreteordinates}
 
@@ -146,7 +145,7 @@ where
  \label{eq:alpha}
 \end{equation}
 
-The DD method is probably the most ubiquitous of the simple schemes available.  It essentially says the angular flux varies linearly within a cell, and it provides second-order accuracy.  Unfortunately, the DD method can lead to negative fluxes for $\Delta_i$ too large, demonstration of which is left as an exercise.  On the other hand, the SD method cannot yield negative fluxes, but is only first-order accurate.  For the SD method, note that the cell-center angular flux is equal to the incident angular flux at the edge.
+The DD method is probably the most ubiquitous of the simple schemes available.  It essentially says the angular flux varies linearly within a cell, and it provides second-order accuracy.  Unfortunately, the DD method can lead to negative fluxes for $\Delta_i$ too large, demonstration of which is left as an exercise.  On the other hand, the SD method cannot yield negative fluxes, but is only first-order accurate.  For the SD method, note that the cell-center angular flux is equal to the outgoing angular flux at the edge.
 
 \section*{Sweeping Formulas}
 
