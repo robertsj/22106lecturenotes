@@ -74,25 +74,25 @@
 % \include{the_adjoint_and_perturbation_theory}
 % \include{variational_methods}
 % 
-% 
-% \part{Bibliography and Appendices} 
-% 
-% % Reset to a simple chapter title and format
-% \renewcommand\printchaptertitle[1]{%
-%     \begin{tabular}{@{\Large\bfseries\chaptername}@{ }p{1.0cm}!{\quad}p{\textwidth-4cm-2em-4\tabcolsep }}
-%       \ifNoChapNumber\relax\else\chapnumfont \thechapter\fi
-%       & \chaptitlefont 
-%     \end{tabular}
-%     \NoChapNumberfalse
-% }
-% \renewcommand{\chaptername}{Bibliography}
-% \bibliographystyle{plain}
-% \bibliography{biblio106}
-% 
-% 
-% \appendix
-% \renewcommand{\chaptername}{Appendix}
-% \include{nomenclature}
-% %\include{diffusion}
+
+\part{Bibliography and Appendices} 
+
+% Reset to a simple chapter title and format
+\renewcommand\printchaptertitle[1]{%
+    \begin{tabular}{@{\Large\bfseries\chaptername}@{ }p{1.0cm}!{\quad}p{\textwidth-4cm-2em-4\tabcolsep }}
+      \ifNoChapNumber\relax\else\chapnumfont \thechapter\fi
+      & \chaptitlefont 
+    \end{tabular}
+    \NoChapNumberfalse
+}
+\renewcommand{\chaptername}{Bibliography}
+\bibliographystyle{plain}
+\bibliography{biblio106}
+
+
+\appendix
+\renewcommand{\chaptername}{Appendix}
+\include{nomenclature}
+%\include{diffusion}
 
 \end{document}

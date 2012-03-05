@@ -125,6 +125,16 @@ These key chacteristics, easily remembered via the acronym
 MAGICMERV \cite{handbook}, are equally applicable to nuclear
 criticality safety.  
 
+To illustrate several of the characteristics listed, consider Figure 
+\ref{fig:pu_critical_mass}.
+
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[keepaspectratio, width = 5.0 in]{images/pu_critical_mass}
+    \caption{Pu-239 solution critical mass. (Borrowed from Martin, J. {
+             Physics for Radiation Protection: A Handbook}, Wiley (2016).}
+    \label{fig:pu_critical_mass}
+\end{figure}
 
 %------------------------------------------------------------------------------
 % ACCIDENTS
@@ -202,14 +212,24 @@ hemisphere) and a screwdriver, a procedure Feynman dubbed
 ``tickling the dragon's tail.''   The screwdriver, holding the 
 reflectors apart, slipped and caused an excursion that led to 
 the experimenter's death 9 days later and significant doses
-to observers.
+to observers; see Figure \ref{fig:pu_sphere_2} for a recreation
+of the experiment.
 
 \begin{figure}[ht] 
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]{images/pu_sphere}
+    \includegraphics[keepaspectratio, width = 4.0 in]{images/pu_sphere}
     \caption{Plutonium sphere reflected by tungsten-carbide bricks.}
     \label{fig:pu_sphere}
 \end{figure}
+
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[keepaspectratio, width = 4.0 in]{images/pu_sphere_2}
+    \caption{Recreation of the ``tickling the dragon's tail'' 
+             experiment.}
+    \label{fig:pu_sphere_2}
+\end{figure}
+
 
 A second type of accident involves processing operations in which
 fissile materials are in solution.  The first domestic processing
@@ -227,6 +247,16 @@ of water, were emptied, the uranium solution and water accumulated
 in a 55 gallon drum.  A nearby worker first noticed dark yellow
 fumes followed by a blue flash.  Eight workers received significant
 doses, though none died as a result of acute effects.
+
+Unfortunately, criticality accidents are not a thing of the past.  A 
+recent example happened in Tokai-mura, Japan at a uranium conversion
+plant.  The accident occurred when workers placed 16.6 kg of 18.8\%
+enriched uranium into a tank designed to contain no more than
+2.4 kg of uranium at such high enrichments.  The accident was the 
+first of its kind in Japan, and the first resulting in casualties.
+The accident is somewhat unique in that criticality was maintained
+intermittently for roughly 20 hours before effective action was
+taken.  
 
 A rather complete history of criticality accidents in the U.S. and
 around the world is contained in the latest edition of
@@ -256,12 +286,12 @@ illustrative example is provided and related to the traditional approach.
 
 As noted above, ANSI/ANS-8.1 provides guidance 
 for avoiding criticality accidents during handling of fissionable material 
-outside of reactors \cite{ans8}. The standard provides basic safety principles 
+outside of reactors \cite{ans8_1}. The standard provides basic safety principles 
 in addition to several limits for simple systems of single isotopes.  
 Specifically, the standard defines a \textit{subcritical limit} to be ``the 
 limiting value assigned to a controlled parameter that results in a subcritical 
 system under specified conditions. The parameter limit allows for 
-uncertainties in the calculations and experiemental data used in the derivation 
+uncertainties in the calculations and experimental data used in the derivation 
 but not for contingencies.''
 
 These limits are \textit{absolute maxima}, and since they do not include 
@@ -299,7 +329,7 @@ use in validation.
 %------------------------------------------------------------------------------
 
 
-\subsection*{Criticality Safety Analysis Validation}
+\subsubsection*{Criticality Safety Analysis Validation}
 
 While the single parameter limits provide useful guidance, two questions 
 naturally arise.  First, how does one actually establish these limits?  And 
@@ -313,7 +343,7 @@ analyses are both valid and within the ``area of applicability'' for specific
 applications. The standard defines the area of applicability as ``limiting 
 ranges of material compositions, geometric arrangements, neutron energy 
 spectra, and other relevant parameters \ldots within which the bias of the 
-calculational method is established'' \cite{ans8}.  In other words, an 
+calculational method is established'' \cite{ans8_1}.  In other words, an 
 \textit{application} is the system of interest, such as a spent fuel canister 
 for shipment and disposal. A computational method is \textit{applicable} if 
 it is verified against a set of \textit{experiments} that are similar to the 
@@ -512,15 +542,14 @@ and $s^2_w$ is the variance of the data, defined as
 \end{equation}
 where  $\sigma_i$ is the uncertainty in the $i$th calculated value, 
 accounting for method uncertainty (\eg Monte Carlo statistics) and 
-estimated uncertainty due to cross-section uncertainty 
-(see Section \ref{sec:uncanal}).
+estimated uncertainty due to cross-section uncertainty.
 
 The width of the confidence $W$ is chosen to be the \textit{ maximum} value 
 of $w$ at the limits of the range of $x$ corresponding to the experiments 
 to be conservative, and moreover, it serves to simplify the definition of 
 USL.  Current guidance is to define $W$ at the 95\% confidence level, 
-\ie choose $\gamma = 0.95$.  See Section \ref{sec:exampletrends} below 
-for an illustrative example of the USL$_1$ methodology.
+\ie choose $\gamma = 0.95$.  Below, we provide an
+illustrative example of the USL$_1$ methodology.
 
 %------------------------------------------------------------------------------
 
@@ -803,7 +832,8 @@ subsequence curve relaxes the assumptions.
 
 Considering that much of the current U.S. inventory of used fuel lies below the reference 
 curve, a 32-assembly canister could not be widely used (and instead, canisters such as
-the 21-assembly Transportation, Aging, and Disposal (TAD) canister intended for ultimate
+the 21-assembly Transportation, Aging, and Disposal (TAD) canister \cite{tad} 
+intended for ultimate
 disposition in Yucca Mountain would be required).  The cost of producing, loading, shipping, 
 and disposing canisters is not negligible, and a study by Parks and Wagner suggest that
 crediting the FP's in criticality safety analysis, thus allowing the high capacity
@@ -847,14 +877,14 @@ To find biases of individual nuclides, the GLLSM method can be applied to
 so-called ``replacement experiments''.  These experiments consists of a single
 reference case, and one or more cases that introduce some small perturbation
 to the system, such as small foils of a fission product between fuel pellets 
-\cite{buccx} or small concentrations of a fission product in a bulk
-moderator \cite{french}.  GLLSM can then be applied to the reactivity 
+ or small concentrations of a fission product in a bulk
+moderator.  GLLSM can then be applied to the reactivity 
 difference between a reference-perturbation pair of models and experiements 
 (rather than on the eigenvalue), since the sensitivities of the 
 reactivity difference should be small for all but the perturbation 
 material.  Consequently, the corresponding adjustment to the data should 
 primarily be due to the test material, and as above, the adjustment can 
-be propogated to the application to define a nuclide-specific bias.
+be propagated to the application to define a nuclide-specific bias.
 
 \subsubsection{Limitations}
 
@@ -878,14 +908,15 @@ above are of limited value.
 \section{Further Reading}
 
 Much of the content in this lecture was inspired by Knief's 
-\textit{Nuclear Criticality Safety: Theory and Practice} \cite{knief}.  Of
+\textit{Nuclear Criticality Safety: Theory and Practice} \cite{knief1991ncs}. 
+ Of
 course, in one lecture, all that material cannot be covered, and the student
 is directed to that book for more info most of the topics addressed here.
 A more succinct overview of some of the topics is given by 
-Peavey
-in the \textit{Handbook of Nuclear Engineering} \cite{handbook}.  
+Pevey in a chapter of the \textit{Nuclear Engineering Handbook} 
+\cite{pevey2010neu}.  
 
 For an overview of the application of sensitivity and uncertainty analysis
 to criticality safety, see Broadhead et. al \cite{broadhead2004sau}, and
 for the latest work on adjustment techniques applicable to full burnup
-credit, see Rearden et al. \cite{reardenNT}.
+credit, see Rearden et al. \cite{rearden2011sua}.

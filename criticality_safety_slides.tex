@@ -1,0 +1,473 @@
+%\documentclass{beamer}
+\documentclass[10pt]{beamer}
+\include{mit-beamer-template}
+\titleimage{fortrancomic}
+
+\usepackage{amsmath,amssymb,enumerate,calc,color,ifthen,capt-of,booktabs,graphicx,listings,algorithm2e,palatino,amsbsy}
+
+\usefonttheme{serif}
+
+\definecolor{light-gray}{gray}{0.95}
+\lstset{basicstyle=\tiny\ttfamily,
+        numbers=left,
+        backgroundcolor=\color{light-gray},
+        frame=shadowbox, 
+        rulesepcolor=\color{mitred},
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941}}
+
+
+%---TITLE AND AUTHOR INFORMATION
+\title % (optional, use only with long paper titles)
+[Criticality Safety]{Criticality Safety}
+\author[Roberts]{Jeremy Roberts}
+\institute[22.106] % (optional, but mostly needed)
+ {}
+% - Keep it simple, no one is interested in your street address.
+\date
+%[CFP 2003] % (optional, should be abbreviation of conference name)
+{01/31/2012}
+
+
+\begin{document}
+
+% TITLE PAGE
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% TABLE OF CONTENTS
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\begin{frame}{References, etc.}
+\begin{enumerate}
+ \item R. Knief, {\it Criticality Safety: Theory and Practice}, ANS (1985)
+ \item R. Pevey, ``Neutronics'', in {\it Nuclear Engineering Handbook},
+       Ed. D. Kok, CRC (2009)
+ \item ``A Review of Criticality  Accidents,'' Los Alamos National Laboratory,
+       LA-13638 (2000)
+ \item Broadhead et al. ``Sensitivity- and Uncertainty-based Criticality 
+       Safety Validation Techniques,'' NSE, {\bf 146} (2004)
+ \item Various ANSI/ANS Standards, and a bit from 10CFR
+\end{enumerate}
+\end{frame}
+
+%*******************************************************************************
+\section{Overview}
+
+%===============================================================================
+\begin{frame}{Nuclear Criticality Safety}
+
+{\bf American National Standard ANSI/ANS-8.1}:
+\vfill
+{\it criticality safety}: protection against the consequences of a criticality 
+safety accident, preferably by prevention of the accident
+\vfill
+{\it criticality accident}: the release of energy as a 
+result of accidental production of a self-sustaining or
+divergent neutron chain reaction
+\vfill 
+ANSI/ANS-8.1 
+\begin{itemize}
+ \item provides general guidance for  nuclear criticality safety 
+       applied to fissionable materials \textit{outside} of reactors
+ \item produced and updated by working groups within ANS (with significant
+       association to NCSD of ANS)
+\end{itemize}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Relevant Standards}
+
+\begin{table}[ht]
+    \caption{Several ANSI/ANS Standards Applicable to Criticality Safety.}
+    \begin{center} 
+    \begin{tabular*}{1.00\textwidth}{@{\extracolsep{\fill}} p{3cm}p{0.9\textwidth-3cm} } 
+      \toprule 
+        Number-Revised    &  Title \\
+      \midrule
+       8.1-1998                  &  Nuclear Criticality Safety in Operations 
+                                    with Fissionable Materials Outside 
+                                    Reactors \\
+       8.3-1997                  &  Criticality Accident Alarm System \\
+       8.5-1996                  &  Guide for Nuclear Criticality Safety in 
+                                    the Storage of Fissile Materials \\
+       8.17-2004                 &  Criticality Safety Criteria for the 
+                                    Handling, Storage, and Transportation 
+                                    of LWR Fuel Outside Reactors \\
+       8.24-2007                 &  Validation of Neutron Transport 
+                                    Methods for Nuclear Criticality Safety 
+                                    Calculations \\
+       8.27-2008                 &  Burnup Credit for LWR Fuel \\
+      \bottomrule 
+    \end{tabular*} 
+    \end{center} 
+    \label{tbl:ansstandard}
+\end{table}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Other Oversight}
+
+{\bf Nuclear Regulatory Commision}:
+\vfill
+{\it NUREG}: documents produced by NRC, contractors, or via international
+agreements
+\vfill
+{\it 10CFR}: mostly parts 0, 1, 2, 20, and several between 50 and 75
+\vfill
+\textcolor{mitred}{Homework}: go look up one or more relevant NUREG documents or parts 10CFR and
+explain the relevance.
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Historical Footnote}
+
+Nuclear criticality safety is {\it about} as old as other nuclear engineering
+disciplines.  Feynman might have started it all in Oak Ridge; he delivered
+Oppenheimer's message, stating
+\vfill
+\textcolor{mitred}{``Los Alamos cannot accept the responsibility
+for the safety of the Oak Ridge plant unless they are full informed as
+to how it works.''}
+\vfill
+and went on to explain
+\vfill
+\textcolor{mitred}{``\ldots all about neutrons, how they worked, da da, ta ta ta,
+there are too many neutrons together, you've got to keep the material
+apart, cadmium absorbs \ldots''}
+
+
+\end{frame}
+
+
+%*******************************************************************************
+\section{Physical Concerns}
+
+%===============================================================================
+\begin{frame}{What Parameters Matter?}
+
+\begin{enumerate}
+ \item mass
+ \item concentration
+ \item enrichment
+ \item volume
+ \item absorption
+ \item moderation
+ \item reflection
+ \item interaction
+\end{enumerate}
+\vfill Easy to remember: MAGICMERV
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Simple Example}
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.2 in]{images/pu_critical_mass}
+    \caption{Pu-239 solution critical mass. (Borrowed from Martin, J. {
+             Physics for Radiation Protection: A Handbook}, Wiley (2016).}
+  \end{figure}
+\end{frame}
+
+
+%*******************************************************************************
+\section{Accidents}
+
+%===============================================================================
+\begin{frame}[fragile]{A Simple Model}
+
+An accident is an {\it excursion}, an uncontrolled reaction; we can
+model this.
+\vfill
+Time to remember your reactor kinetics!
+\end{frame}
+
+%===============================================================================
+\begin{frame}[fragile]{A Simple Model - Definition}
+
+Reactivity:
+\begin{equation}
+ \rho = \frac{k-1}{k} 
+\end{equation}
+Time-dependent population:
+\begin{equation}
+  n(t) =  n_o e^{\frac{\rho-\beta}{\Lambda}t}
+\end{equation}
+where
+\begin{itemize}
+ \item $\beta$ is delayed neutron fraction ($\approx 0.007$)
+ \item $\Lambda$ is prompt neutron lifetime ($\approx 1\cdot 10^{-5}$ s)
+\end{itemize}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}[fragile]{A Simple Model - Application}
+
+Suppose:
+\begin{itemize}
+ \item $\Lambda = 10^{-5}$ s
+ \item $\rho-\beta = 0.002$
+ \item $\Delta t = 0.200$ s
+ \item 1 rem corresponds to a fluence of  $27\cdot 10^6$  n/cm$^2$
+\end{itemize}
+\vfill
+\textcolor{mitred}{Question}: what's a dose to a worker a half-meter away?
+  Is it bad? How bad?
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}[fragile]{The Plutonium Sphere}
+
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.2 in]{images/pu_sphere}
+    \caption{From the LANL Review.}
+  \end{figure}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{The Plutonium Sphere}
+
+Summary:
+\begin{itemize}
+ \item August 21, 1945
+ \item 6.2 kg plutonium sphere coated with nickel
+ \item tungsten carbide brick (reflector)
+ \item while placing blocks, experimenter dropped one onto sphere
+ \item supercritical excursion yielded $10^{16}$ fissions and a (fatal)
+       dose of 510 rem
+\end{itemize}
+\vfill
+\textcolor{mitred}{How does this compare to the simple example?}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Tickling the Dragon's Tail}
+
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.2 in]{images/pu_sphere_2}
+    \caption{From the LANL Review.  Experimenter died, and significant dose
+             to several observers.  Same sphere as the last one, just a half 
+             year later!}
+  \end{figure}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Process Accident at Y-12}
+
+Summary:
+\begin{itemize}
+ \item June, 16 1958
+ \item Y-12 produces parts from HEU (in Oak Ridge, TN)
+ \item accident occurred in area for HEU recovery
+ \item storage tanks to be cleaned and leak-tested with water
+ \item U-solution built up below tanks (and into one) via leak from process 
+       stream
+ \item subsequent leak-test resulted in accumulation in 55 g drum; a worker 
+       described yellow-brown fumes followed by blue light...
+ \item no fatalities, but eight workers with significant doses
+\end{itemize}
+
+\end{frame}
+
+%===============================================================================
+\begin{frame}{Tokai-mura, Japan}
+
+{\it Criticality accidents are not just a relic of the past!}
+\vfill
+Summary:
+\begin{itemize}
+ \item September, 29 1999 (and into October, 1)
+ \item occurred at uranium conversion facility
+ \item workers placed 16.6 kg of 18.8\%
+       enriched uranium into a tank designed to contain no more than
+       2.4 kg of uranium at such high enrichments
+ \item accident was the first of its kind in Japan, and the first 
+       resulting in casualties
+ \item criticality was maintained intermittently for roughly 20 hours before 
+       effective action was taken
+\end{itemize}
+
+\end{frame}
+
+%*******************************************************************************
+\section{Computational Aspects}
+
+%===============================================================================
+\begin{frame}{Computational Aspects: Overview}
+
+Goal: understand how computational tools are used and validated within
+      criticality safety analysis; this includes
+\begin{enumerate}
+ \item subcritical limits
+ \item criticality safety analysis validation
+ \item computational bias determination via traditional techniques (e.g.
+       trending analysis)
+ \item new techniques based on S/U analysis and their application to 
+       a relevant current problem
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Subcritical Limit}
+
+{\bf ANSI/ANS 8.1}: ``the 
+limiting value assigned to a controlled parameter that results in a subcritical 
+system under specified conditions. The parameter limit allows for 
+uncertainties in the calculations and experimental data used in the derivation 
+but not for contingencies.''
+\vfill
+These are \textit{absolute maxima}: no contingincies! An administrative
+margin is needed.
+\end{frame}
+
+\begin{frame}[fragile]{Control Parameters}
+\begin{table}[ht]
+    \caption{Example single parameters and subcritical limits.}
+    \begin{center} 
+    \begin{tabular*}{0.99\textwidth}{@{\extracolsep{\fill}} ll } 
+      \toprule 
+        parameter &  example limit \\
+      \midrule
+       fissile mass                    &  0.78 kg  ${}^{235}$U in UO$_2$NO$_3$ \\
+       dimension (width, volume, etc.) &  6.2   L  ${}^{235}$U in UO$_2$NO$_3$ \\
+       concentration                   &  11.6 g/L ${}^{235}$U in UO$_2$NO$_3$ \\
+       enrichment                      &  5\%      ${}^{235}$U in UO$_2$       \\
+       fissile mass                    &  20.1 kg  ${}^{235}$U in UO$_2$ 
+                                          ($\rho \leq 18.81$ g/cc) \\
+      \bottomrule 
+    \end{tabular*} 
+    \end{center} 
+    \label{tbl:controlparams}
+\end{table}
+\vfill
+Multiple parameters possible, but stricter administrative margins required.
+
+\end{frame}
+
+
+\begin{frame}{Criticality Safety Analysis Validation}
+
+Single parameter (and even multiple parameter) limits are useful but
+limited.  
+\vfill
+Two questions arise:
+\begin{enumerate}
+ \item how does one actually establish these limits?
+ \item how does one ensure subcriticality in complex systems?
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Areas of Applicablility}
+
+ANSI/ANS 8.1 requires methods be valid an within the ``areas of 
+applicability'' for a given application.  It defines:
+\vfill
+{\it area of applicability}:  limiting 
+ranges of material compositions, geometric arrangements, neutron energy 
+spectra, and other relevant parameters \ldots within which the bias of the 
+computational method is established
+\vfill
+{\it computational bias}:  systematic 
+discrepancy between and experimental data and calculated results (with
+associated uncertainties)
+
+\end{frame}
+
+\begin{frame}{Establishing Subcriticality}
+
+ANSI/ANS 8.17 requires:
+
+\begin{equation}
+ k_a + \Delta k_a \leq k_c - \Delta k_c \, ,
+\end{equation}
+or
+\begin{equation}
+ k_a \leq k_c  - \Delta k_a - \Delta k_c \, .
+\end{equation}
+and for more conservatism
+\begin{equation}
+ k_a \leq k_c - \Delta k_a - \Delta k_c - \Delta k_m \, .
+\end{equation}
+Here, $k_a$ is the {\it most conservative} estimate for the application $k$,
+and $k_c$ is the {\it least conservative} estimate $k$ from experiment.
+
+\end{frame}
+
+
+\section{Case Study: Burnup Credit}
+
+
+%===============================================================================
+
+
+%===============================================================================
+\begin{frame}[fragile]{FLOPS - Final Thoughts Revisited}
+%   \begin{figure}
+%     \includegraphics[keepaspectratio, width = 3.0 in]{flopsomp}
+%   \end{figure}
+  \vfill
+  Curiously, the best approach is to switch back $i$ and $j$!  See the text 
+  by Chapman et al. for details. (Note, things like MKL have threaded versions,
+  too, so still avoid reinventing the wheel.)
+\end{frame}
+
+%===============================================================================
+\begin{frame}{The Monte Carlo Slab Problem}
+
+  {\bf Homework (ha!)}: parallelize your program.
+  \vfill
+  {\bf Given}: all the code from yesterday plus a parallel-ready random number 
+  generator (if not already provided).
+  \vfill
+  {\bf Solution Sketch}: The solution looks a lot like the $\pi$ problem above.
+  You need to 
+  \begin{itemize}
+    \item wrap the problem in a \texttt{parallel} directive
+    \item allocate and initiate local tally arrays
+    \item wrap the histories in a \texttt{do} directive
+    \item note the global object \texttt{tal} is already given the attribute
+          \texttt{threadprivate} (like \texttt{private} but for things in a 
+          potentially global scope such as modules)
+    \item carefully select which variables are denoted \texttt{private} (e.g.
+          the \texttt{mat} variable) and which are \texttt{public}
+    \item {\it safely} add the local tally information to the global \texttt{tal}
+          variable.  Hint: look up the \texttt{critical} directive.
+  \end{itemize}
+  Note: I changed roughly 15 lines of code to parallelize the serial code, and most
+  of this was in replacing \texttt{tal} with a private variable.
+\end{frame}
+
+
+\section{Summary}
+
+\begin{frame}{Summary}
+
+  Key takeaways:
+  \begin{itemize}
+  \item Speed isn't the be all end all; memory is often limiting
+  \item The compiler and library choice is important for peak performance
+  \item Don't reinvent the wheel (in particular, OMILAT)
+  \item OpenMP is easy (mostly)
+  \item Computing is fun!
+  \end{itemize}
+  \vfill
+  Help is available if you decide to attempt the problem...
+
+\end{frame}
+
+
+
+\end{document}
