@@ -159,7 +159,7 @@ To derive these conditions would be beyond our intended scope, but the reader mi
 
 \section*{A Simple Code}
 
-Here, we provide a simple code for computing the scalar flux in a slab consisting of several regions of uniform composition, given in Listing \ref{list:cpm}.  The fundamental components of the code are just those that compute $\tau$ and $P_{ii'}$ and should be readily understood.  As in the Neumann iteration code of the last lecture, MATLAB's built in symbolic function for the exponential integrals is used.  This is very slow, and so the student is encouraged to find efficient and accurate numerical techniques to evaluate these functions.  
+Here, we provide a simple code for computing the scalar flux in a slab consisting of several regions of uniform composition, given in Listing \ref{list:cpm}.  The fundamental components of the code are just those that compute $\tau$ and $P_{ii'}$ and should be readily understood.  The reciprocity relations discussed in Lecture \ref{lec:reciprocity} are used to reduce some of the computation.  As in the Neumann iteration code of the last lecture, MATLAB's built in symbolic function for the exponential integrals is used.  This is very slow, and so the student is encouraged to find efficient and accurate numerical techniques to evaluate these functions.  
 
 \lstset{language=Octave,caption=Solution of Slab Problem via CPM, label=list:cpm, morecomment=[l]{\%}}
 \lstinputlisting{code/cpm.m}
