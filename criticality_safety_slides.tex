@@ -3,7 +3,7 @@
 \include{mit-beamer-template}
 \titleimage{fortrancomic}
 
-\usepackage{amsmath,amssymb,enumerate,calc,color,ifthen,capt-of,booktabs,graphicx,listings,algorithm2e,palatino,amsbsy}
+\usepackage{amsmath,amssymb,enumerate,calc,color,ifthen,capt-of,booktabs,graphicx,listings,algorithm2e,palatino,amsbsy,bm}
 
 \usefonttheme{serif}
 
@@ -16,6 +16,12 @@
         keywordstyle=\color[rgb]{0,0,1},
         commentstyle=\color[rgb]{0.133,0.545,0.133},
         stringstyle=\color[rgb]{0.627,0.126,0.941}}
+
+
+\newcommand{\cov}{{$\, \mathbf{C}_{\sigma\sigma} \,$}}
+\newcommand{\keff}{$k_{\text{eff}}$ }
+\newcommand{\ie}{\textit{i.e. }}
+\newcommand{\eg}{\textit{e.g. }}
 
 
 %---TITLE AND AUTHOR INFORMATION
@@ -143,7 +149,8 @@ and went on to explain
 \textcolor{mitred}{``\ldots all about neutrons, how they worked, da da, ta ta ta,
 there are too many neutrons together, you've got to keep the material
 apart, cadmium absorbs \ldots''}
-
+\vfill
+(from {\it Surely You're Joking, Mr. Feynman})
 
 \end{frame}
 
@@ -153,7 +160,7 @@ apart, cadmium absorbs \ldots''}
 
 %===============================================================================
 \begin{frame}{What Parameters Matter?}
-
+\pause
 \begin{enumerate}
  \item mass
  \item concentration
@@ -164,7 +171,7 @@ apart, cadmium absorbs \ldots''}
  \item reflection
  \item interaction
 \end{enumerate}
-\vfill Easy to remember: MAGICMERV
+\vfill Easy to remember: {\bf MAGICMERV}.
 \end{frame}
 
 %===============================================================================
@@ -172,7 +179,7 @@ apart, cadmium absorbs \ldots''}
   \begin{figure}
     \includegraphics[keepaspectratio, width = 3.2 in]{images/pu_critical_mass}
     \caption{Pu-239 solution critical mass. (Borrowed from Martin, J. {
-             Physics for Radiation Protection: A Handbook}, Wiley (2016).}
+             {\it Physics for Radiation Protection: A Handbook}}, Wiley (2016).}
   \end{figure}
 \end{frame}
 
@@ -183,8 +190,8 @@ apart, cadmium absorbs \ldots''}
 %===============================================================================
 \begin{frame}[fragile]{A Simple Model}
 
-An accident is an {\it excursion}, an uncontrolled reaction; we can
-model this.
+An accident is an {\it excursion}, an uncontrolled reaction; {\it we can
+model this}.
 \vfill
 Time to remember your reactor kinetics!
 \end{frame}
@@ -198,12 +205,12 @@ Reactivity:
 \end{equation}
 Time-dependent population:
 \begin{equation}
-  n(t) =  n_o e^{\frac{\rho-\beta}{\Lambda}t}
+  n(t) =  n_o e^{\frac{\rho-\beta}{l}t}
 \end{equation}
 where
 \begin{itemize}
- \item $\beta$ is delayed neutron fraction ($\approx 0.007$)
- \item $\Lambda$ is prompt neutron lifetime ($\approx 1\cdot 10^{-5}$ s)
+ \item $\beta$ is the delayed neutron fraction ($\approx 0.007$)
+ \item $l$ is the neutron lifetime ($\approx 1\cdot 10^{-5}$ s)
 \end{itemize}
 
 \end{frame}
@@ -213,7 +220,8 @@ where
 
 Suppose:
 \begin{itemize}
- \item $\Lambda = 10^{-5}$ s
+ \item $n_0 = 1$
+ \item $l = 10^{-5}$ s
  \item $\rho-\beta = 0.002$
  \item $\Delta t = 0.200$ s
  \item 1 rem corresponds to a fluence of  $27\cdot 10^6$  n/cm$^2$
@@ -402,72 +410,194 @@ and for more conservatism
  k_a \leq k_c - \Delta k_a - \Delta k_c - \Delta k_m \, .
 \end{equation}
 Here, $k_a$ is the {\it most conservative} estimate for the application $k$,
-and $k_c$ is the {\it least conservative} estimate $k$ from experiment.
+and $k_c$ is the {\it least conservative} estimate $k$ from experiment.  
+The $\Delta k$'s represent uncertainties and an administrative margin 
+(typically 5\%).
 
 \end{frame}
 
+\begin{frame}{Upper Subcritical Limit}
+
+Rewrite the previous equation as
+\begin{equation}
+ k_a + \Delta k_a + \Delta k_m - \beta + \Delta \beta \leq 1 \, ,
+\label{eq:kallow}
+\end{equation}
+where the bias is
+\begin{equation}
+ \beta = k_c - 1 \, ,
+\end{equation}
+and its uncertainty is
+\begin{equation}
+ \Delta \beta = \Delta k_c \, .
+\end{equation}
+\vfill
+The {\it upper subcritical limit} (USL) is defined
+\begin{equation}
+ USL = 1 - \Delta k_m + \beta - \Delta \beta  .
+\end{equation}
+Note that $k_a + \Delta k_a \leq USL$, so the USL \textcolor{mitred}
+{is the maximum value an 
+application \keff (plus any uncertainties) may have for which the 
+application can, with a high degree of confidence, be considered 
+subcritical.}
+
+\end{frame}
+
+\begin{frame}{Traditional Bias Determination}
+
+Traditional approach is {\it trending analysis}: 
+\begin{enumerate}
+ \item A set of of experiments ``similar'' to an application are selected
+ \item Experiments and experimental models are correlated for a given
+       parameter 
+ \item A bias is determined as a function of the parameter and applied
+       via interpolation (or extrapolation with additional margin) to 
+       the application system 
+\end{enumerate}
+Common trending variables include
+\begin{itemize}
+ \item enrichment
+ \item average energy causing fission (EAF)
+ \item energy of average lethargy causing fission (EALF)
+ \item H/X 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{One Approach: USL$_1$}
+
+Basic idea (details in uploaded notes):
+\begin{itemize}
+ \item Find $k_c(p)$ as a function of parameter $p$; $\beta(p) = 1 - k_c(p)$. 
+       Note, $\beta < 0$ is to be avoided; current practice sets 
+       $\beta > 0$ to zero.
+ \item Compute a lower confidence band $w(p)$ statistically (based on a 
+       student-t distribution); any negative
+       $\beta$ is no worse than $1 - w(p)$.
+ \item For convenience, define $W$ as the most limiting value of $w$ at the
+       limits of the range of $p$; $W$ typically computed at a 95\% 
+       confidence level
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{S/U Techniques - 1}
+
+Motivation: selection of parameters and experiments subject to expert
+judgment, and new designs may be outside area of applicability of 
+current data.
+\vfill
+Possible solution: DOE's Nuclear Criticality Safety Program aimed to
+develop \textcolor{mitred}{a rigorous physics-based approach for the 
+determination of system similarity} based on S/U analysis
+\pause
+\vfill
+Relative sensitivity of \keff to a nuclide-reaction $x$:
+\begin{equation}
+ S_{k,\sigma_x} = \frac{\sigma_x}{k}\frac{\partial k}{\partial \sigma_x} 
+\end{equation}
+In vector form, $\mathbf{S}$ useful for comparing two systems
+both {\it qualitatively} and {\it quantitatively}.
+\end{frame}
+
+\begin{frame}{S/U Techniques - 2}
+Let a set of group-wise, nuclide-reaction cross-sections be denoted 
+\begin{equation}
+ \bm{\sigma} \equiv \sigma_i, \; \; n = 1,\;2,\ldots,N
+\end{equation}
+with relative covariance matrix
+\begin{equation}
+ \mathbf{C_{\sigma \sigma}} \equiv 
+   \Bigg[\frac{\mathrm{COV}(\sigma_i,\sigma_j)} {\sigma_i \sigma_j} \Bigg ] \, .
+\end{equation}
+The uncertainty in \keff is therefore
+\begin{equation}
+\frac{\delta k}{k} = \sqrt{ \mathbf{S}_k \mathbf{C_{\sigma \sigma}} 
+                     \mathbf{S}_k^T } \, ,
+\end{equation}
+
+\end{frame}
+
+\begin{frame}{S/U Techniques - 3}
+For several systems $I$, $\mathbf{\bar{S}}_k$ is an $N \times I$ matrix,
+and
+\begin{equation}
+ \mathbf{C}_{kk} =  \mathbf{\bar{S}}_k \mathbf{C_{\sigma \sigma}} 
+                    \mathbf{\bar{S}}_k^T  
+\end{equation}
+is the associated $I\times I$ covariance matrix with entries $\alpha_{ij}$.
+\vfill
+The correlation coefficient between system $i$ and $j$ is defined
+\begin{equation}
+ c_{k} =  \frac{\alpha^2_{ij}}{\alpha_i \alpha_j}  \, ,
+\end{equation}
+and ranges from -1 to 1.  Like enrichment or EALF, $c_k$ can be
+used in trending analyses.
+\end{frame}
+
+%===============================================================================
+\begin{frame}[fragile]{Example Trending Analysis - 1}
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.2 in]{images/trend_ealf}
+    \caption{All systems are LEU experiments in IHECSBE.  Two were selected
+             as sample applications.  Here, EALF is used to trend.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Example Trending Analysis - 2}
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.2 in]{images/trend_ck1}
+    \caption{Here, $c_k$ specific to one of the sample applications is used.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Example Trending Analysis - 3}
+\begin{table}[hp]
+ \caption{Observed and predicted biases ($\beta_{\mathrm{ob}}$ and 
+         $\beta$), $\Delta \beta$, all in percent, and USL using 
+         each trending technique.}
+ \begin{center} 
+ \begin{tabular*}{0.98\textwidth}{@{\extracolsep{\fill}} c|cccc|cccc } 
+  \toprule
+              & \multicolumn{4}{c}{LCT-079-002}          & \multicolumn{4}{c}{LCT-050-001} \\
+   \midrule 
+             & $\beta_{\mathrm{ob}}$ & $\beta$ & $\Delta \beta$  & USL & $\beta_{\mathrm{ob}}$& $\beta$  & $\Delta \beta$ & USL \\ 
+   \midrule
+       EALF  &  -1.08  &  -0.95  &  1.08  &  0.9298  &  -0.94  &  -0.77  &  1.08  &  0.9316 \\
+    Enrich.  &  -1.08  &  -0.84  &  1.02  &  0.9314  &  -0.94  &  -0.85  &  1.02  &  0.9313 \\
+      $c_k$  &  -1.08  &  -0.74  &  1.16  &  0.9306  &  -0.94  &  -0.71  &  1.07  &  0.9322 \\
+  \bottomrule 
+ \end{tabular*} 
+ \end{center} 
+ \label{tbl:trendbias}  
+\end{table} 
+\vfill
+Something to note:  all the biases are small and far outweighed by the 5\% adminstrative margin!
+\end{frame}
 
 \section{Case Study: Burnup Credit}
 
-
-%===============================================================================
-
-
-%===============================================================================
-\begin{frame}[fragile]{FLOPS - Final Thoughts Revisited}
-%   \begin{figure}
-%     \includegraphics[keepaspectratio, width = 3.0 in]{flopsomp}
-%   \end{figure}
-  \vfill
-  Curiously, the best approach is to switch back $i$ and $j$!  See the text 
-  by Chapman et al. for details. (Note, things like MKL have threaded versions,
-  too, so still avoid reinventing the wheel.)
+\begin{frame}{Burnup Credit}
+Burnup Credit: {\it taking into account the reduction in reactivity due to burnup}
+\vfill
+Why do we care?  {\it Economics.}
+  \begin{figure}
+    \includegraphics[keepaspectratio, width = 3.5 in]{images/loading_curve}
+  \end{figure}
 \end{frame}
 
-%===============================================================================
-\begin{frame}{The Monte Carlo Slab Problem}
-
-  {\bf Homework (ha!)}: parallelize your program.
-  \vfill
-  {\bf Given}: all the code from yesterday plus a parallel-ready random number 
-  generator (if not already provided).
-  \vfill
-  {\bf Solution Sketch}: The solution looks a lot like the $\pi$ problem above.
-  You need to 
-  \begin{itemize}
-    \item wrap the problem in a \texttt{parallel} directive
-    \item allocate and initiate local tally arrays
-    \item wrap the histories in a \texttt{do} directive
-    \item note the global object \texttt{tal} is already given the attribute
-          \texttt{threadprivate} (like \texttt{private} but for things in a 
-          potentially global scope such as modules)
-    \item carefully select which variables are denoted \texttt{private} (e.g.
-          the \texttt{mat} variable) and which are \texttt{public}
-    \item {\it safely} add the local tally information to the global \texttt{tal}
-          variable.  Hint: look up the \texttt{critical} directive.
-  \end{itemize}
-  Note: I changed roughly 15 lines of code to parallelize the serial code, and most
-  of this was in replacing \texttt{tal} with a private variable.
+\begin{frame}{Burnup Credit}
+Summary of recent work:
+\begin{itemize}
+ \item Use S/U tools to extract {\it partial} biases for specific nuclides
+ \item GLLSM for data adjustment
+ \item Replacement experiments and reactivity differences
+ \item Maybe? informed experiment design
+\end{itemize}
+\vfill
+Methods are promising {\it but sensitive to experiment correlation} and
+{\it very sensitive to data covariance}; our knowledge of both is dismal!
 \end{frame}
-
-
-\section{Summary}
-
-\begin{frame}{Summary}
-
-  Key takeaways:
-  \begin{itemize}
-  \item Speed isn't the be all end all; memory is often limiting
-  \item The compiler and library choice is important for peak performance
-  \item Don't reinvent the wheel (in particular, OMILAT)
-  \item OpenMP is easy (mostly)
-  \item Computing is fun!
-  \end{itemize}
-  \vfill
-  Help is available if you decide to attempt the problem...
-
-\end{frame}
-
-
 
 \end{document}
