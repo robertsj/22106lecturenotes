@@ -1,0 +1,32 @@
+% Example for illustrating variational methods
+% Jeremy Roberts, 2013
+\documentclass{article}
+
+\usepackage{gnuplot-lua-tikz}
+\usepackage[active,tightpage]{preview} 
+\PreviewEnvironment{tikzpicture}
+\setlength\PreviewBorder{2mm}
+
+\begin{document}
+%\pagestyle{empty}
+
+\begin{tikzpicture}[gnuplot]
+  % X and Y axes
+  \draw[-stealth] (0.0, 0.0) -- (8.0, 0.0) node[right] {$x$};
+  \draw[-stealth] (0.0, 0.0) -- (0.0, 6.0) node[above] {$y$};
+  % Two points
+  \fill(1.0, 1.0) circle (2pt) node[below] {{\small $(x_1,\, y_1)$}}; 
+  \fill(7.0, 5.0) circle (2pt) node[above] {{\small $(x_2,\, y_2)$}};
+  % Actual line connecting
+  \draw[color=black] plot[id=y, domain=1.0:7.0] function{(4.0/6.0)*x+1.0/3.0};
+  \node[] at (4.0, 3.2) {$f$};
+  % Two potential lines
+  \draw[color=black,densely dashed] plot[id=g1, domain=1.0:7.0] 
+    function{(4.0/6.0)*x+1.0/3.0 - 0.05*(sin(1*x)**2+1)*(x-1.0)*(x-7.0)};
+  \node[] at (4.7, 4.7) {$f + \epsilon g_1$};
+  \draw[color=black,loosely dashed] plot[id=g2, domain=1.0:7.0] 
+    function{(4.0/6.0)*x+1.0/3.0 + 0.05*(sin(1.5*x)**2+1)*(x-1.0)*(x-7.0)};
+  \node[] at (3.2, 1.3) {$f+\epsilon g_2$};
+\end{tikzpicture}
+
+\end{document}

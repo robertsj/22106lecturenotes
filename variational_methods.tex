@@ -9,6 +9,7 @@ principles can be used to estimate these quantities using approximate fluxes.
 We finish by showing how our first order perturbation theory can be derived 
 directly from variational principles.
 
+%------------------------------------------------------------------------------%
 \section*{Variational Principles, Functionals, and Stationary Points}
 
 A variational principle casts a particular function, usually a problem's 
@@ -48,83 +49,97 @@ quantity.  Moreover, very near the stationary point, $\delta F \to 0$ by
 construction, and the errors in $F$ (and hence the quantity of interest) are 
 second order, which gives rise to the utility of variational approximations.
 
+%------------------------------------------------------------------------------%
 \section*{A Simple, Illustrative Example}
 
 It is easiest to understand these ideas through a simple example (unrelated 
 to nuclear engineering).  Suppose we wish to find the curve giving us the 
-shortest difference between two points in a plane.  Of course, this is 
+shortest difference between two points in a plane  Of course, this is 
 intuitive: the solution should be a line.  We show this using variational 
 techniques.  
 
-Let the curve be $y(x)$. From any calculus book, we know the differential arc 
+Let the curve be $f(x)$. From any calculus book, we know the differential arc 
 length is then
 \begin{equation}
- dl = \sqrt{ dx^2 + dy^2 } = \sqrt{1 + (y')^2} \, .
+ dl = \sqrt{ dx^2 + df^2 } = \sqrt{1 + (f')^2} \, .
 \end{equation}
 We take as our functional the arc length,
 \begin{equation}
- F[y] = \int^{x_2}_{x_1} \sqrt{1 + (y')^2} dx \, ,
+ F[f] = \int^{x_2}_{x_1} \sqrt{1 + (f')^2} dx \, ,
 \end{equation}
-where ($x_1$, $y_1$) and ($x_2$, $y_2$) are the points of interest.  
+where ($x_1$, $y_1$) and ($x_2$, $y_2$) are the points of interest, as 
+illustrated in Figure \ref{fig:shortest_path}.
+
+\begin{figure}[ht] 
+    \centering
+    \includegraphics[keepaspectratio, width = 4.0 in]{images/shortest_path}
+    \caption{The shortest path between two points ($x_1$, $y_1$) and 
+            ($x_2$, $y_2$) is indicated by the solid curve $f$.  Two possible
+            curves for arbitrary $g$ are also given.}
+    \label{fig:shortest_path}
+\end{figure} 
 
 Taking the first variation of $F$,
 \begin{equation}
 \begin{split}
-\delta F[y,g] &= \left ( \frac{d}{d\epsilon}\int^{x_2}_{x_1} 
-                         \sqrt{1 + (y'(x)+\epsilon g'(x))^2} dx \right ) 
+\delta F[f,g] &= \left ( \frac{d}{d\epsilon}\int^{x_2}_{x_1} 
+                         \sqrt{1 + (f'(x)+\epsilon g'(x))^2} dx \right ) 
                  \Bigg |_{\epsilon=0} \\
               &= \left ( \int^{x_2}_{x_1} 
-                         \frac{(y'(x)+\epsilon g'(x))g'(x)}
-                              {\sqrt{1 + (y'(x)+\epsilon g'(x))^2}} \right ) 
+                         \frac{(f'(x)+\epsilon g'(x))g'(x)}
+                              {\sqrt{1 + (f'(x)+\epsilon g'(x))^2}} \right ) 
                  \Bigg |_{\epsilon=0} \\
-              &= \int^{x_2}_{x_1} \frac{y'(x)g'(x)dx}{\sqrt{1 + (y'(x))^2}} \, ,
+              &= \int^{x_2}_{x_1} \frac{f'(x)g'(x)dx}{\sqrt{1 + (f'(x))^2}} \, ,
 \end{split}
 \end{equation}
 we find that the arc length is minimized when
 \begin{equation}
  \delta F[y,g] =
-   \int^{x_2}_{x_1}\frac{y'(x)g'(x)}{\sqrt{1 + (y'(x))^2}} = 0 \, .
+   \int^{x_2}_{x_1}\frac{f'(x)g'(x)}{\sqrt{1 + (f'(x))^2}} = 0 \, .
  \label{eq:exampleprinciple}
 \end{equation}
-In this form, we can't say anything about $y$ or $g$.  Instead, we use 
-integration by parts to go from $y'$ and $g'$ to $y''$ and $g$, and
+In this form, we can't say anything about $f$ or $g$.  Instead, we use 
+integration by parts to go from $f'$ and $g'$ to $f''$ and $g$, and
 Eq. \ref{eq:exampleprinciple} becomes
 \begin{equation}
- \delta F[y,g] =
-   \left [ \frac{y'(x)g(x)}{\sqrt{1 + (y'(x))^2}} \right ]^{x_2}_{x_1} - 
-   \int^{x_2}_{x_1} \frac{y''(x)g(x)dx}{(1 + (y'(x))^2)^{\frac{3}{2}}} = 0\, .
+ \delta F[f,g] =
+   \left [ \frac{f'(x)g(x)}{\sqrt{1 + (f'(x))^2}} \right ]^{x_2}_{x_1} - 
+   \int^{x_2}_{x_1} \frac{f''(x)g(x)dx}{(1 + (f'(x))^2)^{\frac{3}{2}}} = 0\, .
  \label{eq:exampleprinciple2}
 \end{equation}
 While $g(x)$ is arbitrary \textit{between} $x_1$ and $x_2$, we must have 
-$g(x_1) = g(x_2) = 0$ to that $y(x_1) = y_1$ and $y(x_2) = y_2$.  Thus, the 
+$g(x_1) = g(x_2) = 0$ to that $f(x_1) = y_1$ and $f(x_2) = y_2$.  Thus, the 
 first term of Eq. \ref{eq:exampleprinciple2} vanishes. 
 By inspection, the second term vanishes for 
-arbitrary $g$ only if $y'' = 0$.  This relation is known as 
+arbitrary $g$ only if $f'' = 0$.  This relation is known as 
 the \textit{Euler equation}\footnote{In general, setting the first variation 
 to zero gives rise to a set of partial differential equations collectively 
-known as the Euler equations.}.  Of course, to satisfy $y''=0$ requires 
-our solution $\tilde{y}(x)$ to be of the form $Ax+B$, as expected.
+known as the Euler equations.}.  Of course, to satisfy $f''=0$ requires 
+our solution to be of the form $Ax+B$, as expected.
 
+%------------------------------------------------------------------------------%
 \section*{A Variational Principle for Fixed Source Problems}
 
 Suppose we are interested in a linear functional of the flux, such 
 as $G_{\text{fs}}[\psi] = \langle \psi, \Sigma_d \rangle$, a reaction rate. 
-An appropriate variational principal is represented by 
+An appropriate variational principle is represented by 
 the \textit{generalized Roussopoulos functional}
 \begin{equation}
- F_{\text{fs}} [\psi,\psi^*] = G_{\text{fs}}[\psi] + \langle \psi^*, (Q-L\psi) \rangle \, .
+ F_{\text{fs}} [\psi,\psi^*] = 
+   G_{\text{fs}}[\psi] + \langle \psi^*, (Q-L\psi) \rangle \, .
 \end{equation}
 Note, $\delta F_{\text{fs}}[\psi,\psi^*] = 0$ is a variational principle 
 for $G_{\text{fs}}$ if the corresponding solution $\psi$ 
-yields $F_{\text{fs}}[\psi,\psi^*] = G_{\text{fs}}[\psi]$.  We see this is so when 
-the second term of $F$ vanishes when $\psi$ solves $L\psi = Q$, i.e. 
+yields $F_{\text{fs}}[\psi,\psi^*] = G_{\text{fs}}[\psi]$.  We see this is 
+so when the second term of $F$ vanishes when $\psi$ solves $L\psi = Q$, i.e. 
 when $\psi$ is the solution to the transport equation.
 
-To determine the variational principle, we take the first variation of $F_{\text{fs}}$,
+To determine the variational principle, we take the first variation 
+of $F_{\text{fs}}$,
 \begin{equation}
  \begin{split}
-  \delta F_{\text{fs}} [\phi,\phi^*] &= 
-    \left ( \frac{d}{d\epsilon} 
+  \delta F_{\text{fs}} & [\phi,\phi^*] \\
+   &= \left ( \frac{d}{d\epsilon} 
             \left ( \langle (\phi+\epsilon \delta \phi) \Sigma_d \rangle + 
                     \langle (\phi^* + \epsilon \delta \phi^*), 
                             (Q-L(\phi+\epsilon \delta \phi)) \rangle 
@@ -133,7 +148,8 @@ To determine the variational principle, we take the first variation of $F_{\text
    &= \langle \delta \phi, \Sigma_d \rangle - 
       \langle \phi^*,L \delta \phi \rangle + 
       \langle \delta \phi^*, Q \rangle - 
-      \langle \delta \phi^*, L \phi \rangle \, .
+      \langle \delta \phi^*, L \phi \rangle +
+      \mathcal{O}(\epsilon^2) \, .
  \end{split}
 \end{equation}
 Noting 
@@ -148,9 +164,9 @@ the corresponding Euler equations, and we see they are just the original
 forward and adjoint transport equations.
 
 The importance of this variational principle (and others in general) is that 
-it gives us an estimate for $G_{\text{fs}}$ accurate to second order for approximate 
-fluxes $\phi$ and $\phi^*$.  To demonstrate this, suppose the true solutions 
-to the Euler equations are $\psi$ and $\psi^*$.  
+it gives us an estimate for $G_{\text{fs}}$ accurate to second order for 
+approximate fluxes $\phi$ and $\phi^*$.  To demonstrate this, suppose the 
+true solutions to the Euler equations are $\psi$ and $\psi^*$.  
 Let $\phi = \psi + \delta \psi$ and $\phi^* = \psi^* + \delta \psi^*$.  
 We subsitute these expressions into $F$ and find
 \begin{equation}
@@ -190,12 +206,11 @@ that $F_{\text{ev}}$ is in fact a valid expression for $\lambda$.  The
 associated Euler equations are just the forward and adjoint eigenvalue 
 equations, which can be shown by setting the first variation 
 of $F_{\text{ev}}$ to zero, an exercise left to the reader.
-
-For approximate fluxes $\phi$ and $\phi$, it can be shown that
+For approximate fluxes $\phi$ and $\phi$
 \begin{equation}
  F_{\text{ev}}[\phi,\phi^*] = \lambda + \mathcal{O}(\delta^2) \, ,
 \end{equation}
-the proof of which is left as an exercise.
+the proof of which is also left as an exercise.
 
 \section*{Perturbation Theory from Variational Principles}
 
@@ -234,6 +249,7 @@ Eq. \ref{eq:pertfromvar} can also be applied to the Rayleigh quotient,
 yielding Eq. \ref{eq:eigenpertresp}, proof of which is left 
 as an exercise.
 
+%------------------------------------------------------------------------------%
 \section*{Further Reading}
 
 Most of the material presented here is contained in Chapter 7 of 
@@ -245,6 +261,7 @@ methods\footnote{It is worth noting that Stacey and Pomraning, both with
 prolific work in variational methods, did their graduate work in 
 this department.}.
 
+%------------------------------------------------------------------------------%
 \begin{exercises}
 
   %----------------------------------------------------------------------------%
@@ -307,21 +324,21 @@ this department.}.
 
   %----------------------------------------------------------------------------%
   \item \textbf{More Roussopoulos}. 
-    For same problem, estimate the total absorption rate if something 
+    For the same problem, estimate the total absorption rate if something 
     causes $\Sigma_a = 1.1$.  Be careful to consider the impact of the change 
     in $\Sigma_a$ on both $\Sigma_d$ and $L$.
 
   %----------------------------------------------------------------------------%
   \item \textbf{Approximating Escape from a Slab}. 
-    Consider the escape probability $P_{\text{esc}}$ for a homogeneous 1-d slab, 
+    Recall the escape probability $P_{\text{esc}}$ for a homogeneous 1-d slab, 
     the subject of 
     Chapter \ref{lec:analytical}, Problem \ref{itm:escapeprobability}.  
     Here, consider a discrete ordinates approximation using the 
-    two point Gauss-Legendre quadrature for a 10 cm slab 
-    with $\Sigma_t = 10$ [1/cm].
+    two point Gauss-Legendre quadrature and Mark boundary conditions
+    for a 10 cm slab with $\Sigma_t = 10$ [1/cm].
     \begin{enumerate}[a.]
       \item Solve for $P_{\text{esc}}$ directly using the S$_{\text{2}}$ 
-            approximation and Mark boundary conditions.  
+            approximation.
       \item Use a variational principle to improve 
             your estimate of $P_{\text{esc}}$. 
       \item Compare both values to the exact value.
