@@ -1,0 +1,807 @@
+\chapter{Automated Variance Reduction}
+
+In this lecture, automated variance reduction techniques 
+for Monte Carlo shielding problems are investigated. 
+Typically, these shielding problems 
+are difficult because they represent massive attenuation of source 
+particles, and, hence, require many histories to achieve adequate statistics.  
+Variance reduction reduces the effort by modifying the underlying sampling 
+scheme in an unbiased way so that  the same statistics are achieved with 
+less computation.  The techniques investigated in this paper 
+are ``automated'' in the sense that comparatively inexpensive deterministic 
+solutions are used to generate parameters for use in both source and 
+transport biasing schemes.  We demonstrate the efficacy of several 
+algorithms for simple multigroup slab problems using a discrete ordinates 
+solution to generate biasing parameters.
+
+\section{Introduction}
+
+The Monte Carlo method is widely believed to be the most accurate method 
+for solving problems in radiation transport.  Unfortunately, due to its 
+very nature---following individual particle histories---certain classes 
+of problems are particularly challenging for the method.  One such class 
+of problems consist of so-called deep penetration shielding problems.  
+Because the purpose of a shield is to attenuate a particle population by 
+several orders of magnitude, to use the Monte Carlo method requires a 
+sufficient number of histories to ensure that the population, once attenuated, 
+can still provide adequate statistics.  For deep penetration problems, the 
+level of attenuation makes Monte Carlo prohibitively expensive.
+
+To circumvent this issue, several approaches for \emph{variance reduction} have
+been developed over the years.  Variance reduction techniques aim to modify (\ie
+bias) in some manner the underlying physics in such a way that an \emph{unbiased}
+solution with \emph{lower} statistical error is found than an unbiased simulation
+using the same computational resources.  Haghighat and Wagner
+\cite{haghighat2003mcv} classify variance reduction techniques in three ways:
+\emph{modified sampling methods} (e.g., source biasing, implicit capture), 
+\emph{population control methods} (e.g., geometry splitting/roulette, weight windows),
+and 
+\emph{semi-analytical methods} (e.g., point detectors and DXTRAN).  
+In this lecture, we only analyze methods falling in the first two 
+categories, i.e.,
+approaches for source biasing, geometry splitting/roulette, and
+weight windows.  Moreover, we see \emph{automated} approaches 
+for these methods.  
+
+The lecture is is organized as follows.  In Section \ref{sec:tech}, we
+describe several approaches to variance reduction that use the adjoint or
+forward fluxes computed via the discrete ordinates method to select parameters
+for source biasing, geometry splitting, or weight windows. We apply those
+techniques in Section \ref{sec:results} to some simple slab problems and
+summarize the impact each technique has on various problem types. Section
+\ref{sec:conc} provides several concluding remarks.  
+
+\section{Automated Variance Reduction Techniques}
+\label{sec:tech}
+
+In this section, we describe several automated approaches for variance
+reduction.  They are ``automated'' in the sense that essentially no user input
+is required to generate parameters (\eg the user need not define cell
+importances for geometry splitting).  Throughout, it is assumed that an
+approximate forward and/or adjoint flux is available, \eg from a discrete
+ordinates calculation.
+
+\subsection{Geometry Splitting}
+
+Geometry splitting and roulette is a common variance reduction technique that
+can yield a substantial reduction in computational expense.  The essential idea
+of geometry splitting is to encourage more particles (of less weight) to fill a
+region of high importance.  On the other hand, the technique aims to reduce the
+computational effort of tracking particles in unimportant regions.  Here, we
+outline the basic algorithm for geometry splitting.
+
+First, the importance of a cell is taken to be the adjoint flux
+spatially-averaged over a cell.  Note, this implies that a cell importance may
+still be energy-dependent.  When a particle of weight $w$  exits a cell $A$ with
+importance $I_A$ and enters a cell $B$ with importance $I_B$ (with $I_A \neq
+I_B$), two options exist: either $I_B > I_A$ or $I_B < I_A$.  In the first case,
+the particle is split into a number of particles dependent on the ratio of the
+importances.  In the latter case, the particle undergoes roulette and is either
+eliminated or survives with increased weight. Algorithm \ref{alg:geom} provides
+the basic implementation. 
+
+\begin{algorithm}
+ \label{alg:geom}
+ \caption{Geometry Splitting and Roulette}
+ $r \leftarrow$ $I_B/I_A$ \;
+ \eIf{$r > 1$}{
+   \eIf{ $\xi < r - \lfloor r \rfloor$}{
+     $n$ $\leftarrow$ $\lceil r \rceil$ \;
+   }{
+     $n$ $\leftarrow$ $\lfloor r \rfloor$ \;
+   }
+   $w'$ $\leftarrow$ $w/r$ \;
+   bank $n-1$ particles and keep following first \;
+ }{
+   \eIf{$\xi < r $}{
+     $w'$ $\leftarrow$ $w/r$ \;
+   }{
+     kill particle \;
+   }
+ }
+\end{algorithm}
+
+It is worth noting that the algorithm above is  ``expected-value splitting''
+which takes $ w' = w/r$ (\ie no rounding) and  chooses $n = \lfloor r \rfloor $
+or $ n= \lceil r \rceil$ \cite{booth1985mcv}.  This is in contrast to ``sampled
+splitting'' which chooses  $n = \lfloor r \rfloor$ or $ n = \lceil r \rceil$
+(via sampling) and  defines the weight to be $w'=w/n$ \cite{booth1985mcv}.  
+Sampled splitting has the benefit of conserving particle weight at each
+individual split while the expected-value splitting does so only on average. 
+However, because the sampled splitting approach introduces varying weights at a
+particular geometry interface, it may adversely affect the variance (whereas the
+latter approach does not) \cite{haghighat2003mcv}.  Note further that the
+simplified sampled splitting method given by Brown \cite{brown2005fmc} does not
+introduce weight fluctuations but does not capture the importance ratio exactly.
+
+\subsection{CADIS}
+
+The Consistent Adjoint-Driven Importance Sampling (CADIS) method was developed
+by Wagner and Haghighat \cite{wagner1998avr}.  The key idea of CADIS is that the
+transport biasing (via weight windows) and source biasing are derived in a
+consistent manner from the adjoint function.  Here, we give an overview of the
+use of the adjoint in source and transport biasing and how such biasing can be
+translated into weight window parameters, largely following Wagner and Haghigat
+\cite{wagner1998avr}.  Note, this development also forms the basic core of the
+FW-CADIS and pseudo-Cooper methods described below.
+
+\subsubsection{Source Biasing}
+
+We define the response of interest to be
+\begin{equation}
+ R = \int_P \psi (P) \sigma_d(P)dP \, ,
+\end{equation}
+where $\psi$ is the forward angular flux, $\sigma_d$ is an objective function
+(perhaps a flux-to-dose constant), and $P$ represents the spatial-, energy-, and
+angular-dependent phase space.  Using the well-known adjoint identity
+\begin{equation}
+ \langle \psi^\dag H \psi \rangle = \langle \psi H^\dag \psi^\dag \rangle \, ,
+\end{equation}
+where $\psi^\dag$ is the adjoint angular flux, $H^\dag$ is the adjoint transport
+operator, and  $\langle \rangle$ represents integration over all phase space, it
+is possible to show that 
+\begin{equation}
+ R = \int_P \psi^\dag (P) q(P)dP \, ,
+\end{equation}
+where $q$ is a forward source density.  Hence, we find that $\psi^\dag$ can be
+interpreted physically as the expected contribution of a particle anywhere in
+phase space to the response of interest (\ie the particle importance).
+
+We can use this notion of $\psi^\dag$ to bias the source density $q$ via
+\begin{equation}
+ \hat{q} = \frac{\psi^\dag(P) q(P) }{ \int_P \psi^\dag(P) q(P) dP } \, ,
+ \label{eq:biassrc}
+\end{equation}
+which can be shown to minimize the variance for $R$.  The particle weights are
+then defined to be
+\begin{equation}
+ w(P) = \frac{R}{\psi^\dag(P)} \, .
+\end{equation}
+
+\subsubsection{Transport Biasing}
+ To investigate transport biasing, consider the integral form of the transport
+equation,
+\begin{equation}
+ \psi(P) = \int f(P'\to P) \psi(P') dP' + q(P) \, ,
+\end{equation}
+where $f(P' \to P) dP$ is the expected number of particles entering $dP$ about
+$P$ due to an interaction in $P'$, and $q(P)$ is the (forward) source density. 
+We define
+\begin{equation}
+ \hat{\psi}(P) = \frac{ \psi^\dag(P)\psi(P) }{ \int \psi^\dag(P)\psi(P) dP } \,
+,
+ \label{eq:contflux}
+\end{equation}
+from which we find a transformed integral equation in terms of the biased
+source:
+{\footnotesize
+\begin{equation}
+\begin{split}
+ \hat{\psi}(P) &= \int dP' f(P'\to P) \frac{ \psi(P')\psi^\dag(P) }{ \int
+\psi^\dag(P)\psi(P) dP} + \hat{q}(P) \\
+               &= \int dP' f(P'\to P) \frac{ \psi(P')\psi^\dag(P) }{ \int
+\psi^\dag(P)\psi(P) dP}  \frac{ \hat{\psi}(P') \int \psi^\dag(P')\psi(P')
+dP}{\psi^\dag(P')\psi(P') }+ \hat{q}(P) \\
+               &= \int dP' f(P'\to P) \frac{ \psi^\dag(P) \hat{\psi}(P')
+}{\psi^\dag(P') }+ \hat{q}(P) \, .
+\end{split}
+\label{eq:modeq}
+\end{equation}
+}
+In more compact form, we have
+\begin{equation}
+  \hat{\psi}(P) = \int \hat{f}(P' \to P) \hat{\psi}(P') dP' + \hat{q}(P) \, ,
+\end{equation}
+where \footnote{It is interesting to note that the modified flux $\hat{\psi}$ in
+Eq. \ref{eq:contflux} is just the normalized ``contributon flux'' and $\hat{f}$
+of Eq. \ref{eq:modf} is akin to the ``contributon cross-section'' (see \eg the
+interesting paper by M. Williams \cite{williams1991gcr}).  With these
+interpretations, one can arrive (in hand-waving fashion) to the notion of zero
+variance.  Since ''contributons'' represent exactly a flow of response from the
+source to the detector, their very existence gives use what we want; of course,
+that requires both a perfect knowledge of the adjoint and a way to use it
+completely.  Unfortunately, we have neither.}
+\begin{equation}
+ \hat{f}(P' \to P) = f(P' \to P) \frac{\psi^\dag(P) }{\psi^\dag(P') } \, .
+ \label{eq:modf}
+\end{equation}
+Here, $\hat{f}$ represents a biased transfer function that acts to bias the
+transport process, and $\hat{\psi}$ is the corresponding solution (essentially a
+contributon flux, a quantity with a very definite physical interpretation that
+the authors never quite point out; see the note below).  
+
+In general $f(P'\to P)$ is not known, so the modified transport Eqs.
+\ref{eq:modeq} and \ref{eq:modf} cannot be solved.  However, Eq. \ref{eq:modf}
+in particular suggests a possible way to modify the population of particles
+propagating through phase space.  If a particle in phase space $P'$ enters a
+region in phase space $P$ which is more (less) important than $P'$, then
+particles can be split (rouletted) based on the value of $\psi^\dag (P) /
+\psi^\dag (P')$.  This is exactly the idea used in geometry splitting above, but
+for geometry splitting, the ratio of adjoints is determined only at cell
+boundaries and not after every interaction in phase space.  After
+splitting/rouletting, the particle weights are defined via
+\begin{equation}
+ w(P) = w(P') \frac{\psi^\dag(P')}{\psi^\dag(P)} \, .
+\end{equation}
+
+\subsubsection{Implementation}
+To implement CADIS, we follow the approach of Wagner and Haghighat in their
+implementation of CADIS in MCNP \cite{wagner1998avr}.  Because storing adjoint
+information for all (discretized) phase space can be very expensive for large
+problems, the angular variable is integrated out of all the quantities of the
+previous sections.  Consequently, our biased source density becomes
+\begin{equation}
+ \hat{q}(r,E) = \frac{\phi^\dag(r,E) q(r,E) }{ \int_E \int_V \phi^\dag(r,E)
+q(r,E) dr dE } \, ,
+ \label{eq:biassrc2}
+\end{equation}
+where $\phi^\dag(r,E)$ is the adjoint scalar flux, and the particle weights are
+defined as
+\begin{equation}
+ w(r,E) = \frac{R}{\phi^\dag(r,E)} \, .
+\end{equation}
+
+For transport biasing, the weight window approach is used.  The goal of
+weight-windows is not only to encourage a large number of particles toward a
+desired region of phase space but to ensure the particles have weights
+distributed in a relatively narrow range.  A low variance in the weights of
+particles reaching a detector corresponds directly to a detector response with
+low variance.  Whenever a particle of weight $w$ enters a region of phase space
+with a weight window defined by a lower weight $w_L$ and upper weight $w_U$,
+three possibilities exist.  First, if $w$ is within the weight window, then
+nothing occurs.  If instead $w < w_L$, a game of roulette is played.  Finally,
+if $w > w_L$, then the particle is split. Algorithm \ref{alg:ww} outlines a
+basic weight-window approach modified from \cite{brown2005fmc}.
+
+\begin{algorithm}
+ \label{alg:ww}
+ \caption{Weight Windows}
+    Input: $w_L(E)$ for each spatial cell and $c_U$ such that $w_U = w_L/c_U$ \;
+    \uIf{$w > w_U$ }{
+      $n = \lfloor 1+ w/w_U \rfloor$ \;
+      \If{$ n > 1 $}{
+        $w'$ $\leftarrow$ $w/n$ \;
+        bank $n-1$ particles and keep following first \;
+      }
+    }{
+    \uElseIf{$w < w_L $}{
+      $P \leftarrow 2w/(w_U+w_L)$ \;
+      \eIf{$\xi < P $}{
+        $w'$ $\leftarrow$ $w/P$ \;
+      }{
+        kill particle \;
+      }
+     }{
+     \Else{
+       particle is within the weight window
+     }
+     }
+     }
+\end{algorithm}
+
+Note, it is possible to limit the split ratio, but we choose not to do that
+since it would reduce the accuracy with which the underlying adjoint (to be used
+to define $w_L$) is used to bias the transport.  Moreover, $P$ could also be
+defined differently.  Brown defines a general $P = w/w_{\mathrm{avg}}$ where
+$w_{\mathrm{avg}}$ is the average weight of the particle if it survives
+roulette; here, we take that simply to be in the center of the weight window. 
+%Finally, note that even if $w/w_U > 1$, splitting may not occur.  We conserve
+weight and avoid varied weight, but miss out on a bit of the underlying adjoint
+information.  
+
+In using the adjoint to define the weight window bounds, we would like the
+underlying statistical weight of the particles in $(r,E)$ to be in the center of
+the bounds.  For a weight window width $c_U = w_U/w_L$, we obtain our goal by
+defining
+\begin{equation}
+\begin{split}
+  \frac{R}{\phi^\dag(r,E)} &= \frac{1}{2}(w_L + w_U) \\
+                           &= \frac{1}{2}(w_L + c_U w_L) \\
+                           &= w_L \frac{1+c_U}{2}\, ,
+\end{split}
+\end{equation}
+or 
+\begin{equation}
+ w_L(r,E) = \frac{R}{\phi^\dag(r,E)} \frac{2}{1+c_U} \, .
+\end{equation}
+Because the source is biased such that particles born at $(r,E)$ have weight
+$R/\phi^\dag(r,E)$, the source particles are automatically born within their
+local weight window.  For some problems, this is very significant.  For example,
+suppose the response of interest were a small detector on the outside of a
+reactor vessel.  Then the associated adjoint is bound to vary by orders of
+magnitude throughout the source region, that is the reactor core.  If the source
+were not biased consistently with the weight windows, then a particle born could
+immediately have to undergo splitting or rouletting, thus needlessly wasting
+computational effort.
+
+\subsection{FW-CADIS}
+
+Forward-Weighted CADIS (FW-CADIS) is a modification of the CADIS method recently
+developed at Oak Ridge National Laboratory (ORNL)
+\cite{peplow2009sot,wagner2009fwc}.  Many studies have shown that CADIS performs
+remarkably well for source-detector problems.  However, it does not do as well
+for problems with several detectors or more general ``global'' problems.
+
+As a result, FW-CADIS was developed.  The basic motivation of FW-CADIS is to
+generate a more uniform Monte Carlo particle population across the regions of
+interest or perhaps over the whole problem domain.  Doing so, it has been
+suggested, leads to (nearly) uniform statistical uncertainties
+\cite{cooper2001aww}.  Hence, while uniform Monte Carlo particle density is not
+really a ``physical'' response, it is nonetheless an attractive goal.  The
+objective then becomes to find an adjoint function that represents the
+importance of particles to this response.
+
+Following Wagner et al \cite{wagner2009fwc}, we cast the problem (\ie finding
+uniform Monte Carlo particle density) into the familiar response formulation
+\begin{equation}
+ R = \int \psi(P) f(P) dP \, ,
+\end{equation}
+where again $P$ represents all phase space and $f(P)$ converts physical flux to
+the Monte Carlo particle density.  The physical particle density $n(P)$ is
+related to the the Monte Carlo particle density $m(P)$ via
+\begin{equation}
+ n(P) = \bar{w}(P)m(P) \, ,
+\end{equation}
+where $\bar{w}(w)$ is the average statistical weight at $P$. Since $\psi(P) =
+n(P)v(P)$, where $v$ is the velocity, we find that
+\begin{equation}
+ m(P) = \frac{n(P)}{\bar{w}(P)} = \frac{\psi(P)}{\bar{w}(P)v(P)} = \psi(P) f(P)
+\, .
+\end{equation}
+Hence, we may rewrite the total response
+\begin{equation}
+ R = \int \frac{\psi(P)}{\bar{w}(P)v(P)} dP \, .
+\end{equation}
+Now if we want the Monte Carlo particle density to be constant,  then $m\propto
+constant$, and consequently $\bar{w} \propto n$ or equivalently, $\bar{w} v
+\propto \psi$.  Hence, we may substitute $\bar{w} v = \psi$ into the response
+equation:
+\begin{equation}
+ R = \int \psi(P) \frac{1}{\psi(P)} dP \, ,
+\end{equation}
+which suggests that the adjoint source should be defined as
+\begin{equation}
+ q^\dag(P) = \frac{1}{\psi(P)} \, .
+\end{equation}
+
+This approach can be generalized for any desired response, say a reaction rate
+with cross-section $\sigma_r(r,E)$ in a specific volume $V$, by defining the
+adjoint source to be
+\begin{equation}
+q^\dag(r,E) = 
+\begin{cases} \frac{\sigma_r(r,E)}{ \int_E \sigma_r(r,E) dE} &  r\in V \\
+              0 &  r \notin V \\
+\end{cases} \, .
+\end{equation}
+With the adjoint source defined for the a particular desired response, the
+adjoint flux is computed and the CADIS method is used as described above.
+
+\subsection{Pseudo-Cooper's Method}
+In contrast to the adjoint-based methods described above, Cooper and Larsen have
+suggested a different approach to weight window generation based solely on the
+(inverted) forward flux \cite{cooper2001aww}.  Their method as described in the
+original paper is actually quite complicated. Nonetheless, the basic idea is
+clear: ``[I]f the center of the weight window in each cell is chosen to be
+proportional to the density of physical particles in the cell, then the density
+of Monte Carlo particles throughout the system is approximately constant''
+\cite{cooper2001aww}.  
+
+In fact, this might have been surmised above when we went from $m = constant$ to
+$\bar{w}v=\psi$; instead of trying to define an adjoint source, we can simply
+enforce the weight window centers to coincide with an approximate forward flux. 
+ Noting that we previously had set $w = R/\phi^\dag$ and we now want $w \propto
+\phi$, we conclude that within the adjoint-based framework above, we are now
+simply setting $\phi^\dag = 1/\phi$.
+
+Instead of implementing Cooper's method exactly (which involves Monte Carlo
+updates of the weight window parameters via use of Eddington factors and the
+quasi-diffusion method), we simply use the the inverse forward scalar flux
+$1/\phi$ in place of the adjoint scalar flux $\phi^\dag$ in the weight window
+framework described above, \ie a pseudo-Cooper's method.  Consequently, the
+lower weight window bounds become
+\begin{equation}
+ w_L(r,E) = \frac{2R\phi(r,E)}{1+c_U} \, ,
+\end{equation}
+with corresponding particle weights of
+\begin{equation}
+ w(r,E) = R\phi(r,E) \, .
+\end{equation}
+
+One might notice an apparent contradiction: both FW-CADIS and Cooper's method
+aim to achieve a constant Monte Carlo particle population (and as will be seen
+below, Cooper's method fairs better for the sample problems investigated). 
+However, E. Larsen has stated that no zero-variance method exists (at least
+currently) for global $\psi$ estimates \cite{larsen2007hmc}.  Hence, though
+FW-CADIS appears to be using a sound adjoint-based formalism, such a formalism
+was developed for a source-detector problem, where the response $R$ was of
+interest---not the flux itself.  Consequently, neither FW-CADIS nor Cooper's
+method actually intend (in some limit) to provide a globally zero variance flux;
+they in some sense are more heuristic.  While for the simple problems below, the
+pseudo-Cooper approach wins, work at ORNL suggests Cooper's method does not do
+as well as FW-CADIS for real-world problems \cite{wagner2009fwc}.
+
+\section{Results}
+\label{sec:results}
+In this section, we aim to apply the methods of Section \ref{sec:tech} to some
+simple slab problems.  For this purpose, a one-dimensional multi-group Monte
+Carlo code was written.  The code treats a finite slab as a number of
+user-specified coarse meshes within which material properties are constant.  The
+flux is estimated in each coarse mesh via both the track length and collision
+density estimators.  Only isotropic scattering in the lab system is treated.
+
+Each of the variance reduction schemes described above is implemented in
+addition to implicit capture.  For the forward and adjoint scalar flux
+estimates, a one-dimensional discrete ordinates code was written.  The spatial
+meshing stems from the slab coarse meshes, and the user additionally specifies
+the number of fine meshes within each coarse mesh.  Again, materials are
+constant within a coarse mesh.  Note, the code handles only vacuum boundaries,
+downscattering, and isotropic scattering in the lab system.  The Gauss-Legendre
+quadrature scheme for 2, 4, 8, 16, and 32 ordinates is currently implemented
+following Lewis and Miller \cite{lewis1993cmn}.  However, for all the primary
+problems, an order of 32 was used (with 10 fine meshes per region).  The final
+problem revisits a source-detector problem and the effect of $S_N$ order on
+speed-up.
+
+\subsection{1-Group Source-Detector}
+
+The first problem is a simple monoenergetic source-detector problem.  The slab
+is 10 cm wide and divided into 20 equally sized coarse meshes.  A uniform
+isotropic source is located in the first coarse mesh, and the region of interest
+is the last coarse mesh.  The response of interest is simply the flux.  The
+material properties are: $\Sigma_T = 1.5$, $\Sigma_a = 0.5$, and $\Sigma_s =
+1.0$, all in 1/cm.  Figure \ref{fig:diagram_of_slab} provides a schematic where
+$S$ denotes the source, and $D_f$ corresponds the ``far detector'' of interest
+here.
+
+\begin{figure}[h] 
+   \centering
+   %\includegraphics[keepaspectratio, width = 3.0 in]{diagram_of_slab}
+   \caption{Basic schematic of one-dimensional slab.}
+   \label{fig:diagram_of_slab}
+\end{figure}
+
+This problem was solved using analog Monte Carlo, implicit capture, geometry
+splitting, CADIS, and pseudo-Cooper's method.  Table \ref{tbl:1gsd} provides for
+each method the figure-of-merit (FOM) for the track length flux estimate, the
+speed-up relative to analog, and the extrapolated time to 1\% relative error. 
+To compute the extrapolated time, it is assumed that $RE \propto \sqrt{N}
+\propto \sqrt{t}$, which is generally valid assuming sufficient sampling.  An
+$S_N$ order of 32 was used, with ten fine meshes per coarse mesh.
+
+\begin{table*}[th]
+ \caption{Comparison of methods for one-dimensional, one group source-detector
+problem.}
+ \begin{center} 
+ {\small
+ \begin{tabular*}{0.90\textwidth}{@{\extracolsep{\fill}} rcccccc } 
+  \toprule 
+   \emph{ METHOD}  &  $\phi$ [n/cm$^2$]  &  \emph{ RE} & \emph{ FOM} &  \emph{ Speed-Up}
+& \emph{ T [s]} & \emph{ T$_{\mathrm{1\% RE}}$ [hr]} \\
+  \midrule 
+   analog      & 3.07E-06 & 0.3612 & 3.48E-03 & 1.00E+00 & 2.20E+03 & 797.62 \\
+   imp. capt.  & 3.12E-06 & 0.1141 & 1.75E-02 & 5.03E+00 & 4.39E+03 & 158.59 \\
+   geom. sp.   & 3.25E-06 & 0.0036 & 1.11E+01 & 3.18E+03 & 6.91E+03 & 0.25 \\
+   CADIS       & 3.25E-06 & 0.0036 & 1.10E+01 & 3.16E+03 & 6.96E+03 & 0.25 \\ 
+   Cooper      & 3.24E-06 & 0.0033 & 1.12E+01 & 3.21E+03 & 8.40E+03 & 0.25 \\
+  \bottomrule 
+ \end{tabular*} 
+ }
+ \end{center} 
+ \label{tbl:1gsd}  
+\end{table*}
+
+From Table \ref{tbl:1gsd}, it is apparent that analog Monte Carlo for this
+problem is impractical if we require 1\% RE---nearly 800 hours would be needed. 
+Implicit capture is seen to reduce this by roughly a factor of five.  However,
+geometry splitting, CADIS, and pseudo-Cooper give far better speed ups of
+roughly 3000 (and reduce the time to 1\% RE to less than one half-hour).  While
+pseudo-Cooper gives the best FOM, since this is such a simple problem, it is
+difficult to say which of the three automated methods is best, since their FOM's
+are all very similar.
+
+
+\subsection{1-Group, Multiple Detectors}
+
+For the same problem configuration depicted in Figure \ref{tbl:1gsd}, we are now
+interested in three tallies: a near detector $D_n$, a middle detector $D_m$, and
+the (same) far detector $D_f$.  Table \ref{tbl:1g3d} provides the flux (track
+length), relative error, FOM, speed up, and time to 1\% relative error of each
+method for each detector.
+
+For the near detector, the FOM's of all the methods are between 20 and 40,
+except for the CADIS with an adjoint in the near detector only and CADIS with an
+adjoint source uniformly distributed between the three detectors.  This makes
+sense: little speedup is needed or expected from the methods that place an
+adjoint far past the detector.  The two CADIS example have a large adjoint at
+the detector, and so its response---the flux---is optimized.
+
+For the middle and far detectors, however, the analog and implicit capture cases
+do quite poorly.   Geometry splitting (with the adjoint only at the far
+detector; adjoint placed in near detectors led to excessive splitting) performs
+pretty well.  CADIS is seen to fail at those detectors if the adjoint is
+included at previous detectors, \eg the far detector fails if the adjoint is
+placed at the middle detector.  The CADIS case in which an adjoint source is
+placed at all three detectors is a powerful example of why simply spreading an
+adjoint source uniformly across equally important responses is not efficient in
+practice.  The reason is likely as follows.  The weight windows do a good job of
+getting many particles to the first detector.  Thereafter, particles encounter a
+steep drop in the importance of regions and likely suffer significant
+rouletting.  When they get closer to the second detector, the importance rises
+sharply again, and hence the particles are split, and so on.  The process has an
+inherent inefficiency; even if the adjoint information is essentially perfect
+for those later detectors, all the splitting and rouletting needed to
+approximate its biasing effect is highly inefficient.  
+
+On the other hand, FW-CADIS does a nice job of spreading the variance.  While
+the individual CADIS cases do better than the FW-CADIS case, the FW-CADIS
+``optimizes'' all three responses better than any single CADIS case.  For
+example, the ratios of FW-CADIS speed-ups to the far CADIS case speed-ups are
+1.34, 1.15, and 0.89, respectively.  While the total computation time in this
+case is highly dominated by the far detector, and so the benefit of FW-CADIS to
+the nearer detectors is of little consequence, one can imagine a
+three-dimensional problem for which a single FW-CADIS could outperform
+individual CADIS runs.  Pseudo-Cooper slightly outperforms the far CADIS case,
+but the ratio of its speed-ups to the far CADIS speed-ups for the nearer
+detectors is below unity; in effect, pseudo-Cooper spends more time on particles
+in the low-flux region.
+
+
+\begin{table*}[!]
+ \caption{Comparison of methods for one-dimensional, one group source-detector
+problem.}
+ \begin{center} 
+ \small{
+ \begin{tabular*}{0.90\textwidth}{@{\extracolsep{\fill}} rccccc } 
+  \toprule 
+   \emph{ METHOD}  &  $\phi$ [n/cm$^2$]  &  \emph{ RE} & \emph{ FOM} &  \emph{ Speed-Up}
+& \emph{ T$_{\mathrm{1\% RE}}$ [s]} \\
+  \midrule 
+   \emph{ near}   &  & & & &  \\
+  \midrule
+   analog      & 1.71E-02 & 4.34E-03 & 2.41E+01 & 1.00E+00 & 4.14E+02 \\
+   imp. capt.  & 1.70E-02 & 2.40E-03 & 3.96E+01 & 1.64E+00 & 2.53E+02 \\
+   geom. sp.   & 1.69E-02 & 1.32E-02 & 3.14E+01 & 1.30E+00 & 3.18E+02 \\
+   CADIS (n)   & 1.69E-02 & 1.26E-02 & 7.21E+01 & 2.99E+00 & 1.39E+02 \\
+   CADIS (m)   & 1.69E-02 & 1.31E-02 & 4.17E+01 & 1.73E+00 & 2.40E+02 \\
+   CADIS (f)   & 1.69E-02 & 2.10E-03 & 3.34E+01 & 1.38E+00 & 3.00E+02 \\
+   CADIS (3)   & 1.69E-02 & 2.00E-03 & 7.31E+01 & 3.03E+00 & 1.37E+02 \\
+   FW-CADIS    & 1.69E-02 & 4.09E-03 & 4.48E+01 & 1.86E+00 & 2.23E+02 \\
+   Cooper      & 1.70E-02 & 2.00E-03 & 3.00E+01 & 1.24E+00 & 3.33E+02 \\
+  \midrule 
+   \emph{ middle}   &  & & & & \\
+  \midrule
+   analog      & 1.71E-04 & 4.37E-02 & 2.38E-01 & 1.00E+00 & 4.21E+04 \\
+   imp. capt.  & 1.79E-04 & 1.86E-02 & 6.59E-01 & 2.77E+00 & 1.52E+04 \\
+   geom. sp.   & 1.77E-04 & 1.93E-02 & 1.47E+01 & 6.16E+01 & 6.82E+02 \\
+   CADIS (n)   & 1.59E-04 & 3.32E-01 & 1.04E-01 & 4.37E-01 & 9.62E+04 \\
+   CADIS (m)   & 1.75E-04 & 1.85E-02 & 2.08E+01 & 8.75E+01 & 4.80E+02 \\
+   CADIS (f)   & 1.79E-04 & 3.00E-03 & 1.58E+01 & 6.64E+01 & 6.33E+02 \\
+   CADIS (3)   & 1.77E-04 & 1.24E-02 & 1.88E+00 & 7.90E+00 & 5.32E+03 \\
+   FW-CADIS    & 1.78E-04 & 6.43E-03 & 1.81E+01 & 7.61E+01 & 5.53E+02 \\
+   Cooper      & 1.78E-04 & 2.70E-03 & 1.58E+01 & 6.64E+01 & 6.34E+02 \\
+  \midrule 
+   \emph{ far}   &  & & & & \\
+  \midrule
+   analog      & 3.07E-06 & 3.61E-01 & 3.48E-03 & 1.00E+00 & 2.87E+06 \\
+   imp. capt.  & 3.12E-06 & 1.14E-01 & 1.75E-02 & 5.03E+00 & 5.71E+05 \\
+   geom. sp.   & 3.25E-06 & 3.60E-03 & 1.11E+01 & 3.18E+03 & 9.02E+02 \\
+   CADIS (n)   &      n/a &      n/a &      n/a &      n/a &  n/a     \\
+   CADIS (m)   & 3.98E-06 & 2.44E-01 & 1.20E-01 & 3.45E+01 & 8.31E+04 \\
+   CADIS (f)   & 3.25E-06 & 3.61E-03 & 1.10E+01 & 3.16E+03 & 9.09E+02 \\
+   CADIS (3)   & 3.59E-06 & 9.08E-02 & 3.53E-02 & 1.01E+01 & 2.83E+05 \\
+   FW-CADIS    & 3.25E-06 & 8.74E-03 & 9.79E+00 & 2.81E+03 & 1.02E+03 \\
+   Cooper      & 3.24E-06 & 3.30E-03 & 1.12E+01 & 3.21E+03 & 8.96E+02 \\
+  \bottomrule 
+ \end{tabular*} 
+ }
+ \end{center} 
+ \label{tbl:1g3d}  
+\end{table*}
+
+
+\subsection{1-Group, Globally Uniform Statistics}
+
+It may sometimes be the case that low statistical uncertainty is required
+everywhere in a problem.  Here, we investigate the same slab but employ methods
+to yield  uniform statistical uncertainties throughout.  Specifically, the
+FW-CADIS and pseudo-Cooper method were used.  For the former, a uniform adjoint
+source across the slab was used.  The relative statistical error in each coarse
+mesh is shown in Figure \ref{fig:1gstat} for FW-CADIS, pseudo-Cooper, and CADIS
+with an adjoint source in the far detector.  Additionally, Figure
+\ref{fig:1gmcps} shows the Monte Carlo particle density (using a collision
+estimator) for each method.  
+
+From Figure \ref{fig:1gstat}, it is apparent that pseudo-Cooper does the best to
+minimize the uncertainty in deeper regions.  CADIS yields only slightly higher
+uncertainties.  Surprisingly, FW-CADIS does worse than the others.  This is
+further exemplified by the steadily decreasing Monte Carlo particle density for
+FW-CADIS in \ref{fig:1gmcps}, whereas pseudo-Cooper maintains a relatively high
+constant density and CADIS a slightly lower constant density.
+
+\begin{figure}[h] 
+   \centering
+   %\includegraphics[keepaspectratio, width = 2.5 in]{1gstat}
+   \caption{Relative statistical error throughout slab.}
+   \label{fig:1gstat}
+\end{figure}
+
+\begin{figure}[h] 
+   \centering
+  % \includegraphics[keepaspectratio, width = 2.5 in]{1gmcps}
+   \caption{Monte Carlo particle density throughout slab.}
+   \label{fig:1gmcps}
+\end{figure}
+
+
+\subsection{3-Group Source-Detector}
+
+This problem is a three group variation of the source detector problem. Now, the
+source is uniform, isotropic, and in the first (fast) group.  The detector of
+interest is the third group (thermal) flux in the far detector.  The slab is
+again homogeneous with the properties listed in Table \ref{tbl:3groupdata}.
+
+\begin{table}[th]
+ \caption{Three group macroscopic cross-sections (in 1/cm).}
+ \begin{center} 
+ {\small
+ \begin{tabular*}{0.40\textwidth}{@{\extracolsep{\fill}} cccccc} 
+  \toprule 
+    & $\Sigma_t$ & $\Sigma_a$ & $\Sigma_{sg\to1}$ & $\Sigma_{sg\to2}$ &
+$\Sigma_{sg\to3}$  \\
+  \midrule 
+   group 1 & 1.0 & 0.2 & 0.3 & 0.2 & 0.2 \\ 
+   group 2 & 1.5 & 0.9 & 0.0 & 0.4 & 0.2 \\ 
+   group 3 & 2.0 & 0.5 & 0.0 & 0.0 & 1.5 \\ 
+  \bottomrule 
+ \end{tabular*}
+ } 
+ \end{center} 
+ \label{tbl:3groupdata}  
+\end{table}
+
+From Table \ref{tbl:3gsd}, first note that the analog time to 1\%RE is
+significantly less than the one group problem.  This is because the detector is
+thermal, and neutrons tend to moderate as they move through the slab. 
+Furthermore, for this problem implicit capture actually underperforms the analog
+case.  Both geometry splitting and CADIS provide speed-ups of nearly 500,
+whereas pseudo-Cooper achieves just half of that.  This is because pseudo-Cooper
+propagates neutrons of \emph{all} groups through the domain, and hence wastes
+some effort transporting particles that do not contribute to the detector.
+
+\begin{table*}[th]
+ \caption{Comparison of methods for three group source-detector problem.}
+ \begin{center} 
+{\small
+ \begin{tabular*}{0.80\textwidth}{@{\extracolsep{\fill}} rcccccc } 
+  \toprule 
+   \emph{ METHOD}  &  $\phi$ [n/cm$^2$]  &  \emph{ RE} & \emph{ FOM} &  \emph{ Speed-Up}
+& \emph{ T [s]} & \emph{ T$_{\mathrm{1\% RE}}$ [hr]} \\
+  \midrule 
+   analog      & 1.25E-05 & 0.0695 & 1.66E-02 & 1.00E+00 & 1.25E+04 & 167.55 \\
+   imp. capt.  & 1.31E-05 & 0.1248 & 1.09E-02 & 6.58E-01 & 5.89E+03 & 254.62 \\
+   geom. sp.   & 1.21E-05 & 0.0091 & 7.70E+00 & 4.64E+02 & 1.58E+03 &  0.36 \\
+   CADIS       & 1.22E-05 & 0.0090 & 7.87E+00 & 4.75E+02 & 1.58E+03 & 0.35 \\ 
+   Cooper      & 1.21E-05 & 0.0064 & 4.37E+00 & 2.64E+02 & 5.57E+03 & 0.63 \\
+  \bottomrule 
+ \end{tabular*} 
+}
+ \end{center} 
+ \label{tbl:3gsd}  
+\end{table*}
+
+
+
+\subsection{3-Group, Globally Uniform Statistics}
+
+Here, the same global problem as above is performed using three groups.  For
+FW-CADIS, a uniform adjoint source in group 3 is used, and for CADIS, a group 3
+far detector is used.  Figure \ref{fig:3gstat} shows the relative uncertainties,
+and Figure \ref{fig:3gmcps} shows the Monte Carlo particle density.  
+
+Evidently, pseudo-Cooper yields the lowest uncertainties for most of the slab. 
+FW-CADIS gives a steadily increasing uncertainty, as in the one-group problem. 
+The CADIS uncertainties essentially follow what is expected for a thermal
+detector: the fast group uncertainty rises in uncertainty, while the thermal
+group uncertainty falls.  
+
+From Figure \ref{fig:3gmcps}, pseudo-Cooper gives by far the most uniform
+densities (across all groups).  FW-CADIS provides a relatively flat thermal
+distribution, and CADIS yields a significantly growing thermal distribution.
+
+\begin{figure}[!] 
+   \centering
+   %\includegraphics[keepaspectratio, width = 2.5 in]{3gstat}
+   \caption{Relative statistical error throughout slab. Solid is group 1, dashed
+group 2, and dash-dot group 3.}
+   \label{fig:3gstat}
+\end{figure}
+
+\begin{figure}[!] 
+   \centering
+   %\includegraphics[keepaspectratio, width = 2.5 in]{3gmcps}
+   \caption{Monte Carlo particle density throughout slab.  Solid is group 1,
+dashed group 2, and dash-dot group 3.}
+   \label{fig:3gmcps}
+\end{figure}
+
+\subsection{Effect of Adjoint Resolution}
+
+A study was performed after the others to see what impact the selection of fine
+meshing and $S_N$ order has on the variance reduction.  Only the one-group
+source-detector problem was investigated.  Fine mesh counts of 1, 2, 5, 10, and
+20 per coarse mesh were studied for each of $S_N$ orders 2, 4, 8, 16, and 32. 
+Table \ref{tbl:snmeshstudy} provides the FOM for the far detector using the
+standard CADIS method.  10$^5$ particles were used in each simulation.
+
+For all fine mesh counts, $S_2$ gives substantially worse results than higher
+orders.  For higher orders, few fine meshes (\ie large $\Delta x$) give rise to
+negative angular fluxes, denoted by $*$; for $S_{32}$, a single fine mesh
+actually gives rise to a negative adjoint scalar flux, denoted by $\varnothing$.
+ The fluxes appear largely to reduce the effectiveness of the variance
+reduction, as is expected.  However, the best FOM comes from $S_8$ with just a
+single mesh.  As implemented, there is a significant trade of between a high
+resolution and the efficacy of the weight windows.  More fine meshes leads to a
+slight increase in search time for the weight checking, though this is
+relatively insignificant in one dimension and even for the more general case of
+a Cartesian grid.  
+
+\begin{table}[th]
+ \caption{Far detector FOM for several fine meshes and $S_N$ order}
+ \begin{center} 
+ {\small
+ \begin{tabular*}{0.45\textwidth}{@{\extracolsep{\fill}} cccccc } 
+  \toprule 
+   \emph{ $S_N$ / mesh}  &  1  &  2  &  5  &  10  &  20  \\
+  \midrule 
+   2  & 8.00 & 8.62 & 8.09 & 7.89 & 7.54 \\
+   4  & 12.79 & 12.34 & 11.00 & 10.82 & 10.34 \\
+   8  & 12.80$^{*}$ & 12.10 & 11.38 & 10.72 & 10.40 \\
+   16 & 8.00$^{*}$ & 12.65 & 11.62 & 10.53 & 10.81 \\ 
+   32 & 2.23$^{\varnothing}$ & 12.37$^{*}$ & 10.86 & 10.72 & 10.43 \\
+  \bottomrule 
+ \end{tabular*} 
+ }
+ \end{center} 
+ \label{tbl:snmeshstudy}  
+\end{table}
+
+
+
+\section{Conclusion}
+\label{sec:conc}
+
+This paper has reviewed, implemented, and assessed several automated variance
+reduction schemes for shielding problems.  While the problems studied are
+extremely simple, they helped demonstrate the value in using an approximate
+adjoint or forward flux in biasing particle sources and transport.  
+
+Overall, geometry splitting, CADIS, and pseudo-Cooper performed very well in
+achieving reasonable statistics in deep problem regions.  More difficult
+problems in a multidimensional space would likely be required to see more
+significant differences between the methods.   FW-CADIS and pseudo-Cooper were
+also compared for a global reduction in variance.  For both global problems
+considered, pseudo-Cooper far outperformed FW-CADIS.   However, as noted above,
+the efficacy of pseudo-Cooper may degrade for more complicated problems, where
+FW-CADIS might become more effective.
+
+One key approximation used in all the methods was to integrate away the angular
+dependence of the weight windows and importances.  This is done largely to
+eliminate the very large amount of information associated with angle.  Previous
+work at LANL led to the AVATAR method which assumes a symmetric angular flux
+about the current vector, which drastically reduces the information needed
+\cite{vanriper1997ava}.  Very recent efforts at ORNL have begun included the
+AVATAR method with the CADIS method for beam port problems, where spatial weight
+windows are largely ineffective \cite{peplow2010hmc}.  
+
+An interesting project would be to explore other ways of keeping angular
+information while using less than a full angular flux for weight windows.  One
+way may be to go beyond the essentially $P_1$-like nature of the AVATAR method
+and to use higher order moments.  Of course, any useful angular study would
+probably require a move to two- or even three-dimensional problems.  
+
+% \section*{References}
+% \bibliographystyle{unsrt}
+% \bibliography{/home/robertsj/lit/biblio}
+% 
+% 
+% \end{document}

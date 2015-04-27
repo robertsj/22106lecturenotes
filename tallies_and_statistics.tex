@@ -1,0 +1,300 @@
+\chapter{Tallies and Statistics}
+
+Law of Large Numbers and the Central Limit Theorem \\
+Computing \textcolor{mitred}{tallies} and understanding their uncertainty \\
+Important tallies in practice (e.g. the flux)
+
+\section*{Statistics}
+
+We need:
+\begin{itemize}
+ \item fluxes
+ \item currents
+ \item reaction rates
+\end{itemize}
+
+Usually, a \textcolor{mitred}{mean} for an observable $R(x)$ is desired,
+where $x$ is a RV drawn from $f(x)$, and
+\begin{equation*}
+ \overbrace{\mu \equiv \int R(x) f(x) dx}^{\text{mean}} \quad\quad \text{and} 
+   \quad\quad 
+ \overbrace{\sigma^2 \equiv \int (R-\mu)^2(x) f(x) dx}^{\text{variance}} \, .
+\end{equation*}
+With Monte Carlo, the mean and variance are approximated with 
+their \emph{sample} values, or
+\begin{equation*}
+ \underbrace{\mu \approx \bar{R} = 
+   \frac{1}{N} \sum^N_{i=1} R(x_i)}_{\text{sample mean}} 
+   \quad\quad \text{and} \quad\quad 
+ \underbrace{\sigma^2 \approx \frac{N}{N-1} 
+   \left ( \bar{R^2} - \bar{R}^2 \right ) }_{\text{sample variance}} \, .
+\end{equation*}
+
+\textbf{When Simulating Neutrons...}
+ \begin{itemize}
+  \item $x_i$ is a \textcolor{mitred}{random walk} or \textcolor{mitred}{history}
+  \item $R(x_i)$ is the contribution from history $i$
+  \item $R$ is often called a \textcolor{mitred}{tally} or \textcolor{mitred}{score}
+  \item keep both the score $R(x_i)$ and its square $R^2(x_i)$
+  \item compute \textcolor{mitred}{sample mean} 
+        and \textcolor{mitred}{sample variance} after all histories
+ \end{itemize}
+ 
+\noindent\textbf{Why it Works -- Law of Large Numbers}
+
+% stated in 1500's by Geralamo Cardano; proved in 1713 by Jacob Bernoulli
+If $f(x)$ has a mean $\mu$ and a bounded variance $\sigma^2$, then
+
+\begin{center}
+\boxed{
+    \lim_{N\to \infty} \bar{R} = \mu
+}
+\end{center}
+ 
+ 
+The law has two forms:
+\textcolor{mitred}{weak} and \textcolor{mitred}{strong}: 
+\begin{itemize}
+ \item weak says $|\bar{R} - \mu|$ gets small, with occasional large values
+ \item strong says those large values are  finite in number
+ \item either is fine: we get \textcolor{mitred}{means} in the limit
+\end{itemize}
+
+
+\noindent\textbf{Why it Works -- Central Limit Theorem}
+
+If $R_{1}, R_{2}, \dots, R_{N}$ is a random sample from a 
+population with mean $\mu$ and variance $\sigma^{2}$, then \\
+
+\begin{center}
+\boxed{
+    \lim_{N\to \infty} 
+      P \left [a \leq \frac{\bar{R}-\mu}{\sigma(R)/\sqrt{N}} \leq b \right]
+      = \frac{1}{2\pi} \int^{b}_{a} e^{-t^2/2}
+}
+\end{center}
+\textbf{Key point}: $\bar{R}$ is a Gaussian RV with mean $\mu$ and 
+variance $\sigma^2(R)/N$
+
+
+{Confidence Intervals}
+  Given $\bar{R}$, how close are we to $\mu$?  How sure are we?
+ 
+  Define a \textcolor{mitred}{confidence interval} that includes
+  the mean with some confidence level.  Common intervals:
+  \begin{itemize}
+       \item $\bar{R} \in \mu \pm 1 \sigma \approx$   $0.68$
+       \item $\bar{R} \in \mu \pm 2 \sigma \approx$   $0.95$
+       \item $\bar{R} \in \mu \pm 3 \sigma \approx$   $0.99$
+  \end{itemize}
+ 
+  Where do these come from, and more importantly, 
+  \textcolor{mitred}{when are they valid}?
+  
+{Validity}
+  What have we assumed?
+  \begin{itemize}
+     \item a large sample size
+     \item $R_{1}, R_{2}, \dots, R_{N}$ are \emph{normally} distributed
+  \end{itemize}
+ 
+  The theory of confidence intervals comes from Student's t-distribution:
+  \begin{itemize}
+    \item Developed by 1908 by William Gosset at Guinness
+    \item Guinness considered the discovery to be proprietary
+    \item Gosset published it as Student
+  \end{itemize}
+  
+{Student's t-Distribution}
+ Let $R_{1}, R_{2}, \dots, R_{N}$ be a small sample from a 
+ normal population with mean $\mu$. Then 
+ \begin{equation*}
+   \frac{\bar{R}-\mu}{s / \sqrt{N}}
+ \end{equation*}
+ follows Student's t-distribution with $N-1$ degrees of freedom, 
+ denoted $t_{N-1}$.  \textcolor{mitred}{When $N$ is large, this quantity 
+ becomes very close to normal.}
+ 
+
+{Batch Statistics}
+   Generally:
+   \begin{itemize}
+      
+      \item \textcolor{blue}{$N$ is always large to ensure a valid sample mean}
+      
+      \item \textcolor{mitred}{independent realizations 
+            \emph{do not follow normal distributions}}
+   \end{itemize}
+   What to do?
+   
+   
+   Use batches:
+   \begin{itemize}
+     \item CLT says a ``batch'' of independent realizations yields a normally 
+           distributed variable
+     
+     \item Several ``batches'' yield a set of independent, normally 
+           distributed realizations for use in confidence analysis
+     
+     \item $\sigma$ calculated from batches is an estimate of 
+           the standard deviation for the \emph{distribution of the mean} 
+   \end{itemize}
+  
+{Why Do We Care?}
+A set of histories (a single batch) gives only $\bar{R}$ and $s$
+ 
+For a confidence interval, batches are needed:
+\begin{itemize}
+  \item batch size is large enough for the CLT to apply
+  \item number of batches (at least 5-10) provides number of DOF's
+        for Student t-distribution; if $N$ is large, the distribution 
+        becomes approximately normal
+\end{itemize}
+ 
+\textcolor{mitred}{You do \emph{not} need to perform batch statistics
+in your homework!  It's just important to understand.}
+   
+\section*{Tallies}
+
+\textbf{Net Current  $J$}
+   $J$ represents a net flow of particles through a surface:
+   \begin{itemize}
+       \item Tally the weight of each particle crossing the surface
+       \item Divide by total \textcolor{mitred}{starting weight} and 
+             surface area
+   \end{itemize}
+   \begin{equation*}
+        J = \frac{1}{A}\frac{1}{W} \sum_{\text{all n's crossing}} wgt_{j}
+   \end{equation*}
+
+   You can easily apply filters for direction (partial currents) or energy.
+   
+   
+\textbf{Flux $\phi$ via Pathlength Estimator}
+   The flux is $\phi = vn$, where $v$ is velocity and $n$ is particle 
+   density.  By units alone 
+   \begin{center}
+   \boxed{
+    \phi = \text{distance traveled per unit volume per second}
+   }
+   \end{center}
+ 
+  The \textcolor{mitred}{pathlength estimator}:
+   \begin{itemize}
+      \item Tally the particle weight times the distance it travels in a cell
+      \item Divide by cell volume and total starting weight
+   \end{itemize}
+   \begin{equation*}
+        \phi = \frac{1}{V}\frac{1}{W} \sum_{\text{all n's in cell}} d_{j}wgt_{j}
+   \end{equation*}   
+   
+\textbf{Reaction Rates}
+  The rate of reaction $x$ is 
+  $\int{ \underbrace{\Sigma_{x}}_{\text{cm}^{-1}} 
+         \overbrace{\phi(\omega)}^{\frac{1}{\text{cm}^{-2}\text{-s}}} d \omega}$.
+ 
+  Two ways to compute:
+  \begin{enumerate}
+    \item Sum weight of all particles when collision $x$ is sampled
+    \item Sum the pathlength times 
+          the weight times the cross-section of interest for each path in the cell
+  \end{enumerate}
+  Divide by total starting weight (and volume depending on units of interest)
+ 
+%-----------------------------------------------------------------------------%
+\textbf{Flux $\phi$ via Collision Estimator}
+  Using the collision approach to evaluate reaction rates, we can 
+  define \textcolor{mitred}{collision estimator}:
+  \begin{itemize}
+      \item For each collision in the volume of interest, sum the 
+             neutron weight divided by the total macroscopic cross-section
+      \item Divide by the cell volume and the total starting weight
+  \end{itemize}
+   \begin{equation*}
+        \phi = \frac{1}{V}\frac{1}{W} 
+          \sum_{\text{all collisions in cell}} \frac{wgt_{j}}{\Sigma_{t}}
+   \end{equation*}   
+   
+\textbf{Flux at a point}
+   Sometimes, we have large problems with small detectors, so we ``force''
+   detection via \textcolor{mitred}{next event estimator}:
+   \begin{equation*}
+        \delta \phi = \sum_{\text{all collisions}} wgt_{j} 
+        \frac{P(\Omega)} {R^{2}} e^{-\int_{0}^{R}{\Sigma_{t}(r,E)dr}}
+   \end{equation*}
+   where
+   \begin{equation*}
+     P(\Omega) = \text{probability particle scatters and points to detector}
+   \end{equation*}
+   and 
+   \begin{equation*}
+        e^{-\int_{0}^{R}{\Sigma_{t}(r,E)dr}} = \text{probability particle then gets there}
+   \end{equation*}
+ 
+%-----------------------------------------------------------------------------%
+\textbf{History Based Tally}
+  \begin{itemize}
+   \item Before each history, set $S = 0$, where $S$ is some temporary tally
+   \item Run the history, and increment $S$ via new pathlengths, number of 
+         crossings, etc.
+   \item When the history is complete, update the global counters
+   \begin {equation*}
+     S_{1} = S_{1} + S \quad\quad \text{and} 
+       \quad\quad S_{2} = S_{2} + S^{2}
+   \end {equation*}
+   \item After $N$ histories, compute sample mean and sample variance
+   \begin {equation*}
+     \bar{R} = \frac{S_{1}}{N} \quad\quad \text{and}  
+     \quad\quad 
+     s = \sqrt{\frac{1}{N-1}\left(\frac{S_{2}}{N}-\bar{R}^{2}\right)}
+   \end {equation*}
+  \end{itemize}
+  
+  
+\textbf{Batch Based Tally}
+  \begin{itemize}
+   \item For a given batch composed of many histories, compute $S_{\text{batch}}$
+   \item When the batch is complete, update the global counters
+   \begin {equation*}
+     S_{1} = S_{1} + S_{\text{batch}} \quad\quad \text{and} 
+       \quad\quad S_{2} = S_{2} + S_{\text{batch}}^{2}
+   \end {equation*}
+   \item After $N$ histories, compute sample mean and sample variance
+   \begin {equation*}
+     \bar{R} = \frac{S_{1}}{N} \quad\quad \text{and}  
+     \quad\quad 
+     s = \sqrt{\frac{1}{N-1}\left(\frac{S_{2}}{N}-\bar{R}^{2}\right)}
+   \end {equation*} 
+    \item Now you are all set to provide confidence intervals!
+  \end{itemize}
+ 
+%-----------------------------------------------------------------------------%
+\textbf{RE and FOM}
+  \begin{itemize}
+    \item Results are often presented as sample mean and relative error
+      \begin{equation*}
+        RE = \frac{\sigma_{\bar{R}}}{\bar{R}}
+       \end{equation*}
+    \item When dealing with variance reduction methods, codes will 
+          also often report a figure-of-merit
+    \begin{equation*}
+      FOM = \frac{1}{RE^{2}\cdot Time}
+    \end{equation*}
+  \end{itemize}
+ 
+%-----------------------------------------------------------------------------%
+%\section{Recap}
+%\subsection{blah}
+\textbf{Recap}
+  \begin{itemize}
+    \item Be careful when using confidence intervals
+    \item Multiple ways to compute things like $\phi$; choose wisely
+    \item Monte Carlo results should always be 
+          accompanied by a measure of dispersion of the results!  
+  \end{itemize}
+ 
+\textbf{References}
+ \begin{enumerate}
+  \item F. Brown's notes
+  \item Dunn and Shultis \emph{Exploring Monte Carlo Methods}
+ \end{enumerate}

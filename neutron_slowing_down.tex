@@ -1,0 +1,302 @@
+\chapter{Neutron Slowing Down}
+\label{lec:neutron_slowing_down}
+
+In the last lecture, we reviewed neutron scattering kinematics in order 
+to define the energy transfer probability $P(E\to E')$ and the 
+energy-dependence of differential scattering 
+cross sections. In this 
+lecture, we'll use these cross sections to determine the energy dependence 
+of the neutron flux as neutrons ``slow down'' by consecutive collisions.
+We will limit ourselves to homogeneous media (for now) and use 
+both a direct numerical approach and simpler, classical schemes.
+
+
+\section*{Slowing Down in a Homogenous System}
+
+Suppose that the medium of interest is infinite in spatial extent, i.e.,
+it has no boundaries, and it is homogeneous in makeup.  Then, all 
+spatial dependence vanishes, leading to
+\begin{equation}
+       \Sigma_t(E) \psi (E, \bm{\hat{\Omega}})
+            = Q(E, \bm{\hat{\Omega}}) \, ,
+\end{equation}
+and integration over angle yields
+\begin{equation}
+    \begin{split}
+      & \Sigma_t(E)  \phi ( E) \\
+        &= \int_{4\pi} d\Omega \int_{4\pi} d\Omega' \int^{\infty}_{0} \Sigma_s(E',\bm{\hat{\Omega}}' \to  E,\bm{\hat{\Omega}}) \psi(E', \bm{\hat{\Omega}'}) dE' \\
+        &+ \frac{\chi(E)}{k} \int^{\infty}_{0} \nu(E')\Sigma_f(E') \phi(E') dE' \\
+        &+ S_{\text{ext}}( E) \, .
+    \end{split}
+    \label{eq:infmedintegrated}
+\end{equation}
+    
+If scattering is assumed to be isotropic in the LAB system, then 
+$\Sigma_s(E',\bm{\hat{\Omega}}' \to  E,\bm{\hat{\Omega}}) = \Sigma_s(E'\to E)/4\pi$ and
+\begin{equation}
+\begin{split}
+      \Sigma_t(E)  \phi (E) &= \int^{\infty}_{0} \Sigma_s( E' \to  E) \phi(E') dE' \\
+        &+ \frac{\chi(E)}{k} \int^{\infty}_{0} \nu(E')\Sigma_f(E') \phi(E') dE' \\
+        &+ S_{\text{ext}}(E) \, ,
+\end{split}
+\label{eq:infmedspectrum}
+\end{equation}
+which is the infinite medium or spectrum equation.  Here, $\phi (E)$ is 
+referred to as the \emph{spectrum}.
+    
+Between about 1 eV and 100 keV (the \emph{resonance region}, which 
+depends on nuclide),  fission 
+and inelastic scattering can be neglected, and the dominant 
+interaction is elastic scattering.  Hence, the spectrum
+equation (without an external source) simplifies to the 
+the \emph{slowing-down equation}
+\begin{equation}
+     \Sigma_t (E) \phi(E) = 
+       \sum^{N_{\text{nucl}}}_{k} \frac{1}{1-\alpha_k} 
+          \int^{E/\alpha_k}_E N_k \sigma_{s,k} (E') \phi(E') \frac{dE'}{E'} \, ,
+\label{eq:sde_general}
+\end{equation}
+where $\Sigma_t(E)$ is the total macroscopic cross section, $N_k$ is 
+the number density of nuclide $k$,  $\sigma_{s,k}(E)$ is the microscopic
+elastic scattering cross section of nuclide $k$, 
+$\alpha_k = (A-1)^2/(A+1)^2$ for a nuclide $k$ of mass $A$ (in amu), 
+and $N_{\text{nucl}}$ is the number of nuclides.
+    
+For the particular case of just one, purely-scattering nuclide, 
+\EQ{eq:sde_general} simplifies to
+\begin{equation}
+     \Sigma_s (E) \phi(E) = 
+       \frac{1}{1-\alpha} 
+          \int^{E/\alpha}_E \Sigma_{s} (E') \phi(E') \frac{dE'}{E'} \, ,
+    \label{eq:sde_one_nuclide}
+\end{equation}
+and, by substitution, one can verify the corresponding solution
+is
+\begin{equation}
+     \phi(E) = \frac{C}{E\Sigma_s (E)} \, ,
+\end{equation}
+where $C$ is a constant defined by normalization.  Because 
+$\Sigma_s(E)$ is usually almost constant, the 
+\emph{slowing down spectrum} typically goes as $1/E$.
+    
+\section*{Direct Solution of the SDE}
+
+Let $E\to E_i$, where $\Delta E$ is small enough 
+that $\Sigma(E)$ is well-approximated by interpolation
+between $E_i$ and $E_{i+1}$.  Then
+\begin{equation}
+     \Sigma_t (E_i) \phi(E_i) = 
+       \sum_{j=i}^{N_E} \Sigma_s (E_j \to E_i) \phi(E_j) \Delta E_j
+         + S(E_i) \, ,
+    \label{eq:sde_discretized}
+\end{equation}   
+where an external source $S(E)$ has been included for generality,
+$N_E$ is the number of discrete energy points used, and 
+$\Delta E_j = E_{j+1} - E_{j}$.
+
+For ``continuous'' treatment, the matrix implied by 
+$\Sigma_s (E_j \to E_i)$ is far too large.  Instead,
+we can evaluate its values on-the-fly by defining
+\begin{equation}
+      \Sigma_{s,j\to i} \approx 
+        \left\{
+           \begin{array}{l l}
+               \frac{\Sigma_s(E_j)}{(1-\alpha)E_j} & \quad \alpha E_j \leq E_i \leq E_j \\
+               0                                   & \quad \text{otherwise} \, .
+            \end{array} 
+        \right.
+\label{eq:scattermatrixappx}
+\end{equation}
+Remember, this approximation is valid only for \emph{isotropic} 
+(i.e., \emph{s-wave}) scattering in the COM system.  Typically, this is the 
+case for all but the highest energies.
+    
+Substitution of \EQ{eq:scattermatrixappx} into \EQ{eq:sde_discretized}
+leads to
+\begin{equation}
+     \Sigma_t (E_i) \phi(E_i) = 
+       \sum_{j=i}^{N_E} \sum^{N_{\text{nucl}}}_{k=1} \frac{\sigma_s (E_j) \phi(E_j) \Delta E_j }{(1-\alpha_k)E_j} 
+         + S(E_i) \, .
+\label{eq:sdediscretized}
+\end{equation}
+Note that the sum over energy includes \emph{all} energies, but, in practice, the sum for 
+some nuclides would be limited to a smaller number of energies for all 
+but hydrogen.
+        
+This equation uses a one-sided \emph{Riemann sum} for the integral.  One
+could also use a \emph{midpoint} or \emph{trapezoid} rule.  Knott and 
+Yamamoto use the same form as Eq.~\ref{eq:sdediscretized} but substitute an average 
+value $\bar{E}_j = \sqrt{E_j E_{j+1}}$ for $E_j$ in the 
+denominator.
+    
+To solve Eq.~\ref{eq:sdediscretized}, rearrange to get
+\begin{equation}
+      \phi_i =
+      \frac{ 
+         \sum\limits_{j=i+1}^{N_E} 
+         \sum\limits^{N_{\text{nucl}}}_{k=1} \frac{\sigma_s (E_j) \phi(E_j) \Delta E_j }{(1-\alpha_k)E_j} + S_j}
+          {\Sigma_{t, i} - \Sigma_{s, i\to i}} \, ,
+\end{equation}
+where 
+\begin{equation}
+     \phi_N = \frac{S_N}{\Sigma_{t,N}-\Sigma_{s,N\to N}} \, .
+\end{equation}
+Alternatively, neglect any external source and set $\phi_N$ directly.
+Note that the indexing used here is reversed from the standard 
+use of $E_1$ indicating the largest energy.  Rather, $E_N$ is
+the largest energy.
+As basic implementation of the method described is provided in 
+Listing~\ref{list:sde}.  The implementation is limited to 
+a single species with constant cross sections.   
+\lstset{language=Python,
+        caption=Direct Solution of the SDE, 
+        label=list:sde,
+        morecomment=[l]{\%}}
+\lstinputlisting{code/sde.py}
+Although the approach outlined (and implemented) is technically sound, it is not 
+very efficient.  The reader should consult Knott and Yamamoto (page 1031) 
+for implementation ideas, especially for simplifying the construction 
+of the in-scatter source term.   
+    
+    
+\section*{Classical Resonance Approximations}
+
+Although the numerical solution of the the slowing down equation is
+straightforward, in principle, it remains relatively expensive 
+to solve for homogeneous media and, when applied to heterogeneous systems,
+analyses have historically been limited to small problems.  As an
+alternative, several approximations can be made that lead to a direct,
+analytical solution.
+
+Consider again the slowing-down equation, 
+\begin{equation}
+\begin{split}
+     \Bigg ( N_r \sigma_{t,r}(E) &+ 
+             \sum_{k\neq r} N_k \sigma_{s,k} 
+     \Bigg ) \phi(E) = \\
+       & \frac{1}{1-\alpha_r} 
+          \int^{E/\alpha_r}_E N_k \sigma_{s,r} (E') \phi(E') \frac{dE'}{E'} \\
+       &+ \sum_{k\neq r} \frac{1}{1-\alpha_k} 
+          \int^{E/\alpha_k}_E N_k \sigma_{s,k} \phi(E') \frac{dE'}{E'} \, ,
+\end{split}          
+\label{eq:sde_general_modified}
+\end{equation}
+modified such that terms related to a single resonator (identified by 
+the $r$ subscript) are separate from all other nuclides $k$, and 
+where the non-resonator cross sections are assumed to be independent
+of energy and limited to elastic scattering, 
+the first major approximations we shall make on our 
+way to the narrow resonance (NR) and wide resonance (WR) approximations.
+
+Next, we shall assume the ``practical'' width of a resonance is always
+much smaller than the energy lost by a neutron scattering with all 
+non-resonant nuclides.  Thus, for an integral of the form
+\begin{equation}
+ \frac{1}{1-\alpha_k} \int^{E/\alpha_k}_E N_k \sigma_{s,k} \phi(E') \frac{dE'}{E'} \, ,
+\end{equation}
+\emph{most} of the integration domain is far away from the resonance 
+and, hence, we assume that the flux \emph{within the integral} 
+takes its asymptotic form, i.e.,
+the form found for a pure scatterer (with a constant 
+cross section), $\phi(E)\propto 1/E$.  Therefore, 
+the non-resonant scattering integral simplifies to
+\begin{equation}
+\begin{split}
+  \frac{N_k \sigma_{s,k}}{1-\alpha_k}  
+       \int^{E/\alpha_k}_E  \frac{1}{E'} \frac{dE'}{E'}
+  &= \frac{N_k \sigma_{s,k}}{E} \, .
+\end{split}          
+\label{eq:simple_scattering_integral}
+\end{equation}
+
+\subsubsection*{Narrow Resonance Approximation}
+
+The NR approximation further assumes that energy loss of a neutron 
+scattering with the resonator is also much smaller than the 
+resonance width, which means the same approximation can be made 
+for the resonance scattering integral as was made for the 
+non-resonant scattering angle.  With the additional assumption 
+that $\sigma_{s, r}(E) \approx \sigma_{s, r}$, the slowing 
+down equation simplies to
+\begin{equation}
+     \Bigg ( N_r \sigma_{t,r}(E) + 
+             \sum_{k\neq r} N_k \sigma_{s,k} 
+     \Bigg ) \phi(E) = \frac{\Sigma_{s,r}}{E} + \sum_k \frac{\Sigma_{s,k}}{E} \, ,
+\end{equation}
+and, hence, the spectrum in the narrow resonance approximation is
+\begin{equation}
+ \phi_{\text{NR}}(E) = 
+   \frac{ \Sigma_{s,r} + \sum\limits_{k\neq r} \Sigma_{s,k} }{ \Sigma_{t}(E) E } \, ,
+\end{equation}
+with arbitrary normalization.
+
+\subsubsection*{Wide Resonance Approximation}
+
+Contrarily, the WR approximation assumes that the energy lost by a
+neutron scattering off the resonant nuclide is much \emph{smaller} than 
+the resonance width.  The smallest such energy loss 
+occurs in the limit $\alpha_r \to 1$\footnote{i.e., when the 
+resonator has an infinite mass, which explains why WR sometimes 
+is called the narrow resonance, infinite mass (NRIM) approximation)} 
+for which case the corresponding 
+scattering integral simplifies to 
+\begin{equation}
+\begin{split}
+ \lim_{\alpha_r \to 1} & \left [ \frac{1}{1-\alpha_r} 
+          \int^{E/\alpha_r}_E N_k \sigma_{s,r} (E') \phi(E') \frac{dE'}{E'} \right ] \\ 
+  &\approx N_k \sigma_{s,r} (E) \phi(E) \lim_{\alpha_r \to 1}  \int^{E/\alpha_r}_E  \frac{dE'}{(1-\alpha_r)E'} \\
+  &=  N_k \sigma_{s,r} (E) \phi(E) \, .
+\end{split}
+\end{equation}
+It follows that 
+\begin{equation}
+ \phi_{\text{WR}} = \frac{\sum\limits_{k\neq r} \Sigma_{s,k} }{[\Sigma_t(E) - \Sigma_{s,r}(E)]E } \, .
+\end{equation}
+
+\section*{Further Reading}
+
+To be continued.
+
+
+%------------------------------------------------------------------------------%
+\begin{exercises}
+
+  %----------------------------------------------------------------------------%
+  \item \textbf{Slowing Down in Purely Scattering Media}. 
+    Adapt the slowing-down code to treat a single medium with arbitrary
+    mass number $A$.
+    Using a point source at $E=10~\kilo\electronvolt$, compute the spectrum and plot 
+    for $1~\electronvolt \leq E \leq 10~\kilo\electronvolt$.
+    For $A=238$, zoom in and plot the rather strange (``Placzek'') 
+    oscillations occuring 
+    near the source energy.  Can you explain this behavior?
+    
+  %----------------------------------------------------------------------------%
+  \item \textbf{Slowing Down in Arbitary Mixture}. 
+    \label{prob:sdmix}
+    Adapt the slowing-down code to treat an arbitary homogeneous
+    mixture that uses real cross-section data from ENDF. Then
+    \begin{enumerate}[(a)]
+     \item Find total and elastic scattering cross-section data for 
+           H-1 and U-238 (at room temperature) 
+           and develop a way to define that data on 
+           the same energy grid (sometimes called a ``unionized'' energy 
+           grid).  
+     \item Use the slowing-down code to determine the spectrum for 
+           a 1000-to-1 mixture of H-to-U over 
+           the range $E\in[1,100~\electronvolt]$ with a point source 
+           at the upper limit.  Use at least 2000 energy points evenly
+           spaced on a log scale.
+     \item Plot the spectrum.  Repeat for 100-to-1 and 10-to-1 ratios 
+           of H to U.
+    \end{enumerate}
+
+  %----------------------------------------------------------------------------%
+  \item \textbf{The Narrow and Wide Resonance Approximations}. 
+    For the same three cases studied in Problem~\ref{prob:sdmix}, determine 
+    the spectrum for both the narrow and wide resonance approximations.
+    For the 10-to-1 case, plot the numerical, NR, and WR spectra normalized
+    so that $\phi(1~\electronvolt)$ is 1.
+
+    
+\end{exercises}

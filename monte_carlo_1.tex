@@ -1,0 +1,523 @@
+\chapter{Monte Carlo I}
+
+% -----------------------------------------------------------------------------
+\section{Historical Background}
+
+\subsection{Monte Carlo Method}
+
+
+\emph{Early Days}
+
+  \begin{itemize}
+  \item Jacob Bernoulli [1689]
+  \item George-Louis Leclerc (Comte de Buffon) [1777]
+  \item Pierre-Simon de Laplace [1786]
+  \item Lord Rayleigh [1899]
+  \item Fermi [1930's]
+  \item Metropolis and Ulam [1946+]
+  \end{itemize}
+
+
+
+\emph{Early Days}
+
+  \begin{figure}[htbp]
+    \centering
+    %\includegraphics[keepaspectratio, width = 3.2 in]{images/metropolis_and_ulam.jpg}
+  \end{figure}
+
+
+
+\emph{Applications to Neutron Diffusion}
+ \begin{itemize}
+  \item Von Neumann quickly saw the possibilities of digital computing and statistical sampling to explore the behavior of fission chain reactions.
+  \begin{itemize}
+   \item He outlined the initial details for static neutron diffusion calculations in 1947
+   \item He layed out a sampling scheme using spherical geometry and known nuclear properties.
+   \item He calculated that following 100 neutrons through 100 collisions would take about 5 hours!
+   \item He also proposed a way to treat coupled radiation hydrodynamics problems using a non-linear iterative process.
+  \end{itemize}
+ \end{itemize}
+
+
+\subsection{Simple Example}
+\emph{Two Approaches to Monte Carlo}
+ Evaluate $G=\int_{0}^{1} g(x)dx$, with $g(x) = \sqrt{1-x^2}$
+ \begin{itemize}
+   \item Simulation approach
+   \item Mathematical approach (aka ``Quadrature'')
+ \end{itemize}
+ \vfill
+ A \emph{ third} approach: Markov Chain Monte Carlo (MCMC)
+
+
+\emph{Monte Carlo Neutron Transport - In a nutshell}
+ \begin{itemize}
+  \item Simulate the stochasticity of nature by tracking neutrons randomly through our domain of interest from their birth to their death
+  \item Use nuclear data and material properties to determine probabilities of various events
+  \item Evaluate contribution of individual neutrons to a quantity of interest
+  \item In addition to common modeling and data uncertainties, Monte Carlo results always present an element of statistical uncertainty
+  \begin{itemize}
+    \item Average is never enough, you must always provide a measure of dispersion.
+  \end{itemize}
+ \end{itemize}
+
+
+\emph{Topics to be covered}
+   \begin{itemize}
+      \item Probability and Statistics (Today)
+      \item Random Number Generators, Sampling, Collision Physics
+      \item Tallies and Statistics
+      \item Variance Reduction
+   \end{itemize}
+
+
+% -----------------------------------------------------------------------------
+\section{Probability}
+
+\subsection{Basic Definitions}
+
+\emph{Sample Space}
+
+ \begin{itemize}
+  \item Set of all possible outcomes of an experiment is called the sample space
+  \begin{itemize}
+    \item Coin toss \{Heads,Tails\}
+    \item Roll of a die \{1,2,3,4,5,6\}
+    \item Continuous sample spaces have an infinite number of outcomes
+  \end{itemize}
+  \item A subset of a sample space is called an event
+ \end{itemize}
+
+
+
+\emph{Probabilities}
+ Each event in a sample space has a probability of occurring
+ \begin{itemize}
+  \item If $S$ is the sample space, then $P(S) = 1$
+  \item For any event $A$, $0 \le P(A) \le 1$
+ \end{itemize}
+
+
+
+\subsection{Random Variables}
+\emph{Random Variables}
+  A random variable assigns a numerical value to each outcome in a sample space.  Denoted with uppercase letters: $X, Y, Z$
+  \begin{itemize}
+    \item It's a function from the sample space to the real line
+      \begin{equation*}
+        X: S \to \mathbb{R}
+      \end{equation*}
+     \item Example
+      \begin{itemize}
+       \item Flip two coins
+         \begin{equation*}
+            S = \{HH,HT,TH,TT\}
+         \end{equation*}
+        Suppose \textit{X} is the random variable corresponding to the number of \textit{T}'s
+         \begin{equation*}
+           X(TT)=2, X(HT)=X(TH)=1, X(HH)=0
+         \end{equation*}
+      \end{itemize}
+  \end{itemize}
+
+
+\emph{Discrete Random Variables}
+ A random variable is discrete if its possible values form a discrete set.
+%  Example in neutron transport
+     \begin{itemize}
+      \item At a given neutron energy and collision site in a homogeneous material $(B_{4}C)$, sample the collision nuclide
+     \end{itemize}
+     \begin{equation*}
+         \Sigma_{B} = 0.3 cm^{-1}
+     \end{equation*}
+     \begin{equation*}
+         \Sigma_{C} = 0.1 cm^{-1}
+     \end{equation*}
+     Define
+     \begin{displaymath}
+        X = \left\{ \begin{array}{ll}
+                     0 & \textrm{if $C$ is selected}\\
+                     1 & \textrm{if $B$ is selected}
+                    \end{array} \right.
+     \end{displaymath}
+
+
+\emph{Probability Mass Function}
+ The probablity mass function (pmf) of a discrete random variable $X$ is the function $p(x) \equiv P(X=x)$.
+     \begin{itemize}
+      \item Note that $p(x) \ge 0$
+      \item $\sum_{x} p(x) = 1$
+      \item also implies $p(x) \le 1$
+     \end{itemize}
+     From previous example
+     \begin{displaymath}
+        p(x) = P(X=x) = \left\{ \begin{array}{ll}
+                         0.25 & \textrm{if $x=0$}\\                       
+                         0.75 & \textrm{if $x=1$}\\
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+%     \begin{itemize}
+%      \item Probability of selecting $B: P(B) = 0.75$
+%      \item Probability of selecting $C: P(C) = 0.25$
+%     \end{itemize}
+
+% Insert pmf of previous example
+%     \begin{displaymath}
+%        p(x) = \left\{ \begin{array}{ll}
+%                        0.75 & \textrm{if }
+%                       \end{array}
+
+%     \end{displaymath}
+
+
+
+\emph{Continuous Random Variables}
+ A continuous random variable is one with probability of 0 at every point.
+\begin{itemize}
+ \item Example: Select a real number between 0 and 1.
+   \begin{itemize}
+    \item Infinite number of equally probable events
+    \item $P($at each point$) = P(X=x) = 0$
+    \item However, $P(X \le 0.5) = 0.5$
+   \end{itemize}
+ \item When using continuous variables we always deal with intervals
+\end{itemize}
+
+
+\emph{Probability Distribution Function}
+ If $X$ is a continuous random variable, $p(x)$ is a probability distribution function if:
+ \begin{itemize}
+  \item $\int_{\mathbb{R}} p(x)dx = 1$
+  \item $p(x) \ge 0, \forall x$
+  \item If $A \subseteq \mathbb{R}$, then $P(X \in A) = \int_{A}p(x)dx$
+ \end{itemize}
+
+
+\emph{Continuous pdf}
+ The probability distribution function describing the path travel by a neutral particle can be expressed by:
+     \begin{displaymath}
+        p(x) = \left\{ \begin{array}{ll}
+                         \Sigma_{t}e^{-\Sigma_{t}x} & \textrm{if $x\ge0$}\\                       
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+This distribution is also called the exponential distribution. $(X \sim Exp(\Sigma))$
+
+
+\emph{Example of Exponential Distribution}
+  Suppose $X \sim Exp(1)$ (Comparable to a thermal neutron in water)
+  \begin{itemize}
+    \item $P(X\le1)=\int_{0}^{1}e^{-x}dx=1-e^{-1} = 0.632$
+    \item $P(X\le3)=\int_{0}^{3}e^{-x}dx=1-e^{-3} = 0.950$
+    \item $P(X\ge5)=\int_{5}^{\infty}e^{-x}dx=e^{-5}=0.0067$
+    \item $P(X=3)=\int_{3}^{3}e^{-x}dx=0$
+  \end{itemize}
+ This distribution defines the distance traveled by a neutron between collisions.
+
+
+\emph{Uniform Distribution}
+  If $X$ is equally likely to be anywhere between $a$ and $b$, then $X$ has the uniform distribution on $(a,b)$
+     \begin{displaymath}
+        f(x) = \left\{ \begin{array}{ll}
+                         \frac{1}{(b-a)} & \textrm{if $a < x < b$}\\                       
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+  Notation $X \sim U(a,b)$\\
+  Very important distribution for sampling sources over a uniform volume.
+
+
+\subsection{Distribution Functions}
+
+\emph{Cumulative Distribution Function}
+  For any random variable $X$, the cumulative distribution function is defined for all $x$ by $F(x) = P(X\le x))$
+  \begin{itemize}
+    \item $X$ continuous implies
+      \begin{equation*}
+          F(x) = \int_{-\infty}^{x}f(t)dt
+      \end{equation*}
+    \item $X$ discrete implies
+      \begin{equation*}
+          F(x) = \sum_{y\le x}f(y)
+      \end{equation*}
+  \end{itemize}
+
+
+\emph{Continuous cdf}
+  Theorem: If $X$ is a continuous random variable, then $f(x) = F'(x)$
+
+
+\emph{Uniform Distribution cdf}
+  Example: $X \sim U(0,1)$
+     \begin{displaymath}
+        f(x) = \left\{ \begin{array}{ll}
+                         1 & \textrm{if $0 < x < 1$}\\                       
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+     \begin{displaymath}
+        F(x) = \left\{ \begin{array}{ll}
+                         0 & \textrm{if $x \le 0$}\\                       
+                         x & \textrm{if $0 < x < 1$}\\
+                         1 & \textrm{if $x > 1$}
+                       \end{array} \right.
+     \end{displaymath}
+  This distribution is the most commonly used in any Monte Carlo simulation.
+
+
+\emph{Exponential Distribution cdf}
+  Example: $X \sim Exp(\Sigma)$
+     \begin{displaymath}
+        f(x) = \left\{ \begin{array}{ll}
+                         \Sigma e^{-\Sigma x} & \textrm{if $x \ge 0$}\\                       
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+     \begin{displaymath}
+        F(x) = \int_{-\infty}^{x}f(t)dt = \left\{ \begin{array}{ll}
+                         0 & \textrm{if $x < 0$}\\                       
+                         1-e^{-\Sigma x} & \textrm{if $x \ge 0$}
+                       \end{array} \right.
+     \end{displaymath}
+
+
+\emph{Discrete cdf}
+% Put nuclide sampling example and/or reaction sampling example
+ Example: Nuclide sampling - Borated Steel
+  \begin{itemize}
+    \item Convert material properties to individual nuclide densities
+  \end{itemize}
+     \begin{displaymath}
+        \left. \begin{array}{ll}
+               Fe^{54}  & 6.32x10^{21} \textrm{atoms/cm3}\\
+               Fe^{56}  & 7.44x10^{22} \textrm{atoms/cm3}\\
+               Ni^{58}  & 1.67x10^{22} \textrm{atoms/cm3}\\
+               Ni^{60}  & 8.85x10^{21} \textrm{atoms/cm3}\\
+               B^{10}  & 3.24x10^{20} \textrm{atoms/cm3}\\
+               B^{11}  & 1.21x10^{21} \textrm{atoms/cm3}
+                       \end{array} \right.
+  \end{displaymath}
+
+
+\emph{Discrete cdf (2)}
+  \begin{itemize}
+    \item For a given incoming neutron energy, evaluate microscopic total cross-section
+    \item Calculate total macroscopic cross-section
+  \end{itemize}
+     \begin{displaymath}
+        \left. \begin{array}{llll}
+               Fe^{54}  & 4 \: \textrm{barns} & 0.02528 & cm^{-1}\\
+               Fe^{56}  & 10 \: \textrm{barns} &  0.744 & cm^{-1}\\
+               Ni^{58}  & 14 \: \textrm{barns} & 0.2338 & cm^{-1}\\
+               Ni^{60}  & 1 \: \textrm{barns} & 0.00885 & cm^{-1}\\
+               B^{10}  & 1000 \: \textrm{barns} & 0.324 & cm^{-1}\\
+               B^{11}  & 7 \: \textrm{barns} & 0.00847 & cm^{-1}
+                       \end{array} \right.
+  \end{displaymath}  
+
+
+\emph{Discrete cdf (3)}
+  \begin{itemize}
+    \item Total macroscopic cross-section is 1.3444 $cm^{-1}$.
+    \item Normalize to 1 to create pmf
+  \end{itemize}
+     \begin{displaymath}
+        f(x) = \left\{ \begin{array}{ll}
+                         0.0188 & \textrm{if $x = 1$}\\                       
+                         0.5534 & \textrm{if $x = 2$}\\
+                         0.1739 & \textrm{if $x = 3$}\\
+                         0.0066 & \textrm{if $x = 4$}\\
+                         0.2410 & \textrm{if $x = 5$}\\
+                         0.0063 & \textrm{if $x = 6$}\\
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+
+
+\emph{Discrete cdf (4)}
+  \begin{itemize}
+    \item Convert to cdf 
+  \end{itemize}
+     \begin{displaymath}
+        F(x) = \left\{ \begin{array}{ll}
+                         0.0    & \textrm{if $x \le 0$}\\                       
+                         0.0188 & \textrm{if $0 < x \le 1$}\\
+                         0.5722 & \textrm{if $1 < x \le 2$}\\
+                         0.7461 & \textrm{if $2 < x \le 3$}\\
+                         0.7527 & \textrm{if $3 < x \le 4$}\\
+                         0.9937 & \textrm{if $4 < x \le 5$}\\
+                         1.0 & \textrm{if $x > 5$}
+                       \end{array} \right.
+     \end{displaymath}
+  \begin{itemize}
+    \item Notice that the discrete pmf is now converted to a continuous distribution
+    \item Pay attention to the $<$ and the $\le$  
+  \end{itemize}
+
+
+\emph{Another Example}
+  Assume a neutron of 10MeV will collide with $Fe^{56}$
+  \begin{itemize}
+    \item Evaluate all possible cross-section at that energy
+  \end{itemize}
+     \begin{displaymath}
+        \left. \begin{array}{ll}
+               (n,n) & 2.0 \: \textrm{barns}\\
+               (n,n') & 0.1 \: \textrm{barns}\\
+               (n,\gamma) & 0.001 \: \textrm{barns}\\
+               (n,\alpha) & 0.1 \: \textrm{barns}
+               \end{array} \right.
+  \end{displaymath} 
+  \begin{itemize}
+    \item Total cross-section is $2.201$ barns
+  \end{itemize} 
+
+
+\emph{Another Example (2)}
+     \begin{displaymath}
+        f(x) = \left\{ \begin{array}{ll}
+                         0.9087 & \textrm{if $x = 1$}\\                       
+                         0.0454 & \textrm{if $x = 2$}\\
+                         0.0005 & \textrm{if $x = 3$}\\
+                         0.0454 & \textrm{if $x = 4$}\\
+                         0 & \textrm{otherwise}
+                       \end{array} \right.
+     \end{displaymath}
+     \begin{displaymath}
+        F(x) = \left\{ \begin{array}{ll}
+                         0.0    & \textrm{if $x \le 0$}\\                       
+                         0.9087 & \textrm{if $0 < x \le 1$}\\
+                         0.9541 & \textrm{if $1 < x \le 2$}\\
+                         0.9546 & \textrm{if $2 < x \le 3$}\\
+                         1.0 & \textrm{if $x > 3$}
+                       \end{array} \right.
+     \end{displaymath}
+
+
+
+
+\emph{Properties of all cdf's}
+   $F(x)$ is non-decreasing in $x$, i.e., $x_{1} < x_{2}$ implies that $F(x_{1}) \le F(x_{2})$
+   \begin{equation*}
+    \lim_{x \to \infty} F(x) = 1
+   \end{equation*}
+   \begin{equation*}
+    \lim_{x \to -\infty} F(x) = 0
+   \end{equation*}  
+
+
+\section{Statistics}
+
+\subsection{Mean and Variance of a Distribution}
+
+\emph{Mean}
+  The mean or expected value of a random variable $X$ is
+  \begin{equation*}
+    \mu \equiv E[X] \equiv \int_{\mathbb{R}}xf(x)dx \; \textrm{if $X$ is continuous}
+  \end{equation*}
+  \begin{equation*}
+    \mu \equiv E[X] \equiv \sum_{x}xf(x) \; \textrm{if $X$ is discrete}
+  \end{equation*}
+  \begin{itemize}
+   \item The mean gives an indication of the central tendency of $X$.
+  \end{itemize}
+
+
+\emph{Variance}
+  The variance of a random variable $X$ is the second central moment.
+  \begin{equation*}
+    \sigma^{2} \equiv Var(X) \equiv E[(X-\mu)^{2}] = \int_{\mathbb{R}}(x-\mu)^{2}f(x)dx
+  \end{equation*}
+  \begin{itemize}
+   \item The variance mean gives an indication of spread or dispersion.
+   \item The standard deviation of $X$ is $\sigma \equiv \sqrt{Var(X)}$
+  \end{itemize}
+
+
+\emph{More Generally}
+  The $k^{th}$ moment of $X$ is
+  \begin{equation*}
+    E[X^k] = \int_{\mathbb{R}}x^k f(x) dx
+  \end{equation*}
+  The $k^{th}$ central moment of $X$ is
+  \begin{equation*}
+    E[(X-\mu)^k] = \int_{\mathbb{R}}(x-\mu)^k f(x) dx
+  \end{equation*}
+  \begin{itemize}
+   \item The third and fourth central moment are used to define skewness (measure of asymmetry) and kurtosis (measure of peakedness).
+  \end{itemize}
+
+
+\emph{Simpler way to get Variance}
+ Theorem: $Var(X) = E[X^2] - (E[X])^2$\\
+ Proof:
+ % show proof in class
+
+
+\emph{Scaling}
+ What happens to the mean and variance if the random variable is scaled?
+  \begin{itemize}
+     \item Mean: $E[aX+b] = aE[X]+b$
+     \item Variance: $Var(aX+b) = a^2 Var(X)$
+     % Show proofs
+  \end{itemize}
+
+
+\emph{More Definitions}
+ If $X_{1}$ and $X_{2}$ are independent random variables, and $S$ and $T$ are sets of numbers, then
+  \begin{equation*}
+    P(X_1 \in S \; \textrm{and} \; X_2 \in T) = P(X_1 \in S)P(X_2 \in T)
+  \end{equation*}
+ If $X_{1}$ and $X_{2}$ are independent random variables with variances $\sigma_{X_1}^2$ and $\sigma_{X_2}^2$, then the variance of the sum $X_1+X_2$ is
+  \begin{equation*}
+    \sigma_{X_1+X_2}^2 = \sigma_{X_1}^2 + \sigma_{X_2}^2 
+  \end{equation*}
+
+
+\emph{For our purposes}
+ Each simulated neutron is considered to be an independent random variable
+  \begin{itemize}
+   \item Equivalent to assuming that neutron transport is linear
+   \begin{itemize}
+   \item Neutrons do not alter their environment (i.e. no material depletion after single event, no strutural changes after collisions, no temperature changes after single event)
+   \item Neutrons do not interact with each other
+   \end{itemize}
+   \item What if this wasn't true?
+   %Discuss non-linearity issue (w/ T feedback, depletion, compare with charged particles)
+  \end{itemize}
+
+
+\subsection{Mean and Variance of a Sample}
+
+\emph{Sample Mean and Sample Variance}
+ If $X_1,\dots,X_n$ is an independent random sample from a population with mean $\mu$ and variance $\sigma^2$, then the sample mean $\overline{X}$ is also a random variable with
+ \begin{equation*}
+  \mu_{\overline{X}} = \mu
+ \end{equation*}
+ \begin{equation*}
+  \sigma_{\overline{X}}^2=\sigma^2/n
+ \end{equation*}
+ \begin{itemize}
+  \item This is a very important results, because it indicates the relation between variance and the number of indepenent samples.
+ \end{itemize}
+ % Show proof
+
+
+
+% -----------------------------------------------------------------------------
+\section{Conclusions}
+\subsection{Recap}
+
+\begin{itemize}
+   \item ALWAYS verify that you truly have a pdf/pmf before starting to sample.
+   \item Average value is never enough in Monte Carlo simulations, you must ALWAYS present a measure of related statistical error.
+   \item The population variance is proportional to $1/N$ which can indicate how many more independent realizations are necessary to attain a desired level of error.
+  \end{itemize}
+
+References
+  \begin{itemize}
+   \item F. Brown's Lecture Notes
+   \item 1987 Issue of \emph{ Los Alamos Science}
+  \end{itemize}

@@ -1,0 +1,296 @@
+\chapter{Nonlinear Acceleration}
+\label{lec:nonlinear_acceleration}
+
+The discrete ordinates method is in theory a very fast, memory-efficient 
+technique.  Unless the angular flux is needed explicitly, only one set of edge 
+angular fluxes is needed at a time (e.g. the left edge flux for computing the 
+right edge flux, which then can overwrite the left edge flux).  
+
+Despite the algorithmic simplicity of the method, the underlying source 
+iteration scheme can be obnoxiously slow for problems with high scattering 
+ratios.  Several methods have been introduced over the years to accelerate the 
+source convergence.  Of these, diffusion synthetic acceleration (DSA) is 
+probably the most powerful and widespread.  The method essentially involves 
+performing a diffusion solve to update the scalar flux, and has shown 
+spectacular success for a wide variety of problems.  DSA and related 
+methods will be cast as ``preconditioners'' for linear solvers
+in the next lecture.
+
+Here, we look at two  relatively simple 
+methods that have been quite successful: the \textit{coarse mesh rebalance} 
+(CMR) and \textit{Nonlinear Diffusion Acceleration} (NDA) methods.  
+Although the presentation is restricted to the one-group case, both 
+methods apply readily to multigroup fixed-source and eigenvalue problems.
+In addition, both methods can be applied successfully to other 
+transport discretization, including the method of characteristics.
+
+\section*{Coarse Mesh Rebalance}
+
+CMR was probably the first wide-spread method for accelerating discrete 
+ordinates calculations.  Its foundation rests in the \textit{neutron balance 
+equation}, which we obtain in one dimension by integrating
+\EQ{eq:slabtransportequation} over angle, leading to
+\begin{equation}
+\begin{split}
+ \frac{\partial }{\partial x}J(x) + \Sigma_t(x) \phi(x) 
+   = \Sigma_{s}(x)\phi(x) + S(x) \, ,
+\end{split}
+\label{eq:balance}
+\end{equation}
+where $J = \mathbf{J}\cdot \hat{i}$ is the net current in the $x$ direction. Now 
+suppose we divide the domain into a number of coarse meshes, indexed by $j$, 
+with cell edges at $x_{j-\frac{1}{2}}$ and $x_{j+\frac{1}{2}}$.  Subtracting the 
+scattering source from both sides and integrating over the $j$th coarse mesh, we 
+obtain
+\begin{equation}
+\begin{split}
+ J_{j+\frac{1}{2}} - J_{j-\frac{1}{2}}  + \int_{x_i} \Sigma_r(x) \phi(x) dx = 
+\int_{x_i} S(x) dx \, ,
+\end{split}
+\label{eq:coarsebalance}
+\end{equation}
+where $\Sigma_t - \Sigma_s$ is the \textit{removal} cross section.
+Expressing \EQ{eq:net2partial} as $J = J^+ - J^-$, where $+$ indicates to 
+the right and $-$ to the left, we have
+\begin{equation}
+\begin{split}
+ J^+_{j+\frac{1}{2}}- J^-_{j+\frac{1}{2}} - J^+_{j-\frac{1}{2}} + 
+J^-_{j-\frac{1}{2}} + R_j = S_j \, ,
+\end{split}
+\label{eq:cmrbalance}
+\end{equation}
+where the partial currents are defined
+\begin{equation}
+ J^{\pm}_{j+\frac{1}{2}} = \sum_{\mu_n \gtrless 0} \mu_n \psi_{j+\frac{1}{2},n} 
+\, ,
+\end{equation}
+$R_j$ is the coarse mesh-integrated removal rate, and $S_j$ is the coarse 
+mesh-integrated source.  
+
+\EQUATION{eq:cmrbalance} must be satisfied by a fully converged fine mesh 
+solution.  For an unconverged iterate, which we denote $\psi^{m+\frac{1}{2}}$, 
+\EQ{eq:cmrbalance} is generally not satisfied.  To force the flux to 
+satisfy neutron balance, we introduce multiplicative rebalance factors $f_j$ 
+such that
+\begin{equation}
+ \psi^{m+1}_{i,n} =
+ \begin{cases} f_j \psi^{m+\frac{1}{2}}_{i,n}     &   x_{j-\frac{1}{2}} < x_{i} 
+< x_{j+\frac{1}{2}} \\
+               f_{j-1} \psi^{m+\frac{1}{2}}_{i,n} &   x_{i} = x_{j+\frac{1}{2}} 
+\text{ and } \mu_n > 0 \\
+               f_{j+1} \psi^{m+\frac{1}{2}}_{i,n} &   x_{i} = x_{j+\frac{1}{2}} 
+\text{ and } \mu_n < 0 \\
+ \end{cases} \, .
+ \label{eq:alpha}
+\end{equation}
+Note the appropriate factor's index denotes from which coarse mesh the neutrons 
+originate. For the case of vacuum boundaries, the corresponding incident partial 
+current vanishes.  For a reflective boundary at the left, $f_0 = f_1$, and 
+similarly for the right boundary.
+
+To illustrate the method, consider a slab with vacuum boundaries divided into 
+three coarse meshes.  Substituting the modified fluxes into the balance equation 
+yields a set of three equations:
+\begin{equation}
+\begin{split}
+  f_1 J^+_{3/2}  - f_2 J^{-}_{3/2}                   + f_1 J^{-}_{1/2} + f_1 R_1 
+&= f_1 S_1 \\
+  f_2 J^+_{5/2}  - f_3 J^{-}_{5/2} - f_1 J^{+}_{3/2} + f_2 J^{-}_{3/2} + f_2 R_2 
+&= f_2 S_2 \\
+  f_3 J^+_{7/2}                    - f_2 J^{+}_{5/2} + f_3 J^{-}_{5/2} + f_3 R_3 
+&= f_3 S_3 \, ,
+\end{split}
+\end{equation}
+which yields a tridiagonal system written in condensed form as
+\begin{equation}
+ \mathbf{A} \mathbf{f} = \mathbf{S} \, .
+\end{equation}
+Solving this equation for $\mathbf{f}$ and updating to $\psi^{m+1}$ allows us to 
+recompute the scattering source, which---hopefully---converges faster than 
+without the rebalancing scheme.  Look to the Further Reading section for 
+references that investigate stability of coarse mesh rebalance.  
+Algorithm~\ref{alg:accel} shows how CMR (or any low order acceleration scheme) 
+can be used within source iteration.
+
+\begin{algorithm}
+ \label{alg:accel}
+ \caption{Accelerated Source Iteration}
+  initialization\;
+  \While{$\psi^m$ or $\phi^m$ not converged}{
+    compute scattering source \;
+    $\psi^{m+\frac{1}{2}} \leftarrow \text{sweep}(\psi^{m})$ \;
+    \eIf{using CMR}{
+      $\psi^{m+1} \leftarrow \text{cmr}(\psi^{m+\frac{1}{2}})$ \;
+    }{
+      $\psi^{m+1} \leftarrow \psi^{m+\frac{1}{2}}$ \;
+    }
+  }
+\end{algorithm}
+
+
+
+\section*{Nonlinear Diffusion Acceleration}
+
+Nonlinear Diffusion (or Coarse-Mesh, Finite-Difference) Acceleration (NDA
+or CMFD) was originally developed by Kord Smith as a way to reduce the 
+memory requirements of advanced, nodal-diffusion solvers \cite{smith1983nms}.  
+The method also
+led to signficant speed-ups and has since been applied routinely in 
+for lattice-physics computations based on the method of characteristics
+\cite{2002}.  
+
+We begin along the same lines as we did for CMR by integrating the 
+transport equation over a coarse mesh indexed by $j$, which leads to 
+\EQ{eq:coarsebalance}.  Now, define the flux-weighted cross section
+\begin{equation}
+ \Sigma_{t,j} = \frac{\int^{x_{j+1/2}}_{x_{j-1/2}} \Sigma_r(x) \phi^{n+1/2} dx}
+                     {\int^{x_{j+1/2}}_{x_{j-1/2}}\phi^{n+1/2} dx} \, ,
+\end{equation}
+with similar expressions for $\Sigma_{r,j}$ and $\Sigma_{s,j}$, along 
+with the coarse-mesh-averaged flux
+\begin{equation}
+ \phi_{j} = \frac{\int^{x_{j+1/2}}_{x_{j-1/2}} \phi(x) dx}
+              {\int^{x_{j+1/2}}_{x_{j-1/2}} dx} \, 
+\end{equation}
+and source
+\begin{equation}
+ S_{j} = \frac{\int^{x_{j+1/2}}_{x_{j-1/2}} S(x) dx}
+              {\int^{x_{j+1/2}}_{x_{j-1/2}} dx} \, .
+\end{equation} 
+With these definitions, \EQ{eq:coarsebalance} can be written as
+\begin{equation}
+ J^{n+1/2}_{j+1/2} - J^{n+1/2}_{j-1/2} 
+   + \Delta_j \Sigma_{r,j} \phi_j = \Delta_j S_j
+\end{equation}
+
+Previously, we studied fine-mesh diffusion, which gave
+\begin{equation}
+\begin{split}
+  J^{n+1/2}_{j+1/2} &= - \left ( \frac{ 2 D_j D_{j+1} }
+                                     {D_j \Delta_{j+1} + D_{j+1} \Delta_j}
+                        \right )
+                        (\phi_{j+1} - \phi_j) \\\
+                    &= \tilde{D}_{j+1/2} (\phi_{j+1} - \phi_j) \, .
+\end{split}                    
+\label{eq:diffusion_current}
+\end{equation}
+where $D_j$ is the diffusion coefficient for the $j$th coarse cell.
+Although the choice of $D_j$ is not unique, a common approach is 
+to set 
+\begin{equation}
+ D_j = 1/3\Sigma_{t, j}
+\end{equation}
+or 
+\begin{equation}
+ D_{j} = \frac{\int^{x_{j+1/2}}_{x_{j-1/2}} D(x) \phi(x) dx}
+              {\int^{x_{j+1/2}}_{x_{j-1/2}} \phi(x) dx} \, .
+\end{equation}
+A better approach may be to weight $D(x)$ by $J(x)$ instead of 
+$\phi(x)$, but in practice $J(x)$ is not usually computed.
+
+Even with a flux- or current-weighted $D_j$, the current as 
+defined by \EQ{eq:diffusion_current} is not generally 
+equal to the current as computed directly from 
+$\psi^{n+1/2}$, as in Eq. XXX, because the diffusion approximation is 
+not guaranteed to yield the same solution as a transport 
+approximation.  Hence, even if the flux were perfectly converged, 
+the diffusion approximation, coarse mesh or otherwise, will not 
+reproduce the solution and, hence, does not preserve balance over
+the coarse cells.
+
+We can enforce balance by letting
+\begin{equation}
+ J_{j+1/2} = -\tilde{D}_{j+1/2} (\phi_{j+1}-\phi_j) - \hat{D}_{j+1/2}(\phi_{j+1}+\phi_j) \, ,
+\end{equation}
+where the nonlinear coupling coefficient $\hat{D}_{j+1/2}$ is 
+defined as
+\begin{equation}
+ \hat{D}_{j+1/2} = \frac{\tilde{D}_{j+1/2} (\phi_{j+1}-\phi_j) + J_{j+1/2}}{\phi_{j+1}+\phi_j)} \, .
+\end{equation}
+For an albedo condition at the left, we can set 
+\begin{equation}
+ J_{1/2} = (\tilde{D}_{1/2}+\hat{D}_{1/2})\phi_1 \, ,
+\end{equation}
+where 
+\begin{equation}
+ \hat{D}_{1/2} = \frac{J_{1/2}-\tilde{D}_{1/2} \phi_1}{\phi_1} \, .
+\end{equation}
+The resulting, one-dimensional diffusion equation is
+\begin{equation}
+\begin{split}
+ -\tilde{D}_{j+1/2}(\phi_{j+1}-\phi_j) - \hat{D}_{j+1/2} & (\phi_{j+1}+\phi_j)  + \\
+ \tilde{D}_{j-1/2}(\phi_{j}-\phi_{j-1})& + \hat{D}_{j-1/2} (\phi_{j}+\phi_{j-1}) + \\
+  & \Sigma_{r,j} \phi_{j}^{n+1} \Delta_j = S_j \Delta_j \, .
+\end{split}
+\end{equation}
+
+
+
+Once solved, the coarse-mesh flux $\phi^n$ can be used to 
+update the fine-mesh flux via 
+\begin{equation}
+ \phi^{n+1}(x) = \frac{\phi^{n}_{j}}{\phi^{n-1/2}_j} \phi(x) \, \quad x \in [x_{j-1/2},x_{j+1/2}] \, .
+\end{equation}
+With $\phi^{n}(x)$ found, the scattering source can be updated,  another 
+sweep can be performed to obtain $\psi^{n+3/2}$, and the
+process can be repeated. 
+
+
+Like CMR, if the NDA converges, it must converge to 
+the right answer.  However, that convergence is not guaranteed \cite{}.
+Sometimes, for a given $\tilde{D}$, the computed $\hat{D}$ leads to 
+a diffusion matrix that is not diagonally dominant.  While this does 
+not prevent solution of the equations, the updated, coarse-mesh flux 
+may contain unphysical features that lead to instability.  
+Specifically, if $\hat{D}_{j+1/2} > \tilde{D}_{j+1/2}$, setting
+\begin{equation}
+ \hat{D}_{j+1/2} = \tilde{D}_{j+1/2} = \frac{J_{j+1/2}}{2\phi_j} \, 
+\end{equation}
+ensures a diagonally-dominant matrix.
+
+In addition, the use of $D_j$ directly may be replaced by 
+Larsen's ``effective'' diffusion coefficient, which may be particularly
+valuable for the step-characteristic scheme in use for both MOC and S$_N$
+calculations.  Even though $D_j$ is arbitary, its proper selection can 
+help convergence.
+
+
+Finally, it has been found that instabilities can be reduced 
+significantly by using under-relaxation of the 
+nonlinear coupling coefficient \cite{}.  In other words, 
+the coefficients are defined
+\begin{equation}
+ \hat{D}^{n+1}_{j+1/2} = \alpha \hat{D}^{n+1}_{j+1/2} + (1-\alpha)\hat{D}^{n}_{j+1/2}  \, ,
+\end{equation}
+where  $\alpha \in [0, 1)$ is the relaxation parameter.  Based on 
+past experience, typical values for $\alpha$ range from 0.5 to 0.8, 
+though the optimum value is highly problem dependent.
+
+
+
+
+
+\section*{Further Reading}
+
+A review paper by Adams and Larsen \cite{adams2002fim} provides a survey of the 
+many acceleration techniques available for the discrete ordinates equations, and 
+with its several hundred references, is the place to look for further 
+information.  Lewis and Miller provides more information on coarse mesh 
+rebalance, and Cefus and Larsen have assessed its stability \cite{cefus1990sac}. 
+ Park and Cho \cite{park2004cma} have suggested angular-dependent rebalance 
+schemes, and their work is a good place to start to find references to other CMR 
+variations.  The discontinuity factors used in CMFD were first proposed by Smith 
+in the context of homogenization \cite{smith1980shm}, and he later proposed 
+their use for acceleration \cite{smith1983nms}. A recent paper by Zhong et al. 
+\cite{zhong2008itl} provides a modern overview and advanced use of the approach 
+along with a relatively detailed set of equations for implementation.  
+
+
+%  For edge $j+\frac{1}{2}$ joining meshes $j$ and $j+1$, we compute from the high order solution the net current $J_{j+\frac{1}{2}}$ and enforce
+% \begin{equation}
+%  J_{j+\frac{1}{2}} = -\tilde{D}_{1+\frac{1}{2}} \Big ( \bar{\phi}_{j+1}-\bar{\phi}_{j} \Big ) -\hat{D}_{1+\frac{1}{2}} \Big ( \bar{\phi}_{j+1}-\bar{\phi}_{j} \Big ) \, ,
+% \end{equation}
+% where
+% \begin{equation}
+%  \D
+% \end{equation}

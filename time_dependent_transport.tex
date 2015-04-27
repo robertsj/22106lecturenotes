@@ -1,0 +1,601 @@
+\chapter{Time-Dependent Transport}
+\label{lec:time_dependent_transport}
+
+This lecture investigates approaches for solving the time-dependent neutron 
+transport equation using the discrete ordinates method.  Several 
+important historical schemes are presented. Additionally, a generalized approach for 
+solving the equations via generic solvers is presented, and several options
+and challenges are identified.  Throughout, delayed neutron precursors 
+are explicitly included.
+
+\section{The Time-Dependent Transport Equation}
+
+We begin with the time-dependent, multigroup transport equation (TDTE),
+\begin{equation}
+\begin{split}
+\overbrace{ \frac{1}{v_g} \frac{\partial \psi_g}{\partial t} }^{\text{time rate of change}} &=  
+    - (\overbrace{ \hat{\Omega} \cdot \nabla \psi_g(\vec{r},\Omega,t) + 
+                   \Sigma_{tg}(\vec{r},t)  \psi_g(\vec{r},\Omega,t) }^
+                 {\text{rate of destruction}} ) \\ 
+    &+ \overbrace{\frac{1}{4\pi} \int_{4\pi}d\Omega' \, \sum_{g'=1}^{G} 
+                  \Sigma_{sg \gets g'}(\vec{r},\Omega' \cdot \Omega,t) \psi_{g'}(\vec{r},\Omega',t)}^
+                 {\text{production rate from in-scatter}} \\
+    &+ \overbrace{\frac{1}{4\pi k_{\text{crit}} }  \int_{4\pi}d\Omega' \, 
+                    \Bigg ( 
+                       \chi_{pg}(\vec{r})(1-\beta(\vec{r})) \sum_{g'=1}^{G} 
+                       \nu\Sigma_{fg'}(\vec{r},t)  \psi_{g'}(\vec{r},\Omega',t) 
+                    \Bigg )}^
+                 {\text{production rate from prompt fission}} \\
+    &+ \overbrace{\sum_i \lambda_i C_i(\vec{r}, t) \chi_{ig}(\vec{r})}^
+                 {\text{production rate from delayed fission}} \\
+    &+ \overbrace{q_g(\vec{r}, \hat{\Omega}, t)}^
+                 {\text{production rate from external sources}}\, ,  \,\,\, g = 1 \ldots G
+\end{split}
+\label{eq:tdte}
+\end{equation}
+with a corresponding set of precursor equations,
+\begin{equation}
+ \frac{\partial C_i}{\partial t} =  
+   \frac{\beta_i(\vec{r})}{k_{\text{crit}}} \int_{4\pi}d\Omega' \,  
+     \sum_{g'=1}^{G} \nu\Sigma_{fg'}(\vec{r},t)  
+       \psi_{g'}(\vec{r},\Omega',t) 
+  - \lambda_i C_i(\vec{r},t) \, , \,\,\, i = 1\ldots N \, .
+\label{eq:prec}
+\end{equation}
+While the notation is essentially standard, it does imply 
+isotropic scattering in the LAB system.  Furthermore, it
+assumes that 
+a steady-state calculation has been performed for the critical 
+$k$-eigenvalue and
+use of modern delayed neutron data such that a single set of 
+decay constants $\lambda_i$ is applicable to all materials.
+
+Before proceeding, we adopt the operator notation developed 
+in \LECTURE{operator} to simplify
+somewhat the exposition to follow.
+For the time-dependent multigroup problem, this notation generalizes to 
+\begin{equation}
+  \frac{1}{v_g} \frac{\partial \psi_g}{\partial t}
+   = -\mathcal{L}_g\psi_g
+     + \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi_{g'}
+     +  \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C_i \, ,
+\label{eq:tdteop}
+\end{equation}
+and
+\begin{equation}
+ \frac{\partial C_i}{\partial t} =  
+  \beta_i \sum_{g=1}^G \mathcal{F}_{g} \phi_{g} - \lambda_i C_i \, ,
+\label{eq:precop}
+\end{equation}
+where $\mathcal{F}$ has absorbed the eigenvalue, and
+$\mathcal{X}_{pg} $ has absorbed the $1-\beta$ term.
+
+\section{Time-Integration Schemes}
+
+There appear to exist two broad categories of time integration 
+approaches applicable to solving the TDTE.
+The first and historically dominant approach discretizes
+the equations in time in some (usually
+simple) manner, and introduces ``synthetic'' materials and
+sources to convert the time step into a fixed source problem.
+This approach is attractive because it can make use of 
+an existing fixed source code without much additional
+code.  Moreover, by consistently differencing the
+fluxes and precursors, it is possible to eliminate the 
+precursors as an unknown, thus reducing the size of 
+the system.  
+A drawback to this approach is that for complex
+time integration schemes, the modified coefficients may 
+become arbitrarily complex. Any change in a scheme would
+require different coefficients.  Furthermore, coupling
+to other physics would be limited to operator splitting,
+possibly with an inner iteration to correct.
+
+A second approach is to consider the TDTE as a generic
+ODE for use in general time integration schemes.  This
+approach is attractive because arbitrarily high order
+integration schemes would be applicable.  Moreover,
+it would be comparitively easier to couple other 
+physics, yielding one consistent set of ODE's.  
+A significant potential downside to this approach is that
+the operators used to define the ODE may be more 
+difficult to apply and may require significant new
+code.  
+Interestingly, and perhaps telling of these challenges,
+it appears no production codes use this latter approach.
+
+\section{A Survey of Historical Time Integration Schemes}
+
+At least three variants of the first approach are found in
+production codes of the last several decades.  Much of 
+the discussion to follow is similar to the review given
+by Dishaw \cite{dishaw2007tdd}, though we have made 
+corrections and our own observations where
+needed.  In all cases, where applicable, the historical 
+schemese make use of synthetic sources and materials in order 
+to convert the time-dependent problem into 
+a series of fixed-source problems.
+
+\subsection{TIMEX-1972}
+
+In the first incarnation of the Los Alamos TIMEX code, the time 
+discretization is defined using a semi-implicit,
+first order discretization defined by
+\begin{equation}
+  \frac{1}{\Delta_t v_g} \left ( \psi^{n+1}_g - \psi^{n}_g \right )
+     + \mathcal{L}\psi^{n+1}_g = 
+       \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n}_{g'}
+     +  \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C^{n}_i \, ,
+\label{eq:timex1972}
+\end{equation}
+where $n$ indexes the time step.  Note that the latest time
+step $n+1$ occurs only on the left hand side; hence, the 
+implicit component of this step is relatively small.  Note,
+original documentation for this method was not found; hence, 
+we rely on Dishaw's review \cite{dishaw2007tdd}.
+
+Substituting
+\begin{equation}
+ \tilde{\Sigma}_{tg} \equiv \Sigma_{tg} + \frac{1}{\Delta_t v_g} \, ,
+\end{equation}
+with a corresponding change to $\tilde{\mathcal{L}}$ and defining
+\begin{equation}
+ \tilde{q}^{n+1} \equiv
+     \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n}_{g'}
+     +  \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C^{n}_i
+     - \frac{1}{\Delta_t v_g} \psi^{n}_g \, ,
+\end{equation}
+yields the equation
+\begin{equation}
+  \tilde{\mathcal{L}}_g\psi^{n+1}_g = \tilde{q}^{n+1}_g \, ,
+\end{equation}
+which is a one group fixed source 
+problem with pure absorption.  The precursors are 
+updated based on the new flux.
+
+This method has two chief downsides.  The first is its inherent
+instability for large time steps being only slightly implicit.  
+The second is its inherent inaccuracy caused by lagging all
+scattering and fission sources.  What this implies is that the
+scattering and fission sources are never converged at a time 
+step, a potentially huge source of error.
+The method was attractive because of its efficiency: only a 
+single transport sweep is required per step.
+
+\subsection{TIMEX-1976}
+
+A second incarnation of TIMEX \cite{hill1976tim} 
+improved its time discretization,
+using a modified semi-implicit scheme defined by
+\begin{equation}
+\begin{split}
+  \frac{1}{\Delta_t v_g} \left ( \psi^{n+1}_g - \psi^{n}_g \right )
+     + \mathcal{L}\psi^{n+1}_g &= 
+       \mathcal{M} \sum_{g'=1}^{g-1} 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n+1}_{g'}  \\
+    &+ \mathcal{M} \sum_{g'=g}^{G} 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n}_{g'}
+     +  \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C^{n}_i \, .
+\end{split}
+\label{timex1976}
+\end{equation}
+ 
+This updated scheme introduces something similar to 
+Gauss-Seidel iteration for defining the scattering and
+fission sources, though it converges neither.  Consequently, this
+scheme is still subject to gross inaccuracy.  
+As done for TIMEX 1972, we can define synthetic materials
+and sources.  Using $\tilde{\mathcal{L}}$ as above and defining
+\begin{equation}
+ \tilde{q}_g =        \mathcal{M} \sum_{g'=1}^{g-1} 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n+1}_{g'}  
+     + \mathcal{M} \sum_{g'=g}^{G} 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n}_{g'}
+     +  \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C^{n}_i \, ,
+\end{equation}
+we have the equation
+\begin{equation}
+ \tilde{\mathcal{L}}\psi_g = \tilde{q}_g \, ,
+\end{equation}
+which, as expected, has the same form as above.
+
+\subsection{PARTISN}
+
+A successor to TIMEX is the Los Alamos code 
+PARTISN \cite{alcouffe2005par},
+which remains a standard production code for many
+institutions today.
+The time discretization in PARTISN  is equivalent 
+to the the implicit midpoint method \cite{alcouffe1998par}.  Consider the ODE
+\begin{equation}
+ \frac{d y(t)}{dt} = f(t, y(t)) \, .
+\end{equation}
+The implicit midpoint method defines the step
+\begin{equation}
+ y^{n+1} = y^n + \Delta_t f \left (t^n + \frac{\Delta_t}{2},
+                                   \frac{1}{2} \left (y^{n+1} + y^{n} \right)  \right ) \, .
+\end{equation}
+This can implemented as a sequence of two steps.  Defining
+the midpoint value
+\begin{equation}
+ y^{n+\frac{1}{2}} =  \frac{1}{2} \left (y^{n+1} + y^{n} \right) \, ,
+\end{equation}
+we perform a backward Euler step,
+\begin{equation}
+ y^{n+\frac{1}{2}} = y^n + \frac{\Delta_t}{2} 
+    f \left (t+\frac{\Delta_t}{2}, y^{n+\frac{1}{2}} \right ) \, .
+\end{equation}
+Using the computed $y^{n+\frac{1}{2}}$ and the midpoint definition, we 
+then extrapolate to $t^{n+1}$ 
+using
+\begin{equation}
+ y^{n+1} =  2y^{n+\frac{1}{2}} - y^n \, .
+\end{equation}
+It can be shown this is a second order accurate method.  
+
+We can apply this method to the TDTE.  The fully implicit
+backward Euler half-step is defined via
+\begin{equation}
+  \frac{2}{\Delta_t v_g} \left ( \psi^{n+\frac{1}{2}}_g - \psi^{n}_g \right )
+     + \mathcal{L}\psi^{n+\frac{1}{2}}_g = 
+       \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n+\frac{1}{2}}_{g'}
+     +  \mathcal{M}\sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} C^{n+\frac{1}{2}}_i \, ,
+\label{eq:partisnpsi}
+\end{equation}
+where the consistently-discretized precursors are
+governed by
+\begin{equation}
+ \frac{2}{\Delta_t} \left ( C_i^{n+\frac{1}{2}} - C_i^{n} \right )
+   = \beta_i \sum_{g=1}^G \mathcal{F}_{g} \phi^{n+\frac{1}{2}}_{g} - \lambda_i C^{n+\frac{1}{2}}_i \, .
+\label{eq:partisnC}
+\end{equation}
+Taking these steps, the updated fluxes and precursors are
+defined via
+\begin{equation}
+ \begin{split}
+   \psi_g^{n+1} &= 2 \psi_g^{n+\frac{1}{2}} + \psi_g^{n} \\
+   C_i^{n+1}    &= 2 C_i^{n+\frac{1}{2}} + C_i^{n} \, .
+ \end{split}
+\end{equation}
+
+As done for the TIMEX methods, we can cast Eqs. \ref{eq:partisnpsi}
+and \ref{eq:partisnC} as a fixed-source problem.  First, we 
+solve \EQ{eq:partisnC} for the updated concentrations,
+\begin{equation}
+   C_i^{n+\frac{1}{2}} = 
+     \frac{ \Delta'_t \beta_i }{1+\Delta'_t \lambda_i} \sum_{g=1}^G \mathcal{F}_{g} \phi^{n+\frac{1}{2}}_{g} 
+     + \frac{C_i^{n}}{1+\Delta'_t \lambda_i } \, ,
+\end{equation}
+where $\Delta'_t = \frac{\Delta_t}{2}$.
+Substituting this into \EQ{eq:partisnpsi} yields
+\begin{equation}
+\begin{split}
+  \frac{1}{\Delta'_t v_g} \left ( \psi^{n+\frac{1}{2}}_g - \psi^{n}_g \right )
+     &+ \mathcal{L}_g\psi^{n+\frac{1}{2}}_g = 
+       \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \mathcal{X}_{pg} \mathcal{F}_{g'} 
+         \right )\phi^{n+\frac{1}{2}}_{g'} \\
+    &+  \mathcal{M}\sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} 
+     \left ( 
+       \frac{ \Delta'_t \beta_i }{1+\Delta'_t \lambda_i} \sum_{g'=1}^G \mathcal{F}_{g'} \phi^{n+\frac{1}{2}}_{g'} 
+       + \frac{C_i^{n}}{1+\Delta'_t \lambda_i } 
+     \right ) \, .
+\end{split}
+\end{equation}
+Rearranging, we find
+\begin{equation}
+\begin{split}
+  \left ( \frac{1}{\Delta'_t v_g} + \mathcal{L}_g \right )\psi^{n+\frac{1}{2}}_g &= 
+       \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \left( \mathcal{X}_{pg} +
+                  \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} \left ( \frac{ \Delta'_t \beta_i }{1+\Delta'_t \lambda_i} \right )
+           \right ) \mathcal{F}_{g'} 
+         \right )\phi^{n+\frac{1}{2}}_{g'} \\
+   &+ \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} 
+      \left ( 
+         \frac{C_i^{n}}{1+\Delta'_t \lambda_i } 
+      \right ) + \frac{\psi^{n}_g}{\Delta'_t v_g} \, ,
+\end{split}
+\end{equation}
+Defining
+\begin{equation}
+ \tilde{\mathcal{L}}_g \equiv \frac{1}{\Delta'_t v_g} + \mathcal{L}_g \, ,
+\end{equation}
+\begin{equation}
+ \tilde{\chi}_g \equiv 
+     \left( \mathcal{X}_{pg} +
+        \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} 
+          \left ( \frac{ \Delta'_t \beta_i }{1+\Delta'_t \lambda_i} \right )
+     \right )  \, ,
+\end{equation}
+and
+\begin{equation}
+ \tilde{q}^{n+\frac{1}{2}}_g \equiv 
+   \mathcal{M} \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} 
+   \left ( 
+     \frac{C_i^{n}}{1+\Delta'_t \lambda_i } 
+   \right ) + \frac{\psi^{n}_g}{\Delta'_t v_g} \, ,
+\end{equation}
+we have
+\begin{equation}
+  \tilde{\mathcal{L}}_g \psi^{n+\frac{1}{2}}_g =  
+         \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \tilde{\mathcal{X}}_{g}\mathcal{F}_{g'} 
+         \right )\phi^{n+\frac{1}{2}}_{g'} 
+         + \tilde{q}^{n+\frac{1}{2}}_g \, ,
+\end{equation}
+which is a standard fixed source multigroup problem.
+
+The actual implementation in PARTISN is slightly different
+from that presented above.  In PARTISN, the angular flux is
+defined for $t^{i-\frac{1}{2}}, t^{i+\frac{1}{2}}, \ldots$
+while the scalar fluxes, and, hence, reaction rates are 
+computed at the centered time.  Moreover, it does not 
+appear that PARTISN includes delayed neutrons. 
+
+Another modern code, TD-TORT, also employs a fully implicit 
+approach \cite{seubert2009tda}, though the exact method was
+not described in the available literature.  
+However, it appears the implementation used is
+limited to backward Euler and hence is only first order.  
+
+
+\section{Higher-Order Synthetic Schemes}
+
+It was mentioned above that for all but the simplest time-stepping
+schemes, a time discretization of the TDTE becomes quite complex.
+There does exist a class of high order methods that does allow
+a rather simple discretization in terms only of synthetic sources
+and materials called the \emph{backward differentiation formula} (BDF) 
+methods \cite{leveque2007fdm}.
+The first order BDF method is equivalent to the backward Euler scheme.
+The BDF methods of orders 1 through 3 are defined by
+\begin{equation}
+\begin{split}
+               y^{n+1} -              y^{n}                                               &= \Delta_t f(t^{n+1}, y^{n+1}) \\
+  \frac{ 3}{2} y^{n+1} - \frac{ 4}{ 2}y^{n} + \frac{1}{ 2} y^{n-1}                        &= \Delta_t f(t^{n+1}, y^{n+1}) \\
+  \frac{11}{6} y^{n+1} - \frac{18}{ 6}y^{n} + \frac{9}{ 6} y^{n-1} - \frac{2}{6} y^{n-2} &= \Delta_t f(t^{n+1}, y^{n+1}) \, ,
+\end{split}
+\end{equation}
+though the methods are stable through sixth order.  These can be 
+written more compactly as
+\begin{equation}
+   \sum_{i = 0}^{m} a_i y^{n-i+1} =  \Delta_t f(t^{n+1}, y^{n+1}) \, .
+\end{equation}
+
+
+As done for backward Euler, we can define synthetic 
+materials and sources.  In this case, defining
+\begin{equation}
+ \tilde{\mathcal{L}}_g \equiv \frac{a_0}{\Delta_t v_g} + \mathcal{L}_g \, ,
+\end{equation}
+\begin{equation}
+ \tilde{\chi}_g \equiv 
+     \left( \mathcal{X}_{pg} +
+        \sum_{i=1}^{I} \lambda_i \mathcal{X}_{dig} 
+          \left ( \frac{ \Delta_t \beta_i }{a_{0}+\Delta_t \lambda_i} \right )
+     \right )  \, ,
+\end{equation}
+and
+\begin{equation}
+ \tilde{q}^{n+1}_g \equiv 
+    \mathcal{M} \sum_{i=1}^{I} \left ( \frac{ \mathcal{X}_{dig}  \lambda_i}{a_0 + \lambda_i \Delta_t} \sum^{m}_{j=1} a_m C^{n-j+1}_i \right )
+    -  \sum^{m}_{j=1}  \frac{a_j \psi^{n-j+1}_g}{\Delta_tv_g} \, ,
+\end{equation}
+yields the same standard multigroup form
+\begin{equation}
+  \tilde{\mathcal{L}}_g \psi^{n+1}_g =  
+         \mathcal{M} \sum_{g'=1}^G 
+         \left (
+           \mathcal{S}_{gg'} + 
+           \tilde{\mathcal{X}}_{g}\mathcal{F}_{g'} 
+         \right )\phi^{n+1}_{g'} 
+         + \tilde{q}^{n+1}_g \, .
+\end{equation}
+Of course, using a a BDF method with order $m > 1$ requires that
+more than one previous state vector is stored.  The cost associated
+with this higher memory use may or may not be outweighted by the
+larger time steps higher order methods allow.
+
+It is worth noting that no mention of the BDF methods for neutron
+transport can be found in the literature (though admittedly the
+search was not great).  Numerical studies will be needed to 
+assess how valuable these schemes are for such problems.
+
+\section{Solution Via General Solvers}
+
+We can cast the TDTE into a form suitable for
+solution via general ODE time integration schemes.  
+In particular, we transform the TDTE into 
+an ODE of the form
+\begin{equation}
+ \frac{d u(t)}{dt} = \mathcal{A}\left (t, u(t) \right) u(t)\, .
+\end{equation}
+Rearranging Eqs. \ref{eq:tdteop} and \ref{eq:precop}, we have
+the following system of equations
+
+\begin{equation}
+\frac{d}{dt} 
+\overbrace{\left[ 
+  \begin{array}{c}
+    \psi_1    \\
+    \vdots     \\
+    \psi_G    \\
+    C_1       \\
+    \vdots    \\
+    C_I      
+  \end{array} 
+\right]}^{\mathbf{u}(t)}
+= 
+\overbrace{
+\left[ 
+  \begin{array}{cccccc}
+     v_1 \mathcal{A}^{\psi \psi}_{11} & \cdots  & v_1 \mathcal{A}^{\psi \psi}_{1G}  & 
+     v_1 \mathcal{A}^{\psi C}_{11}    & \cdots  & v_1 \mathcal{A}^{\psi C}_{I1}     \\
+%
+                                      & \ddots  &                                   &                      
+                                      & \ddots  &                                   \\
+%
+     v_G \mathcal{A}^{\psi \psi}_{G1} & \cdots  & v_G \mathcal{A}^{\psi \psi}_{GG}  & 
+     v_G \mathcal{A}^{\psi C}_{1I}    & \cdots  & v_G \mathcal{A}^{\psi C}_{II}     \\
+%
+    \mathcal{A}^{C \psi}_{11}         & \cdots  & \mathcal{A}^{C \psi}_{11}         & 
+    -\lambda_1                        &         &                                   \\
+%
+                                      & \ddots  &                                   & 
+                                      & \ddots  &                                   \\
+%
+    \mathcal{A}^{C \psi}_{I1}         & \cdots  & \mathcal{A}^{C \psi}_{11}         & 
+                                      &         & -\lambda_I                        \\
+  \end{array} 
+\right]}^{\mathcal{A}(t)}
+\overbrace{
+\left[ 
+  \begin{array}{c}
+    \psi_1    \\
+    \vdots     \\
+    \psi_G    \\
+    C_1       \\
+    \vdots    \\
+    C_I   
+  \end{array} 
+\right]}^{\mathbf{u}(t)}
+\label{eq:tdtefull}
+\end{equation}
+where
+\begin{equation}
+ \mathcal{A}^{\psi \psi}_{gg'} = -\mathcal{L}_g\delta_{gg'} + \mathcal{M} \left ( \mathcal{S}_{gg'} + \mathcal{X}_{pg} \mathcal{F}_{g'} \right ) \mathcal{D} \, ,
+\end{equation}
+\begin{equation}
+ \mathcal{A}^{\psi C}_{ig} = \lambda_i \mathcal{M} \mathcal{X}_{dig} \, ,
+\end{equation}
+and
+\begin{equation}
+ \mathcal{A}^{C \psi}_{ig} = \beta_i \mathcal{F}_{g} \mathcal{D} \, .
+\end{equation}
+The size of the operator $\mathcal{A}$ is quite large.  Assuming
+one spatial unknown per cell, this size is
+\begin{equation}
+ \text{size}(\mathcal{A}) = N_{\text{cells}} \times \left ( N_\text{groups} \times N_{\text{angles}} + N_{\text{precursors}} \right ) \, .
+\end{equation}
+To put this in context, suppose we use an $S_8$ approximation in angle,  
+2 energy groups, 8 precursor groups, and a 1 cm mesh for a typical
+two-dimensional reactor benchmark problem such as the LRA problem.  
+This leads to
+\begin{equation}
+ \text{size}(\mathcal{A}) \approx 30000 \times \left ( 2 \times 40 + 8 \right )  \approx 3\times 10^6 \, \text{unknowns} \, .
+\end{equation}
+While solving for millions of unknowns is not infeasible, doing
+so for several thousand time steps brings the total to 
+billions, and so the problem does become quite challenging.
+
+One drawback of the form of \EQ{eq:tdtefull} is the 
+challenge in defining the action of the operator $\mathcal{A}$.
+Typically, the linear systems resulting from implicit 
+discretizations would be solved via Krylov methods, and so
+the full matrix is not necessary.  However, work has been done
+to construct this full operator for the case of no 
+precursors \cite{swesty2006std}.  The full explicit 
+matrix is large and sparse; typical sparsity patterns are given
+in Figure \ref{fig:two_d_matx} for the $\mathcal{A}^{\psi \psi}_{gg'}$
+block of $\mathcal{A}$ \cite{roberts2010dsd}.
+
+% \begin{figure}[ht]
+%   \centering
+%     \subfigure[full matrix]{
+%       \includegraphics[keepaspectratio, width = 3.0 in]{two_d_matx_full}
+%      }
+%      \subfigure[similar to (a), and zoomed]{
+%        \includegraphics[keepaspectratio, width = 3.0 in]{two_d_matx_zoom}
+%      }
+%   \caption{2-D, 2-G, 20 $\times$ 20 mesh, S$_4$ in (a)}
+%   \label{fig:two_d_matx}
+% \end{figure}
+
+An alternative to constructing the operator explicitly would be to
+define only its action.  Most of the action $\mathcal{A}$ is
+straightforward; for example, a term such as 
+$\mathcal{M} \mathcal{S}_{gg'} \mathcal{D} \psi_{g'}$ represents a typical
+source construction likely present in most codes in some form.  However,
+the action $\mathcal{L}_g \psi_{g}$ is not likely found.  This is because
+discrete ordinates codes solve the problem via sweeping across the domain
+for all angles.  This sweep is represented by the \emph{inverse} of the 
+operator $\mathcal{L}_g $.  To be more explicit, consider the 
+equation
+\begin{equation}
+ \mathcal{L}_g \psi_g = \mathcal{M} \mathcal{S}_{gg} \mathcal{D} \psi_g + q_g \, .
+\end{equation}
+A common iteration scheme would solve this fixed source problem via the process
+\begin{equation}
+ \psi_g^{k+1} = \mathcal{L}^{-1}_g  \mathcal{M}  \mathcal{S}_{gg}  \mathcal{D} \psi^{k}_g + \mathcal{L}^{-1}_g q_g \, ,
+\end{equation}
+where the iteration index $k$ is not to be confused with a time index.
+Such iteration is called \emph{Richardson iteration} or more frequently 
+in the context of neutron transport \emph{source iteration}.
+
+Hence, transport solvers typically have the action of $\mathcal{L}^{-1}$
+available.  To construct the action $y \gets \mathcal{L} x$, we can solve
+the linear system
+\begin{equation}
+ \mathcal{L}^{-1} y = x \, 
+\end{equation}
+via Krylov methods that require only the action $\mathcal{L}^{-1}$. 
+Alternatively, the individual $\mathcal{L}_g$ for each group could
+be explicitly constructed, though of course such construction 
+would potentially be repeated at every time step due to any material
+changes. 
+
+It is not clear whether explicitly constructing $\mathcal{A}$ or
+constructing its action using an explicit or approximate action of
+$\mathcal{L}_g$ is most economical.  As with most such questions,
+the answer is likely highly dependent on the problem being solved and
+the machine on which the problem is solved.  Worth noting is that
+either method that does not employ the action of $\mathcal{L}^{-1}$ can
+be considered a ``sweepless'' algorithm; such an algorithm is
+the focus of the work of Davidson and Larsen \cite{davidson2009std},
+though they discuss it in the context of a particular spatial 
+discretization and solver.
+
+
+\begin{exercises}
+
+  %----------------------------------------------------------------------------%
+  \item \textbf{Time-Dependent Diffusion}. 
+    Derive the time-dependent, multigroup diffusion equations including 
+    delayed neutron precursors.
+  
+\end{exercises}

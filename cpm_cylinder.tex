@@ -1,0 +1,37 @@
+\chapter{CPM in Cylindrical Coordinates}
+\label{lec:cpm_cylinder}
+
+In this lecture, the collision probability method is derived for 
+1-D cylindrical coordinates and specialized for the case of 
+annular systems.  For many years, this approach was fundamental for 
+pin-cell spectrum calculations.
+
+\section*{Sample Code}
+
+To be continued.
+
+\section*{Further Reading}
+
+Lewis and Miller. Hebert.  Carlvik 1964 paper.
+
+%------------------------------------------------------------------------------%
+\begin{exercises}
+
+  %----------------------------------------------------------------------------%
+  \item \textbf{White Boundary Conditions}. 
+  
+  Collision probabilities 
+  found using the methods discussed in this lecture can be modified to 
+  account for white boundary conditions by setting 
+  \begin{equation*}
+  R_i =  \Sigma_{i}V_i - \sum_{j} \Sigma_j V_j P_{j\to i} \, ,
+  \end{equation*}
+  and defining updated collision probabilities
+  \begin{equation*}
+  \Sigma_{i}V_i P^{\text{white}}_{j\to i} = 
+    \Sigma_{i}V_i P_{j \to i} - \frac{R_i R_j}{\sum_k R_k} \, .
+  \end{equation*}
+  Prove this expression by using reciprocity relations.
+
+    
+\end{exercises}

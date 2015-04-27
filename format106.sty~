@@ -161,10 +161,7 @@
 % Code listings
 \definecolor{light-gray}{gray}{0.95}
 \lstset{basicstyle=\tiny\ttfamily,
-        backgroundcolor=\color{white},
+       % numbers=left,
+        backgroundcolor=\color{light-gray},
         frame=shadowbox, 
-        language=python,
-        showtabs=false,
-        commentstyle=\color{blue},
-        rulesepcolor=\color{light-gray},
-        }
+        rulesepcolor=\color{blue}}

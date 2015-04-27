@@ -1,0 +1,357 @@
+\chapter{Numerical Diffusion}
+\label{lec:numerical_diffusion}
+
+In \LECTURE{pn_method_and_diffusion}, the diffusion approximation 
+was formally derived.  In this lecture,  we present an approach 
+for solving the diffusion equations numerically.  Diffusion theory 
+represents an important method by itself.  Moreover, it finds widespread
+use in the acceleration of higher-order transport methods, including 
+the nonlinear diffusion acceleration of \LECTURE{nonlinear_acceleration} and
+the linear preconditioners of \LECTURE{linear_acceleration}.
+
+\section*{Mesh-Centered Diffusion Approximation}
+
+The diffusion approximation can also be coupled with the 
+multigroup treatment in multiple spatial dimensions.  Here,
+we limit the discussion to the multidimensional, one-group
+diffusion equation.  A full multigroup treatment is left as 
+an exercise.
+
+Consider the one-group diffusion equation
+\begin{equation}
+  -\nabla D(\vec{r}) \nabla \phi(\vec{r}) + \Sigma_r(\vec{r})\phi(\vec{r})
+    = S(\vec{r}) \, ,
+\label{eq:1gdiff}
+\end{equation}
+where $\Sigma_r$ is the ``removal'' cross section.  In the one-group
+approximation, $\Sigma_r = \Sigma_a$.
+To solve \EQ{eq:1gdiff} numerically, we use 
+a mesh-centered, finite-volume approach, 
+in which cell materials and sources are taken to be 
+constant \cite{hebert2009arp}. 
+By integrating \EQ{eq:1gdiff} over the volume $V_{ijk}$, one obtains
+\begin{equation}
+\begin{split}
+ \int^{x_{i+1/2}}_{x_{i-1/2}} dx 
+   \int^{y_{j+1/2}}_{y_{j-1/2}} dy 
+     & \int^{z_{k+1/2}}_{z_{k-1/2}} dz 
+    \Bigg \{ -\nabla D(\vec{r}) \nabla \phi(\vec{r})  
+              + \Sigma_r(x,y,z) \phi(x,y,z) \Bigg \} \\
+       &= \int^{x_{i+1/2}}_{x_{i-1/2}} dx 
+            \int^{y_{j+1/2}}_{y_{j-1/2}} dy 
+              \int^{z_{k+1/2}}_{z_{k-1/2}} dz \, S(x,y,z)  \, ,
+\end{split}
+\end{equation}
+or
+\begin{equation}
+\begin{split}
+ -D_{ijk} \Bigg [ \Delta_{y_j}  \Delta_{z_k} 
+                   \Big (\phi_x(x_{i+1/2},y_j,z_k) &- \phi_x(x_{i-1/2},y_j,z_k) \Big ) \\
+                 + \Delta_{x_i} \Delta_{z_k} 
+                   \Big (\phi_y(x_i,y_{j+1/2},z_k) &- \phi_y(x_i,y_{j-1/2},z_k) \Big ) \\
+                 + \Delta_{x_i}  \Delta_{y_j} 
+                   \Big (\phi_z(x_i, y_j, z_{k+1/2}) &- \phi_z(x_i, y_j, z_{k-1/2}) \Big ) 
+          \Bigg ] \\
+     + \Delta_{x_i} \Delta_{y_j} \Delta_{z_k}  \Sigma_{r,ijk} \phi_{ijk} 
+      &= \Delta_{x_i} \Delta_{y_j} \Delta_{z_k} S_{ijz} \, ,
+\end{split}
+\label{eq:integrateddiffeq}
+\end{equation}
+where the cell-centered flux (equal to the average flux) is defined as
+\begin{equation}
+ \phi_{ijk} \equiv 
+   \frac{1}{\Delta_{x_i}}\frac{1}{\Delta_{y_j}}\frac{1}{\Delta_{z_k}} 
+     \int^{x_{i+1/2}}_{x_{i-1/2}} dx 
+     \int^{y_{j+1/2}}_{y_{j-1/2}} dy 
+     \int^{z_{k+1/2}}_{z_{k-1/2}} dz \, \phi(x,y,z) \, ,
+\end{equation}
+the cell-average source is
+\begin{equation}
+ S_{ijk} \equiv 
+   \frac{1}{\Delta_{x_i}}\frac{1}{\Delta_{y_j}}\frac{1}{\Delta_{z_k}} 
+     \int^{x_{i+1/2}}_{x_{i-1/2}} dx 
+     \int^{y_{j+1/2}}_{y_{j-1/2}} dy 
+     \int^{z_{k+1/2}}_{z_{k-1/2}} dz \, S(x,y,z) \, ,
+\end{equation}
+and, for example, $\phi_x(x_{i+1/2},y_j,z_k)$ is the derivative of $\phi$ with 
+respect to $x$, averaged over $y$ and $z$, and evaluated at $x=x_{i+1/2}$.
+
+To evaluate the partial derivatives $\phi_x$, $\phi_y$, and $\phi_z$ in 
+\EQ{eq:integrateddiffeq}, Taylor-series expansions are 
+employed. For the
+$x$-directed terms at the left (or west) boundary, let
+\begin{equation}
+  \phi(x_{i-1},y_j,z_k)  \approx 
+      \phi(x_{i-1/2},y_j,z_k) - 
+      \frac{\Delta x_{i-1}}{2} \phi^+_x (x_{i-1/2},y_j,z_k) 
+ \label{eq:leftXexpA} 
+\end{equation}
+and
+\begin{equation}
+  \phi(x_{i},y_j,z_k)    \approx 
+      \phi(x_{i-1/2},y_j,z_k) + 
+      \frac{\Delta x_{i}}{2} \phi^-_x (x_{i-1/2},y_j,z_k) \, ,
+ \label{eq:leftXexpB}
+\end{equation}
+with similar expressions for the right $x$ boundary and the 
+$y$- and $z$-directed terms.  The $+$ and $-$ superscripts
+on the partial derivatives indicate forward and backward extrapolation
+from the cell midpoint,
+respectively.
+By continuity of net current, we must have
+\begin{equation}
+   D_{i-1,jk}\phi^+_x(x_{i-1/2},y_j,z_k) 
+     = D_{ijz}\phi^-_x(x_{i-1/2},y_j,z_k) \, .
+ \label{eq:contcurr}
+\end{equation}
+Multiplication of \EQ{eq:leftXexpA} by 
+$D_{i-1,jk}/\Delta x_{i-1}$ and
+\EQ{eq:leftXexpB} by $D_{ijk}/\Delta x_{i}$,
+adding the results, and rearranging leads to
+\begin{equation}
+ \phi_{i-1/2,jk} = 
+   \frac{D_{i-1,jk} \phi_{i-1,jk} \Delta_{x_i} + 
+             D_{ijk} \phi_{ijk} \Delta x_{i-1}}
+        {D_{i-1,jk} \Delta_{x_i} + D_{ijk} \Delta x_{i-1}} \, .
+\end{equation}
+Substituting this into the \EQ{eq:leftXexpB} gives
+\begin{equation}
+\begin{split}
+ \phi_x(x_{i-1/2},y_j,z_k) &= 
+  \frac{2}{\Delta_{x_i}} 
+    \Bigg (\phi_{ijk} - 
+           \frac{D_{i-1,jk} \phi_{i-1,jk} \Delta_{x_i} + 
+                     D_{ijk} \phi_{ijk} \Delta x_{i-1}}
+                {D_{i-1,jk} \Delta_{x_i} + D_{ijk} \Delta x_{i-1}} 
+    \Bigg ) \\
+  &= \frac{2}{\Delta_{x_i}} 
+     \Bigg ( \frac{D_{i-1,jk} \phi_{ijk} \Delta_{x_i} + 
+                       D_{ijk} \phi_{i-1,j,k} \Delta x_{i-1}}
+                  {D_{i-1,jk}  \Delta_{x_i} + 
+                       D_{ijk} \Delta x_{i-1}} \Bigg ) \\  
+\end{split}
+\end{equation}
+or
+\begin{equation}
+  \phi_x(x_{i-1/2},y_j,z_k) = 
+    2D_{i-1,jk} \Bigg ( \frac{\phi_{ijk} - \phi_{i-1,jk}} 
+                             {\Delta_{x_i} D_{i-1,jk} + 
+                              \Delta x_{i-1} D_{ijk}} 
+                \Bigg ) \, ,  
+\label{eq:phideriv1}
+\end{equation}
+Similarly, one finds
+\begin{equation}
+  \phi_x(x_{i+1/2},y_j,z_k) = 
+    2D_{i+1,jk} \Bigg ( \frac{\phi_{i+1,jk}-\phi_{ijk}} 
+                             {\Delta_{x_i} D_{i+1,jk} + 
+                              \Delta x_{i+1} D_{ijk}} 
+                \Bigg ) \,  .
+\label{eq:phideriv2}
+\end{equation}
+These equations and the equivalents for $y$ and $z$ 
+are substituted into
+\EQ{eq:integrateddiffeq} to obtain a set of \emph{internal equations}.
+
+
+\subsubsection{Internal Equation}
+Substitution of Eqs.~(\ref{eq:phideriv1})~and~(\ref{eq:phideriv2})
+into  \EQ{eq:integrateddiffeq} leads to
+\begin{equation}
+\begin{split}
+  -D_{ijk} 
+   \Bigg \{  
+    \Delta_{y_j} \Delta z_j 
+    \Bigg [ 
+       2D_{i+1,jk} \Bigg (& 
+                  \frac{ \phi_{i+1,j}-\phi_{i,j} } 
+                       { \Delta_{x_i} D_{i+1,jk} + \Delta x_{i+1} D_{ijk} } 
+                  \Bigg ) +  \\
+       2D_{i-1,jk} \Bigg (& 
+                  \frac{\phi_{i-1,j} - \phi_{i,j}} 
+                       { \Delta_{x_i} D_{i-1,jk} + \Delta x_{i-1} D_{ijk} } 
+                 \Bigg ) 
+    \Bigg ] \ldots + 
+   \Bigg \} + \\
+   & \Delta_{x_i} \Delta_{y_j} \Delta_{z_k} \Sigma_{r,ijk} \phi_{ijk} 
+   = \Delta_{x_i} \Delta_{y_j} \Delta_{z_k} S_{ijk} \, .
+\end{split}
+\label{eq:inteqs}
+\end{equation}  
+\EQUATION{eq:inteqs} represents the balance of neutrons in the
+cell $(i,j,k)$.
+
+We can further simplify the notation.  Let us define a coupling coefficient
+\begin{equation}
+ \tilde{D}_{i+1/2,jk} \equiv 
+   \frac{2D_{i+1,jk}D_{ijk}}
+        {\Delta_{x_i} D_{i+1,jk} + \Delta_{x_{i+1}} D_{ijk} } \, ,
+\end{equation}
+with similar coefficients for each direction.  Then 
+we can rewrite Eq. \ref{eq:inteqs} as
+\begin{equation}
+ \begin{split}
+     \frac{ \tilde{D}_{i+1/2,j,k}}{\Delta_{x_i}} 
+         \Big (\phi_{ijk} - \phi_{i+1,j,k}  \Big ) 
+  & +\frac{ \tilde{D}_{i-1/2,j,k}}{\Delta_{x_i}} 
+         \Big (\phi_{ijk} - \phi_{i-1,j,k}  \Big ) \\
+    +\frac{ \tilde{D}_{i,j+1/2,k}}{\Delta_{y_j}} 
+         \Big (\phi_{ijk} - \phi_{i,j+1,k} \Big ) 
+  & +\frac{ \tilde{D}_{i,j-1/2,k}}{\Delta_{y_j}} 
+         \Big (\phi_{ijk} - \phi_{i,j-1,k} \Big ) \\
+    +\frac{ \tilde{D}_{i,j,k+1/2}}{\Delta_{z_k}} 
+         \Big (\phi_{ijk} - \phi_{i,j,k+1} \Big ) 
+  & +\frac{ \tilde{D}_{i,j,k-1/2}}{\Delta_{z_k}}
+         \Big (\phi_{ijk} - \phi_{i,j,k-1} \Big ) \\
+  & + \Sigma_{r,ijk} \phi_{ijk} =  S_{ijk} \, .
+ \end{split}
+ \label{eq:inteqssimp}
+\end{equation}
+Note that each term on the left with a coupling coefficient represents
+the net leakage from a surface divided by the area of that surface.
+
+\subsubsection{Boundary Equations}
+
+At the boundaries, we employ the albedo condition \cite{hebert2009arp}
+\begin{equation}
+ \frac{1}{2} D(x,y,z) \nabla \phi(x,y,z) \cdot \hat{n}(x,y,z) + 
+ \frac{1}{4} \frac{1-\alpha(x,y,z)}{1+\alpha(x,y,z)}\phi(x,y,z) = 0 \, ,
+\label{eq:albedo}
+\end{equation}
+where $\hat{n}$ is the outward normal, $\alpha$ describes the albedo 
+condition ($\alpha = 0$ for vacuum, and $\alpha = 1$
+for reflection).  
+
+In three dimensions, a mesh cell has six surfaces, some of which 
+may be part of a global surface.  As an example,
+we consider the west global boundary:
+\begin{equation}
+ \text{west boundary}:  \,\,\,  
+    -\frac{1}{2}D_{1jk} \phi_x(x_{1/2},y_j,z_k) + 
+   \frac{1}{4}\frac{1-\alpha}{1+\alpha}\phi_{1/2,jk} = 0 \, .
+\end{equation}
+Because this expression contains $\phi$ at the edge, we again need to 
+employ Taylor expansions.  For the west boundary, note that
+\begin{equation}
+ \phi_{1jk} \approx \phi_{1/2,jk} + \frac{\Delta_{x_i}}{2} \phi_x(x_{1/2},y_j,z_k) \, ,
+\end{equation}
+and we rearrange to get
+\begin{equation}
+ \phi_{1/2,jk} = \phi_{1jk} - \frac{\Delta_{x_i}}{2} \phi_x(x_{1/2},y_j,z_k) \, .
+\end{equation}
+Placing this into the albedo condition yields
+\begin{equation}
+\begin{split}
+ 0 =  -\frac{1}{2}D_{1jk} \phi_x(x_{1/2},y_j,z_k)  
+  + \frac{1}{4}\frac{1-\alpha}{1+\alpha} 
+    \Bigg ( \phi_{1jk} - \frac{\Delta_{x_i}}{2} \phi_x(x_{1/2},y_j,z_k) \Bigg ) \, ,
+\end{split}
+\end{equation}
+and solving for $\phi_x(x_{1/2},y_j,z_k)$ gives
+\begin{equation}
+ \phi_x(x_{  1/2},y_j,z_k) = \frac{2(1-\alpha)\phi_{1jk}}
+                                  {4(1+\alpha)D_{1jk} + \Delta_{x_1}(1-\alpha)} \, .
+\end{equation}
+For the east, we similarly find
+\begin{equation}
+ \phi_x(x_{I+1/2},y_j,z_k) =-\frac{2(1-\alpha)\phi_{Ijk} }
+                                  {4(1+\alpha)D_{Ijk} + \Delta_{x_I}(1-\alpha)} \, ,
+\end{equation}
+and likewise for the other surfaces. Each of these  is placed into the proper 
+partial derivative of \EQ{eq:integrateddiffeq}.  For example, the leakage
+contribution on the left hand side of \EQ{eq:inteqssimp} due to leakage from 
+the west boundary is transformed as 
+follows\footnote{Ignore the fact that $\phi_{0jk}$ doesn't exist!}: 
+\begin{equation}
+  \frac{ \tilde{D}_{1/2,jk}}{\Delta_{x_1}}  \Big (\phi_{0jk} - \phi_{1jk}  \Big )  \rightarrow 
+     \frac{2D_{1jk}(1-\alpha) \phi_{1jk}}
+      {(4(1+\alpha)D_{1jk} + \Delta_{x_1}(1-\alpha))\Delta_{x_1}} \, .
+\label{eq:west_leakage}      
+\end{equation}
+
+
+\subsubsection{Constructing the Diffusion Matrix}
+
+The equations for cell balance derived heretofore can be combined into 
+a linear system for the cell fluxes.  Generically, we can express this 
+system as
+\begin{equation}
+ \mathbf{L}\vec{\phi} = \vec{S} \, ,
+\end{equation}
+where $\mathbf{L}$ is the  diffusion loss matrix. 
+A straightforward implementation of the one-group diffusion loss matrix 
+is presented in Listing~\ref{list:lossmatrix}.  Note that several 
+parameters and helper functions require definition.  Although the 
+code is set up for three dimensions, it can also be used for 1-D 
+and 2-D problems by proper selection of boundary conditions.
+
+\lstset{language=Python,caption=Sample code for construction of one-group loss matrix., label=list:lossmatrix, morecomment=[l]{\%}}
+\begin{lstlisting}
+L   = zeros((N, N))             # N x N loss matrix
+remdims = [[1,2], [0,2], [0,1]] # For a given dim, provides remaining dims
+# Loop over all cells
+for n in range(0, N) :
+  ijk = cell_to_ijk(n)          # Convert cardinal index to (i, j, k)
+  w = [dx[ijk[0]], dy[ijk[1]], dz[ijk[2]]]
+  # Loop over dimensions
+  for dim in range(0, 3) :
+    bound = [0, Nxyz[dim]]      # Minimum and maximum cell index in this dim
+    # Loop over directions, + and -
+    for dir in range(0, 2) :
+      if ijk[dim] == bound[dir] :
+        # Global boundary
+        side = 3*dim + dir      # index of this side (0-5)
+        B = beta[side]          # albedo for this side
+        L[n][n] = L[n][n] + 2*D[n]*(1-B)/((4*(1+B)*D[n]+w[dir]*(1-B))*w[dir])
+      else :
+        # Coupling to neighbor at cell m
+        ijk_m = ijk
+        ijk_m[dim] = ijk_m[dim] + (-1)**dir
+        m = cell_from_ijk(ijk_m)
+        w_m = [dx[ijk_m[0]], dy[ijk_m[1]], dz[ijk_m[2]]]
+        D_tilde = 2*D[n]*D[m]/((w[dir]*D[m]+w_m[dir]*D[n])*w[dir])
+        L[n][m] = -D_tilde / w[dir]
+        L[n][n] = L[n][n] + D_tilde / w[dir]
+  # Add the removal cross-section component
+  L[n][n] = L[n][n] + Sigma_r[n]
+\end{lstlisting}
+
+
+\begin{exercises}
+ \item \textbf{Boundary Source}.  Suppose a partial current 
+   $J^{\mathrm{west}-}_{jk}$ were incident on the west boundary 
+   of cell $(1, j, k)$.  Show that the corresponding current 
+   balance contribution (i.e., \EQ{eq:west_leakage}) is unchanged 
+   but that the following source term arises:
+  \begin{equation}
+  Q^{\mathrm{boundary}}_{1jk} = \frac{8 D_{1jk} (1+\alpha) J^{\mathrm{west}-}_{jk}}
+                                    {(4(1+\alpha)D_{1jk} + \Delta_{x_1}(1-\alpha))\Delta_{x_1}} 
+  \end{equation}
+ 
+  \item \textbf{One-Group Diffusion}.  For $\Sigma_t = 1.0$ and 
+  $\Sigma_s = 0.0$, compute the flux.
+  
+  \item \textbf{Multigroup Diffusion}. 
+    Although a formal derivation of the multigroup diffusion approximation
+    requires assumptions beyond the ones
+    made in \LECTURE{pn_method_and_diffusion},
+    the resulting set of multigroup diffusion equations is intuitive:
+    \begin{equation}
+    \begin{split}
+      -\nabla D_g(\vec{r}) \nabla \phi_g(\vec{r}) &+ 
+        \Sigma_{rg}(\vec{r})  \psi_g(\vec{r})  = 
+        \sum_{\substack{g'=1 \\ g'\neq g}}^{G} 
+          \Sigma_{sg \gets g'}(\vec{r}) \phi_{g'}(\vec{r})  \\
+        &+  \frac{\chi_g(\vec{r})}{ k}  
+              \sum_{g'=1}^{G} 
+                \nu\Sigma_{fg'}(\vec{r}) 
+                  \phi_{g'}(\vec{r})
+        +  S_g(\vec{r})  \, .
+    \end{split}
+    \label{eq:multigroupneutrondiffusionequation}
+    \end{equation}
+    Extend the routine proposed in Listing~\ref{list:lossmatrix} to handle 
+    multigroup problems.
+  
+  
+\end{exercises}

@@ -9,20 +9,35 @@
 % PREAMBLE
 %---------------------------------------------------------------%
 
-\documentclass[ letterpaper, 11pt, twoside, openany ]{memoir}
+\documentclass[letterpaper, 11pt, twoside, openany]{memoir}
 % NOTE: The option ``oneside'' is for one-sided printing and happens
 %       to reduce several blank pages that would otherwise arise.
-\usepackage{bm}
+\usepackage{bm,xcolor,cancel}
 % This gives a bit more white space...possibly desirable.
 %\OnehalfSpace
+
+\DefineNamedColor{named}{mitred}    {rgb}{0.6,0.2,0.2}
+\DefineNamedColor{named}{mitgray}   {rgb}{0.4,0.4,0.4}
+\DefineNamedColor{named}{darkgray}   {cmyk}{0,0,0,0.90}
 
 \usepackage{format106}
 \usepackage{hyperref} 
 \newcommand{\cov}{{$\, \mathbf{C}_{\sigma\sigma} \,$}}
+\newcommand{\transp}{\mathsf{T}}
 
+
+\newcommand{\ISOA}  [2]{$\prescript{#2}{}{\text{#1}}^{}_{}$}
+\newcommand{\ISOAZ} [3]{$\prescript{#2}{#3}{\text{#1}}^{}_{}$}
+\newcommand{\ISOAZN}[4]{$\prescript{#2}{#3}{\text{#1}}^{}_{#4}$}
+\newcommand{\isoA}  [2]{\prescript{#2}{}{\text{#1}}^{}_{}}
+\newcommand{\isoAZ} [3]{\prescript{#2}{#3}{\text{#1}}^{}_{}}
+\newcommand{\isoAZN}[4]{\prescript{#2}{#3}{\text{#1}}^{}_{#4}}
+             
 \newcommand{\keff}{$k_{\text{eff}}$ }
 \newcommand{\ie}{\textit{i.e. }}
 \newcommand{\eg}{\textit{e.g. }}
+
+\newcommand{\LECTURE}[1]{Lecture~\ref{lec:#1}}
 %---------------------------------------------------------------%
 % DOCUMENT
 %---------------------------------------------------------------%
@@ -40,40 +55,78 @@
 
 \mainmatter 
 
-\part{Nuclear Data}
+\include{introduction}
 
-\include{microscopic_interactions}
-\include{macroscopic_interactions}
-\include{shielding_and_moderation}
-\include{neutron_detection_and_spectroscopy}
-\include{nuclear_data}
-\include{r_matrix_theory}
-\include{neutron_thermalization}
-\include{scattering_laws}
+%\part{Preliminaries}
 
-\part{Monte Carlo Transport}
 
-\include{probability_and_statistics}
-\include{monte_carlo_methods}
-\include{collision_physics}
-\include{tallies_and_uncertainties}
-\include{variance_reduction}
-\include{criticality}
-\include{criticality_safety}
+% \part{Nuclear Data}
+% 
+% \include{microscopic_interactions}
+% \include{macroscopic_interactions}
+% \include{shielding_and_moderation}
+% \include{neutron_detection_and_spectroscopy}
+% \include{nuclear_data}
+% \include{r_matrix_theory}
+% \include{neutron_thermalization}
+% \include{scattering_laws}
+% 
+% \part{Monte Carlo Transport}
+% 
+% \include{probability_and_statistics}
+% \include{monte_carlo_methods}
+% \include{collision_physics}
+% \include{tallies_and_uncertainties}
+% \include{variance_reduction}
+% \include{criticality}
+% \include{criticality_safety}
 % 
 \part{Deterministic Transport} 
 
 \include{transport_equation}
-\include{boundary_conditions}
+\include{neutron_scattering}
+\include{neutron_slowing_down}
+\include{multigroup_method}
 \include{analytical_solutions}
 \include{the_integral_form}
 \include{collision_probability_method}
-\include{discrete_ordinates}
+\include{cpm_cylinder}
+%
 \include{pn_method_and_diffusion}
-\include{linearity_and_reciprocity}
+\include{numerical_diffusion}
+\include{discrete_ordinates}
+\include{nonlinear_acceleration}
+\include{iterative_solvers}
+\include{linear_acceleration}
+\include{time_dependent_transport}
+
+% \include{linearity_and_reciprocity}
+% \include{eigenvalue_problems}
+%\include{monte_carlo_1}
+% \include{random_numbers_and_collision_physics}
+% \include{tallies_and_statistics}
+
+
+\part{Additional Topics} 
+
 \include{the_adjoint_and_perturbation_theory}
 \include{variational_methods}
-% 
+\include{computational_geometry}
+\include{criticality_safety}
+%\include{equivalence_theory}
+%\include{krylov_methods}
+%\include{numerical_diffusion}
+%\include{linear_acceleration}
+%\include{advanced_sn_discretization}
+%\include{method_of_characteristics}
+%\include{coupling_transport_to_other_physics}
+%\include{homogenization}
+%\include{analytic_multigroup}
+%\include{nodal_diffusion}
+% \include{advanced_variance_reduction}
+
+
+
 
 \part{Bibliography and Appendices} 
 
@@ -92,7 +145,7 @@
 
 \appendix
 \renewcommand{\chaptername}{Appendix}
-\include{nomenclature}
+%\include{nomenclature}
 %\include{diffusion}
 
 \end{document}

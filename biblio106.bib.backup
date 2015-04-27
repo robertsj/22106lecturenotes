@@ -591,14 +591,3 @@
   booktitle   = {Journal of Physics: Conference Series, accepted},
   year        = {2010}
 }
-
-
-@article{larsen2009aan,
-  title       = {{Asymptotic Analysis in Nuclear Reactor Theory (invited)}},
-  author      = {Larsen, E.W.},
-  journal     = {Transactions of the American Nuclear Society},
-  volume      = {101},
-  pages       = {711-713},
-  year        = {2009},
-  publisher   = {American Nuclear Society}
-}

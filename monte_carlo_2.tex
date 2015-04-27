@@ -1,0 +1,456 @@
+\chapter{Random Numbers and Collision Physics}
+
+In order to simulate particle transport stochastically, a way 
+to sample the ``random'' nature of particles is needed.  In this 
+lecture, the generation of pseudorandom number sequences is 
+presented.  With these sequences, it is possible to sample 
+from arbitrary probability densities.  
+Finally, a basic particle transport algorithm is proposed.
+
+
+% -----------------------------------------------------------------------------
+\section*{Random Numbers}
+
+The heading is a misnomer---\emph{numbers} are not random, but a 
+\emph{sequence} of numbers can be random. Such sequences can be 
+created using the natural variation of our 
+surroundings, which could include the number of decays counted in 
+a specific interval of time or the noise on an electrical 
+system \footnote{In fact, random.org provides random sequences
+based on atmospheric noise.}.  
+
+For scientific simulations, truly random sequences are not always desirable, 
+specifically  when such simulations are to be repeated for debugging purposes.
+As an alternative to truly random sequences,  
+\emph{pseudorandom} sequences are often used.  A pseudorandom 
+sequence is a deterministic sequence, which means that given an 
+initial \emph{seed}, every number in the sequence can be 
+found directly (although not always efficiently).  Moreover,
+pseudorandom sequences (at least good ones) exhibit statistical
+properties similar to those expected of truly random sequences.
+
+
+
+\emph{Linear Congruential Generators} (LCG's) are probably 
+the most common way to generate psuedorandom 
+sequences in practice and the only ones 
+to be described here.  A LCG is defined by the sequence
+\begin{equation}
+  S_{i+1} = \Big ( S_{i} \cdot g+c \Big ) \: \textrm{mod} \: p
+\label{eq:lcg}
+\end{equation}
+where $S_0$ is the  \emph{seed},
+$g$ is the   \emph{generator} or   \emph{multiplier},
+$c$ is the  \emph{adder} or \emph{increment},
+and $p$ is the  \emph{modulus}.  
+
+Use of a LCG is straightforward.  An initial, integer seed ($S_0$)
+is selected, with which any subsequent value 
+can be found by using \EQ{eq:lcg}  
+However, the numbers from the psuedorandom sequence are most often used to 
+produce a number $r$ drawn uniformly from the range 0 to 1.  Hence,
+the number $S_k$ must be divided by the modulus to 
+get $r_k = S_k / p$.
+
+
+The utility of a LCG depends strongly on the parameter values 
+selected.  A typical choice for the modulus is to 
+set $p = 2^m$ for some integer $m$.  This choice can simplify 
+evaluation of the modulo operator (on some systems) 
+by discarding $m$ largest digits.  Usually,
+$m$ selected as number of bits in the largest integer.
+The \emph{period} of such LCG's is limited to $\frac{p}{4}$ or $2^{m-2}$,
+where the period is the smallest integer $n$ such that $S_0 = S_n$.
+
+
+\textbf{Example}: $p=2^5$, $g=21$, $c=1$, and $s_0 = 13$
+\begin{equation*}
+        s_1 = (13 \cdot 21 +1) \, \textrm{mod} \: 2^5 
+            =  \underbrace{274}_{\cancel{1000}\textbf{10010}} \: \textrm{mod} \, 2^5 = \underbrace{18}_{\textbf{10010}} \, .
+\end{equation*}
+
+
+\emph{Choosing the Multiplier and Increment}
+  \begin{itemize}
+     \item Choose $g$ and $c$ to maximize the period
+     \item Larger values of the $g$ help reduce correlation
+     \item $c=0$ produces a maximum possible period of $2^{m-2}$
+     \item $c=1$ produces a maximum possible period of $2^m$
+  \end{itemize}
+% c=0 is multiplicative, c=1 is mixed
+
+
+\emph{Typical LCG values}
+  \begin{center}
+  \begin{tabular}{ | l | c | c | c | c | }
+\hline
+  Code & p & period & g & c \\
+\hline
+  MCNP5 (LANL) & $2^{63}$ & $2^{63}$ & variable & $1$ \\
+  RACER (KAPL) & $2^{47}$ & $2^{45}$ & $84000335758957$ & $0$ \\
+  VIM (ANL) & $2^{48}$ & $2^{46}$ & $5^{19}$ & $0$ \\
+  MCNP4 (LANL) & $2^{48}$ & $2^{46}$ & $5^{19}$ & $0$ \\
+\hline   
+  \end{tabular}
+  \end{center}
+
+
+\emph{LCG testing}
+  \begin{itemize}
+    \item Spectral test (want to minimize the distance between hyper-planes)
+    \item Diehard test suite (G. Marsaglia)  
+  \end{itemize}
+
+
+\section{Sampling}
+
+\subsection{Direct Sampling}
+
+\emph{Transformation of RV's}
+ 
+Suppose $x$ is a RV with pdf $f(x)$ and a function $y(x)$
+has a pdf $g(y)$.  Then
+\begin{equation*}
+  |g(y)dy| = |f(x)dx| \quad \text{or} \quad  g(y) = f(x) \left | \frac{dx}{dy} \right |
+\end{equation*}
+
+\vfill
+\textcolor{mitred}{Special case: $y(x) = F(x)$}.  Then 
+\begin{equation*}
+ g(F) =  \left \{ 
+         \begin{array}{l l}
+           1      & 0 \leq F \leq 1 \\
+           0      & \text{otherwise} \\
+  \end{array} \right . 
+\end{equation*}
+\vfill
+ $F(x)$ is a uniformly distributed RV
+
+
+\emph{Direct Sampling}
+
+  \begin{itemize}
+     \item Direct inversion of the cdf
+     \begin{itemize}
+      \item Sample: $\xi \in (0, 1)$
+      \item Set: $F(x)=\xi$
+      \item Invert cdf: $x=F^{-1}(\xi)$
+     \end{itemize}
+%     \item Equivalent to Mathematical approach of the Monte Carlo integration
+%Insert equation of x = F-1
+
+     \item Advantages
+        \begin{itemize}
+           \item Often efficient (when $F^{-1}$ exists)
+        \end{itemize}
+
+     \item Disadvantages
+        \begin{itemize}
+           \item $F^{-1}$ may be expensive
+           \item $F^{-1}$ may not exist (e.g. Klein-Nishina)
+        \end{itemize}
+  \end{itemize}
+
+
+\emph{Direct Sampling Example}
+  Consider the exponential distribution
+  \begin{equation*}
+     p(x)dx = \Sigma_{t} e^{-\Sigma_{t} x} \; \textrm{for $0 \le x \le \infty $}
+  \end{equation*}
+  with corresponding cdf
+  \begin{equation*}
+     F(x) = \int_{0}^{x} p(x')dx' = 1 - e^{-\Sigma_{t} x}
+  \end{equation*}
+
+ Sample via:
+  \begin{equation*}
+    \xi = 1 - e^{-\Sigma_{t} x}
+  \end{equation*}
+  \begin{equation*}
+    e^{-\Sigma_{t} x} = 1 - \xi
+  \end{equation*}
+  \begin{equation*}
+    x = -ln(1-\xi) / \Sigma_{t} \equiv -ln(\xi) / \Sigma_{t}
+  \end{equation*}
+%show path length sampling
+
+
+\subsection{Rejection Sampling}
+\emph{Rejection Sampling}
+   \begin{itemize}
+       \item Random sampling of $f(x)$ for which $F(x)$ is hard to invert
+       \item Equivalent to the ``simulation'' approach of MC integration
+   
+       \item Advantages
+          \begin{itemize}
+              \item Very simple
+          \end{itemize}
+   
+       \item Disadvantages
+          \begin{itemize}
+              \item Can become costly and/or confusing
+          \end{itemize}         
+   \end{itemize}
+
+
+\emph[fragile]{Rejection Sampling Algorithm}
+
+\begin{algorithm}[H]
+    select $g(x)$ and $M$ such that $f(x) \leq Mg(x)$\;
+    \While{$x$ is not found}{
+      sample $x$ from $g(x)$ \;
+      sample $\xi$ from $U(0, 1)$\;
+      \uIf {$\xi <\frac{f(x)}{Mg(x)}$}{
+        accept $x$\;
+      }
+      \Else {
+        reject $x$\;
+      }
+    }
+\end{algorithm}
+
+
+
+\emph{}
+\begin{figure}[htbp]
+  \centering
+%  \includegraphics[keepaspectratio, width = 3.5 in]{rejection_sampling}
+\end{figure}
+
+
+\emph{Discrete Sampling}
+ \begin{itemize}
+  \item Build cdf from discrete pdf
+  \item Pick a random number $\xi$
+  \item Perform table search
+  \begin{itemize}
+   \item Linear table search: go through each case one by one
+   \begin{itemize}
+    \item Worst case performance: $O(N)$
+   \end{itemize}
+   \item Binary search: Start in the middle of the number of bins and reduce search space in half each time
+   \begin{itemize}
+    \item Worst case performance: $O(log_{2}N)$
+   \end{itemize}
+  \end{itemize}
+ \end{itemize}
+
+
+\section{Collision Physics}
+
+\subsection{Basic Principles}
+
+\emph[fragile]{Basic Particle Simulation Algortihm}
+
+\begin{algorithm}[H]
+    \tiny
+    %\DontPrintSemicolon
+    \For {all particles}{
+        sample position, direction, and velocity\;
+        \While{particle is alive}{
+             sample distance traveled\;
+             move particle to new location\;
+             \uIf {leak}{
+                 particle is dead!\;
+             }
+             \uElseIf {crosses material boundary}{
+                 move to boundary\;
+             }
+             \Else {
+                 sample collision isotope\;
+                 sample collision type\;
+                 \uIf {absorption}{
+                     particle is dead!\;
+                 }
+                 \Else{
+                     sample direction and velocity\;
+                 }
+             }
+        }
+    }
+\end{algorithm}
+
+
+
+\emph{Source Sampling}
+   \begin{itemize}
+      \item Sample position, direction and velocity
+      
+      \item Depends on problem definition
+      \begin{itemize}
+        \item For fixed source problems, this is known
+        \item For eigenvalue, this must be iterated
+      \end{itemize}
+      
+      \item Fission sources are assumed to be isotropic and energy distribution are provided by tabulated pdfs, Watt's spectrum or other laws
+      
+      \item Watt Spectrum
+      \begin{equation*}
+          W(a,b,E') = Ce^{-aE'}sinh(\sqrt{bE'})
+      \end{equation*}
+      where $a$ and $b$ vary between isotopes
+   \end{itemize}
+
+
+\emph{Distance Traveled}
+   \begin{itemize}
+       \item Evaluate $\Sigma_t(E)$ of material in which particle is located
+       
+       \item Sample from the exponential pdf with parameter $\Sigma_{t}(E)$
+       
+       \item Calculate distance to nearest boundary
+       
+       \item If particle leaves medium, re-start sampling in new material with starting position at material boundary
+       \begin{itemize}
+            \item Exponential distribution has no memory
+       \end{itemize}
+       
+       \item If distance is less than new material surface, particle makes a collision in medium
+   \end{itemize}
+
+
+\emph{Collision Isotope}
+  Determine which isotope of interaction by sampling the discrete pmf 
+  built from the $\Sigma_t$ of each isotope in the material:
+  \begin{equation*}
+       p_{j} = N_{j}\sigma_{tj}(E) / \Sigma_{t}(E)
+  \end{equation*}
+  where
+  \begin{equation*}
+        \Sigma_{t}(E) = \sum_{j} N_{j}\sigma_{tj}(E)
+  \end{equation*}  
+  and $j$ represents the isotope
+
+
+\emph{Collision Type}
+  Once the collision isotope is selected, determine which reaction will 
+  occur by sampling a discrete pmf built from $\sigma$'s of this isotope
+  \begin{equation*}
+       p_{k} = \sigma_{k}(E) / \sigma_{t}(E)     
+  \end{equation*}
+  where $k$ is the reaction type and 
+  \begin{equation*}
+     \sigma_{t}(E) = \sigma_{n,n}(E) + \sigma_{n,n'}(E) + \sigma_{n,\gamma}(E) + \dots
+  \end{equation*}
+
+
+\emph{Collision Type}
+If the collision is...
+    \begin{itemize}
+      \item \emph{absortion}: the particle is killed (in \underline{analog} simulations)
+      \item \emph{scattering}: sample the outgoing energy and direction from the scattering data
+      \item $\mathbf{(n,2n)}$: sample the outgoing energy and direction of each neutron...and then what?
+      \item ...
+   \end{itemize}
+
+
+\emph{Scattering}
+ \begin{itemize}
+  \item Scattering laws are defined in either the CM or LAB system
+  
+  \item Simulation is performed in the LAB system
+  
+  \item Sample energy and direction (sometime they are correlated)
+  
+  \item \emph{ Example}: elastic scattering with target at rest
+  \begin{equation*}
+  E' = E \frac{(A^2+2A \mu_{CM}+1)}{(A+1)^2}
+  \end{equation*}
+  \begin{equation*}
+  \mu_{L} = \frac{1+A \mu_{CM}}{\sqrt{A^2+2A \mu_{CM}+1}}
+  \end{equation*}
+ \end{itemize}
+
+
+\emph{Exit Direction}
+ \begin{itemize}
+  \item The polar angle is given by the scattering law, $\mu_{L}$
+  \item The azimuthal angle is sample uniformly over $2 \pi$
+ \end{itemize}
+  \begin{equation*}
+    u' = \mu_{L}u+\frac{\sqrt{1-\mu_{L}^{2}}(uw \; cos(\phi)-v \; sin(\phi))}{\sqrt{1-w^2}}
+  \end{equation*}
+  \begin{equation*}
+    v' = \mu_{L}v+\frac{\sqrt{1-\mu_{L}^{2}}(vw \; cos(\phi)+u \; sin(\phi))}{\sqrt{1-w^2}}
+  \end{equation*}
+  \begin{equation*}
+    w' = \mu_{L}w+\sqrt{1-\mu_{L}^{2}}\sqrt{1-w^2} \; cos(\phi)
+  \end{equation*}
+
+
+\subsection{Additional Topics}
+
+\emph{Secondary Particles/Fission Neutrons}
+  \begin{itemize}
+   \item One possibility
+   \begin{itemize}
+    \item Add fission neutrons only when fission reaction is selected
+    \item Sample directly from $\nu(E)$
+    \begin{equation*}
+       n = int(\nu+\xi)
+    \end{equation*}
+   \end{itemize}
+   
+   \item Another possibility
+     \begin{itemize}
+        \item Add fission neutrons after each collision
+        \item Sample from expected number of neutrons per collision
+        \begin{equation*}
+           r = \nu \sigma_{f}/\sigma_{t} \; \; \; n = int(r+\xi)
+        \end{equation*}
+     \end{itemize}
+    
+    \item Particles are ``banked'' and must be simulated before starting a new particle
+  \end{itemize}
+
+
+\emph{Woodcock Tracking}
+  \begin{itemize}
+   \item Basic particle tracking requires that new distance traveled be sampled everytime a material surface is crossed.
+   \item Delta tracking provides a way to track particles across the entire geometry without stopping at material boundaries.
+   \begin{itemize}
+    \item Create a fictitous cross-section in all materials such that the total macroscopic cross-section is constant everywhere.
+    \item When sampling a fictitous cross-section, nothing changes, just re-sample travel path.
+   \end{itemize}
+   \item Works well when $\Sigma_t$ is relatively uniform
+  \end{itemize}
+
+
+\emph[fragile]{Woodcock Tracking}
+
+\begin{algorithm}[H]
+    given location $x$, angle $\mu$, and $\Sigma_{\text{max}}$\;
+    $s = 0$ \;
+    \While{true}{
+      $s = s -\ln{(\xi_1)}/\Sigma_{\text{max}}$\;
+      \If {$\xi_2 < \Sigma_t(x+\mu s) / \Sigma_{\text{max}}$}{
+        break\;
+      }
+    }
+    return $s$\;
+\end{algorithm}
+
+
+
+% -----------------------------------------------------------------------------
+%\section{Conclusions}
+\emph{Recap}
+  \begin{itemize}
+   \item Random number sequences are not truly random
+   \item LCG parameters must be chosen carefully: \emph{ know your RNG!!!}
+   \item Continuous distributions can be sampled by either direct sampling, rejection sampling or discrete sampling (if discretized)
+   \item Think like a neutron!
+  \end{itemize}
+  \vfill
+  
+  Exam \emph{ this} Thursday (9:30-11:00) \\
+  Homework 4 due \emph{ next} Thursday
+
+
+\emph{References}
+ \begin{itemize}
+  \item F. Brown, \emph{ Monte Carlo Lecture Notes} 
+  \item I. Lux, L. Koblinger, \emph{ Monte Carlo Particle Transport Methods: Neutron and Photon Calculations}
+  \item W. Dunn and K. Shultis, \emph{ Exploring Monte Carlo Methods}
+ \end{itemize}
+

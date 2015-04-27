@@ -1,0 +1,439 @@
+\chapter{Iterative Solvers for Transport Equations}
+\label{lec:iterative_solvers}
+
+So far, three basic models for discretizing the transport equations have been
+discussed.  The latter model, neutron diffusion, leads to a very 
+straightforward system of linear equations for which standard techniques
+readily apply.  The S$_{\text{N}}$ and MOC transport schemes also lead 
+to a set of linear equations.  However, casting these equations in a 
+standard form for solution by generic solvers is less obvious.   Because
+our goal is ultimately to apply generic solvers to the equations, it
+is useful here first to provide a general representation of the equations.
+
+\subsection{Angular Flux Equations}
+
+Before proceeding, we adopt an operator notation following Larsen 
+and Morel \cite{larsen2010ado} to simplify
+somewhat the exposition to follow.  
+Recall that the scalar flux is defined
+\begin{equation}
+\begin{split}
+  \phi(\vec{r}) &= \int_{4\pi} d \Omega \, 
+                   \psi(\vec{r}, \Omega) \\
+              &\approx \sum_{n = 1}^N w_n \psi_{n}(\vec{r}) \, .
+\end{split}
+\end{equation}
+Introducing a \emph{discrete-to-moment} operator $\oper{D}$, we
+enforce
+\begin{equation}
+ \phi = \oper{D} \psi \, ,
+\end{equation}
+where space and angle indices are implicit.  Moreover, we introduce
+a \emph{moment-to-discrete} operator $\oper{M}$, defined
+\begin{equation}
+ \psi = \oper{M} \phi \, ,
+\end{equation}
+where in general
+$\oper{D} \ne \oper{M}^{-1}$.  Finally,
+defining the operator
+\begin{equation}
+ \oper{L} (\cdot) \equiv 
+ \left ( \hat{\Omega} \cdot \nabla + 
+   \Sigma_{t}(\vec{r}) \right ) (\cdot) \, ,
+\end{equation}
+the one group discretized transport equation becomes
+\begin{equation}
+  \oper{L}\psi = \oper{M}\oper{S}\phi + q \, ,
+\label{eq:wgteop_psi}
+\end{equation}
+where $\oper{S}$ is the scattering operator (which can include
+fission).  For the case of
+isotropic scattering in one group, we have
+$\oper{M} = \frac{1}{4\pi}$
+while $\oper{S} = \Sigma_s(\vec{r})$.
+
+For the multigroup problem, this notation generalizes to 
+\begin{equation}
+  \oper{L}_g\psi_g =  \oper{M} \sum_{g'=1}^G 
+         \left (
+           \oper{S}_{gg'} + 
+           \frac{1}{k}\oper{X}_{g} \oper{F}_{g'} 
+         \right )\phi_{g'} + q_g \, ,
+\label{eq:mgteop_psi}
+\end{equation}
+where the fission source has been explicitly represented.  Here,
+$\oper{X}$ represents the fission spectrum $\chi$ in operator form.
+
+\subsection{Moments Equation}
+
+\subsubsection{S$_{\text{N}}$ in Operator Form}
+
+Equations \ref{eq:wgteop_psi} and \ref{eq:mgteop_psi} represent 
+equations in which the unknown is the angular flux $\psi$.  In 
+general, and particularly for reactor physics, our interest is in
+computing reaction rates for which only the scalar flux is needed.  
+Consequently, in practice the angular flux is rarely stored explicitly, 
+but is rather computed on-the-fly during a sweep through the space-angle 
+grid.  This
+can be represented explicitly by manipulating the equations to be functions
+only of the scalar flux (and higher order flux moments if scattering 
+is anisotropic).  
+
+To illustrate, consider Eq. \ref{eq:wgteop_psi}.  Multiplying
+through by the space-angle \emph{transport sweep} 
+operator $\oper{T} = \oper{DL}^{-1}$, we have
+\begin{equation}
+ \oper{D}\psi = 
+    \oper{DL}^{-1} \oper{MS} \phi + \oper{DL}^{-1}q \, .
+\end{equation}
+Recalling $\phi = \oper{D}\psi$ and rearranging yields 
+\begin{equation}
+ (\oper{I} - \oper{TMS} ) \phi =  \oper{T}q \, ,
+\label{eq:wgteop}
+\end{equation}
+or 
+\begin{equation}
+  \oper{A}_{\text{WG}} \phi = b \, ,
+\end{equation}
+where
+\begin{equation}
+ \oper{A}_{\text{WG}} \equiv \oper{I} - \oper{TMS}
+\end{equation}
+is the \emph{within-group transport operator} and
+\begin{equation}
+ b = \oper{T}q
+\end{equation}
+represents the \emph{uncollided} flux moments.  Eq. \ref{eq:wgteop} represents
+a linear equation in standard form for the scalar flux moments $\phi$.  
+
+The operator $\oper{DL}^{-1}$ has 
+a very specific physical interpretation.  The inverse $\oper{L}^{-1}$
+represents the set of space-angle sweeps from one global boundary 
+to another.  The additional factor  $\oper{D}$ implies that along
+the space-angle sweep, $\phi$ is updated, thus eliminating the 
+need to store $\psi$.  This is exactly how S$_{\text{N}}$ and MOC solvers 
+have traditionally been implemented.  
+
+The extension to multigroup yields a similar form
+\begin{equation}
+   \left ( \oper{I} - \oper{T_{\text{MG}}M_{\text{MG}}} 
+      \left ( \oper{S}_{\text{MG}} + 
+              \frac{1}{k}\oper{X}_{\text{MG}} \oper{F}_{\text{MG}}^{\transp} 
+      \right ) 
+   \right ) \phi 
+   =  \oper{T_{\text{MG}}}q_{\text{MG}} \, ,
+\label{eq:mgteop}
+\end{equation}
+where $\oper{T_{\text{MG}}}$  and $\oper{M_{\text{MG}}}$ are  block 
+diagonal operators
+having blocks 
+$\oper{T}_g$ and $\oper{M}$, 
+respectively, 
+$\oper{X_{\text{MG}}}$, $\oper{F_{\text{MG}}}$, and $q_{\text{MG}}$ 
+are the 
+column vectors having elements 
+$\oper{X}_g$, $\oper{F}_g$, and $q_g$
+respectively, and the multigroup scattering operator is defined
+\begin{equation}
+       \oper{S_{\text{MG}}} = 
+           \left(
+           \begin{array}{ccc}
+              \oper{S}_{11} & \cdots & \oper{S}_{1G} \\
+              \vdots           & \ddots & \vdots          \\
+              \oper{S}_{G1} & \cdot   & \oper{S}_{GG}
+           \end{array} 
+           \right ) \, .
+\label{eq:mgscatter}
+\end{equation}
+Similar to the within-group problem, we define the \emph{multigroup
+transport operator} to be
+\begin{equation}
+ \oper{A}_{\text{MG}} =  \oper{I} - \oper{T_{\text{MG}}M_{\text{MG}}} 
+      \left ( \oper{S}_{\text{MG}} + 
+              \frac{1}{k}\oper{X}_{\text{MG}} \oper{F}_{\text{MG}}^{\transp} 
+      \right ) \, .
+ \label{eq:mgto}
+\end{equation}
+
+\subsubsection{MOC in Operator Form}
+
+While the operators and equations apply directly the S$_{\text{N}}$ method,
+slight changes must be made to represent MOC. In MOC, we iterate on the 
+quantities averaged over a \emph{cell},
+specifically the scalar flux moments $\phi_{\text{cell}}$.  However, the
+angular fluxes are computed for each track \emph{segment}, and each cell 
+can have several tracks crossing it.  The average angular flux on each 
+track segment in a given cell is used to generate the average scalar flux.
+
+This can be cast in operator form for a one group problem as
+\begin{equation}
+  \oper{L}\psi_{\text{seg}} = 
+    \oper{P M S}\phi_{\text{cell}} +
+      \oper{P} q_{\text{cell}} \, ,
+    \label{eq:traneq}
+\end{equation}
+where $q_{\mathrm{cell}}$ is the cell-wise external source
+and $\oper{P}$ is a cell-to-segment operator, ``P'' denoting prolongation,
+though not quite in the multigrid sense.  
+
+We can also define a segment-to-cell operator (restriction) 
+$\oper{R}$ so that
+\begin{equation}
+   \psi_{\text{cell}} = \oper{R}\psi_{\text{seg}} \, ,
+\end{equation}
+and
+\begin{equation}
+    \phi_{\text{cell}} = \oper{DR}\psi_{\text{seg}} \, . 
+    \label{eq:psitophi}
+\end{equation}
+Finally, the moments equation akin to Eq. \ref{eq:wgteop} is
+\begin{equation}
+   \left ( \oper{I} -  \oper{DRL}^{-1}\oper{PMS} \right ) 
+     \phi_{\text{cell}} =  
+  \oper{DRL}^{-1}\oper{P} q_{\text{cell}}  \, .
+\end{equation}
+In the context of MOC, the operator
+\begin{equation}
+ \oper{A}_{\text{WG-MOC}} =  \oper{I} -  \oper{DRL}^{-1}\oper{PMS} 
+\end{equation}
+is implied when discussing the within-group transport operator, and 
+similarly for the multigroup variant.
+
+\subsection{Boundary Conditions}
+
+So far, we have neglected to treat boundary conditions.  
+In particular, reflecting (or periodic, or white) boundary conditions 
+create an additional set of unknowns, namely the incident 
+(or exiting) boundary fluxes.  In theory, treating these conditions is
+straightforward, but we refrain from further discussion for two 
+reasons. First, adding boundary unknowns complicates presentation of 
+the algorithms discussed below.  Second, and more importantly,
+response function calculations use vacuum conditions 
+only, and so treatment of reflecting boundaries is outside our scope.
+A more detailed discussion can be found in the work 
+of Warsa \emph{et al.} \cite{warsa2004kim}.
+
+\section{Transport Solvers}
+
+Consider the fixed source multigroup transport problem
+represented by
+\begin{equation}
+ \oper{A}_{\text{MG}} \phi = b \, .
+\end{equation}
+The traditional method for solving the multigroup equations is via 
+a nested iteration in which a series of within-group equations is 
+solved for each group, with the scattering (and possibly) fission 
+sources updated between each group solve.  More modern treatments
+view the equations as a complete set to be solved simultaneously.
+
+
+\subsection{Gauss-Seidel}
+
+The Gauss-Seidel method has long been used to solve the multigroup 
+equations.  For standard problems, the method first solves the 
+fast (within-)group equation.  The updated fast group flux can then be used 
+to define the in-scatter source for the next group, and so on.  Because
+this algorithm really implies inversion of each group \emph{block} (as 
+defined in Eq. \ref{eq:mgteop}), the method is more accurately described 
+as \emph{block} Gauss-Seidel in energy.
+
+
+Algorithm \ref{alg:gauss_seidel_energy} describes a basic implementation 
+of the method.  Historically, convergence of the method is based on the 
+difference of successive fluxes, either as an absolute norm as indicated 
+or a norm of the relative point-wise difference.  Assessing convergence 
+in this way can be misleading.  The difference between successive
+iterates can be much smaller than the difference between an iterate
+and the solution, sometimes resulting in premature convergence.  Section 
+\ref{sec:comparison_of_norms} provides a numerical comparison of various
+convergence criteria.
+
+\begin{algorithm}[h]
+  \SetCommentSty{small}
+  \DontPrintSemicolon
+  \KwData{initial guess for group fluxes $\phi^{(0)}$, 
+          external source $q$, 
+          eigenvalue $k$, 
+          tolerance $\tau$,
+          maximum number of iterations $N$}
+  \KwResult{converged group fluxes $\phi$}
+  $n = 1$ \;
+  \While{$\tau > \epsilon$ and $n < N$}
+  {
+    \For{$g$ from 1 to $G$}
+    {
+      \tcp{Compute in-scatter and in-fission sources}
+      $b_g = \oper{T}_g \left(  \oper{M} \sum_{g'=1}^G 
+              \left ( \oper{S}_{gg'} + \frac{1}{k}\oper{X}_{g} \oper{F}_{g'} 
+              \right )\phi^{(n-1)}_{g'} + q_g \right )$ \;
+      \tcp{Solve the within-group problem}
+      $\phi^{(n)}_{g} = \oper{A}^{-1}_g b_g$ \;
+    }
+    $\tau = ||\phi^{(n)}-\phi^{(n-1)}||$\;
+    $n = n + 1$\;
+    
+  }
+  \caption{Gauss-Seidel Algorithm for the Multigroup Transport Equation}
+  \label{alg:gauss_seidel_energy}
+\end{algorithm}
+
+For problems in which there is no upscatter and no fission, Gauss-Seidel
+is an essentially exact scheme assuming the within-group equations are
+solved exactly.  However, for cases with upscatter or fission, 
+extra ``upscatter'' iterations are required, and in some cases, 
+the convergence of Gauss-Seidel becomes prohibitively slow.
+
+\subsection{Source Iteration}
+\index{source iteration}
+\index{Richardson iteration|see{source iteration}}
+The standard method for solving the within-group transport equation
+has been \emph{source iteration}. The basic idea is a simple one:
+given an external source (including in-scatter and fission), we guess the 
+flux, compute the within-group scattering source, solve for a new flux, and 
+repeat until converged.  Mathematically, source iteration is 
+defined by the process 
+\begin{equation}
+ \phi^{(n)} = \oper{TMS}\phi^{(n-1)} + \oper{T}q \, .
+\end{equation}
+However, recall that Richardson iteration for the system $\oper{A}x=b$ 
+is just 
+\begin{equation}
+ x^{(n)} = (\oper{I}-\oper{A})x^{(n-1)} + b \, .
+\end{equation}
+Since $\oper{I} - \oper{A}_{\text{WG}} = \oper{TMS}$, we see that 
+source iteration is equivalent to Richardson iteration.
+
+Source iteration has a particularly intuitive physical interpretation.
+Suppose our initial guess is zero.  The resulting flux is just the 
+right hand side, or the uncollided flux.  Performing one iteration 
+adds the contribution of neutrons having undergone a single collision.
+A second iteration includes the twice-collided neutrons, and so on. 
+For systems in which neutrons undergo many scattering events, the physics 
+suggests the process can be painfully slow to converge.  The math verifies
+the physics \cite{larsen2010ado}: the error $||\phi^{(n)}-\phi^{(n-1)}||$ of 
+the infinite medium one group problem goes as the scattering 
+ratio $c = \frac{\Sigma_s}{\Sigma_t}$, meaning that increased scattering
+leads to slower convergence.
+
+\subsection{Krylov Solvers}
+\label{sec:krylovsolvers}
+
+Because of the limitations of the Gauss-Seidel and source iteration
+schemes, much work has been done to apply modern linear solvers to
+transport problems.  One of the most successful class of solvers 
+studied consists of Krylov subspace methods.  
+
+\subsubsection{Overview}
+
+One can categorize linear (and eigenvalue) solvers as being 
+\emph{stationary} or \emph{nonstationary}.  Stationary methods
+produce updated solutions using only a single previous solution, and
+the Gauss-Seidel and Richardson methods are both stationary.  Other 
+well-known examples include the Jacobi and 
+successive over-relaxation (SOR) methods.
+On the other hand, nonstationary methods produce a solution based on 
+two or more previous iterates (or the information used to create those 
+iterates). 
+
+Krylov methods are nonstationary methods that rely on 
+construction of a so-called \emph{Krylov subspace} of dimension $n$, 
+defined for an $m \times m$ operator $\oper{A}$ as
+\begin{equation}
+ \mathcal{K}(n,x_0) \equiv \text{span} 
+     \{x_0,\, \oper{A}x_0,\, \oper{A}^2x_0,\, 
+         ,\ldots,\,, \oper{A}^{m-1}x_0 \} \, , 
+ \label{eq:krylovsubspace}
+\end{equation}
+for some initial, possibly random, vector $x_0$.  The main idea of Krylov
+subspace methods is to find  $x \in \mathcal{K}(m,x_0)$  
+ that ``best'' solves the system of interest, be it an 
+eigenproblem or linear system, where it is assumed that $m \ll n$.
+
+Working with $\mathcal{K}(n, x_0)$ directly is difficult numerically, since
+repeated application of $\oper{A}$ sends the initial vector $x_0$ into the
+same direction, namely that of the dominant eigenvector of $\oper{A}$.  
+Hence, the basis 
+must be orthogonalized. The canonical approach for nonsymmetric 
+operators is Arnoldi's method, which by successive application of the 
+modified Gram-Schmidt process yields the Arnoldi decomposition
+\begin{equation}
+ \oper{A}\oper{V} = \oper{V} \oper{H} + fe^{\transp}_m \, ,
+\end{equation}
+where $\mathbf{V} \in \mathbb{R}^{m\times n}$  consists of
+orthonormal columns,
+$\mathbf{H} \in \mathbb{R}^{n \times n} $ is an upper Hessenberg matrix, 
+$e_n$ is the
+$n$-vector of all zeros except a one in the $n$th location, and $f$ is 
+the residual, which is orthogonal to the columns of $\mathbf{V}$.  
+
+The most popular Krylov method for nonsymmetric linear systems (such as the 
+transport equations above) is GMRES \cite{saad1986gmr}.  The basic idea 
+of GMRES is straightforward:  the $n$th step of GMRES produces a 
+$n\times n$ Hessenberg matrix and the corresponding basis $\oper{V}$,
+and the approximate solution $x_n$ is found by minimizing the residual 
+norm $||r||_2 = ||\oper{A}x_n-b||_2$
+for $x_i \in \mathcal{K}(n, x_0)$.  In other words, $x_n$ must be in 
+the column space of $\mathcal{K}(n, x_0)$, mathematically 
+expressed as $x_n = \oper{V} y$,  where 
+$y$ satisfies 
+\begin{equation}
+\begin{split}
+  ||\oper{AV}y-b||_2 &= ||\oper{V}^{\transp} \oper{A} \oper{V} x_n -\oper{V}^{\transp} b|| \\
+                     &= || \oper{H} y - \oper{V}^{\transp} b || \, .
+\end{split}
+\end{equation}
+The last equation shows that GMRES can be thought of as finding the 
+best solution $x_n \in \mathcal{K}(n, x_0)$ in a least-squares sense.
+
+\subsubsection{Preconditioning}
+
+While Krylov methods are generally more robust than the classical 
+stationary methods, their performance can be improved significantly
+via \emph{preconditioning}.  A preconditioner $\oper{M}$ is an operator 
+whose inverse satisfies $\oper{M}^{-1} \approx \oper{A}^{-1}$ in some sense 
+and is relatively inexpensive to apply.
+
+A \emph{left preconditioned} linear system is
+\begin{equation}
+  \oper{M}^{-1}\oper{A}x = \oper{M}^{-1}b
+\end{equation}
+while a \emph{right preconditioned} system is 
+\begin{equation}
+  \oper{A}\oper{M}^{-1} y = b
+\end{equation}
+with $x = \oper{M}^{-1} y$.  The left preconditioned residual differs 
+from the original residual but may be a better metric for convergence. 
+The right preconditioned system preserves the original residual.  
+
+A preconditioner typically leads to a clustering of eigenvalues.  As 
+an extreme example, suppose that $\oper{M} = \oper{A}$.  The 
+preconditioned operator is then $\oper{AM}^{-1} = \oper{I}$, for 
+which all the eigenvalues are unity.  Of course, to apply $\oper{M}^{-1}$ 
+in this case represents solving the original problem.  While preconditioners
+cannot in general be expected to yield a set of eigenvalues equal to unity, 
+any clustering typically improves convergence.  Often, even pushing 
+eigenvalues away from the origin tends to improve 
+convergence \cite{larsen2010ado}.
+Chapter \ref{chp:transport_pc} provides a relatively thorough 
+development of several diffusion-based preconditioners for the 
+transport equation.
+
+\subsubsection{Krylov Methods for the Transport Problems}
+
+Krylov solvers have been used 
+to solve both the within-group \cite{warsa2004kim} and multigroup
+\cite{evans2010tdf} transport equations.  For the multigroup 
+equations in particular, the independent nature of the group-wise 
+blocks makes parallelization in energy much more straightforward
+than for Gauss-Seidel.
+
+For problems in which there is no fission and 
+upscatter is limited to a subset of thermal groups, it is
+possible to solve the downscatter groups via Gauss-Seidel
+and to use a Krylov method on the thermal block of Eq. \ref{eq:mgteop}.
+Doing so can yield improved efficiency for some problems \cite{evans2010tdf}.  
+However, when fission is included, as is often true for response 
+function generation, there is always
+thermal-to-fast coupling, and solving the full system via
+a Krylov method is to be preferred.
+

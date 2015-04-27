@@ -1,0 +1,592 @@
+\chapter{Linear Acceleration}
+\label{lec:linear_acceleration}
+
+
+While Krylov methods are generally more robust than the classical 
+stationary methods, their performance can be improved significantly
+via \emph{ preconditioning}.  A preconditioner $\oper{M}$ is an operator 
+whose inverse satisfies $\oper{M}^{-1} \approx \oper{A}^{-1}$ in some sense 
+and is relatively inexpensive to apply.
+
+A \emph{ left preconditioned} linear system is
+\begin{equation}
+  \oper{M}^{-1}\oper{A}x = \oper{M}^{-1}b
+\end{equation}
+while a \emph{ right preconditioned} system is 
+\begin{equation}
+  \oper{A}\oper{M}^{-1} y = b
+\end{equation}
+with $x = \oper{M}^{-1} y$.  The left preconditioned residual differs 
+from the original residual but may be a better metric for convergence. 
+The right preconditioned system preserves the original residual.  
+
+A preconditioner typically leads to a clustering of eigenvalues.  As 
+an extreme example, suppose that $\oper{M} = \oper{A}$.  The 
+preconditioned operator is then $\oper{AM}^{-1} = \oper{I}$, for 
+which all the eigenvalues are unity.  Of course, to apply $\oper{M}^{-1}$ 
+in this case represents solving the original problem.  While preconditioners
+cannot in general be expected to yield a set of eigenvalues equal to unity, 
+any clustering typically improves convergence.  Often, even pushing 
+eigenvalues away from the origin tends to improve 
+convergence \cite{larsen2010ado}.
+Chapter \ref{chp:transport_pc} provides a relatively thorough 
+development of several diffusion-based preconditioners for the 
+transport equation.
+
+
+
+Chapter \ref{chp:transport_methods} provided a short survey of trends in 
+transport discretizations and solvers applicable to the fixed source 
+multiplying problems relevant to response matrix methods.  As noted, 
+Krylov methods have quickly become important tools for a variety of 
+transport problems, but to be successful, they require adequate 
+\emph{ preconditioning}.  
+This chapter details several preconditioners 
+relevant to transport calculations for reactor physics, and specifically 
+the comparatively small problems characteristics of response matrix 
+methods.
+
+\index{preconditioner}
+
+\section{Diffusion Synthetic Acceleration}
+\index{DSA|see{diffusion synthetic acceleration}}
+\index{diffusion synthetic acceleration}
+
+Frequently, the most successful preconditioners are those that are based 
+on \emph{ a priori} knowledge of the physics or structure of the problem.
+This has long been the case for accelerating transport problems, for 
+which early techniques enforced balance over coarse regions in space, 
+angle, and energy.  
+
+A related idea that has remained an important 
+innovation is to apply a simple, low order approximation, invariably
+based on diffusion, to provide an efficient update or correction to 
+an unconverged transport solution.  Here, we provide a brief sketch 
+of one diffusion-based scheme known as \emph{ diffusion synthetic 
+acceleration} that has long been used but only recently as a 
+preconditioner.  For simplicity, the development is given for the 
+one group case, following the excellent treatment 
+of Larsen and Morel \cite{larsen2010ado}.
+
+Suppose we perform one source iteration, so that
+\begin{equation}
+  \phi^{n+\frac{1}{2}} = \oper{TMS} \phi^{n} + \oper{T}q \, .
+\end{equation}
+where $\oper{S}$ is assumed to contain both the 
+scatter and fission within-group terms.
+ Note the half index.  We subtract this equation 
+from Eq. \ref{eq:wgteop} to get
+\begin{equation}
+ (\oper{I} - \oper{T}\oper{MS})\phi- \phi^{n+\frac{1}{2}} = 
+   -\oper{TMS} \phi^{n} \, ,
+\end{equation}
+and adding $\oper{TMS} \phi^{n+\frac{1}{2}}$ to both 
+sides and rearranging, 
+\begin{equation}
+ \epsilon = \overbrace{ ( \oper{I} - \oper{TMS})^{-1}\oper{T M} }^
+                      {\text{what we approximate}}
+            \overbrace{\oper{S} (\phi^{n+\frac{1}{2}}- \phi^{n})}^{v}
+\label{eq:erroreq}
+\end{equation}
+where $\epsilon$ is the error.  Note the error satisfies the 
+transport equation
+\begin{equation}
+ (\hat{\Omega} \cdot \nabla  + \Sigma) \varepsilon - 
+   \frac{\Sigma_s}{4\pi} \epsilon =  \frac{v}{4\pi} \, ,
+\end{equation}
+where
+\begin{equation}
+ \epsilon = \int_{4\pi} d\Omega \, \varepsilon \, .
+\end{equation}
+Solving the error equation is just as expensive as solving the 
+original transport equation.  As an alternative, we can use the 
+diffusion approximation.  In this case, we have
+\begin{equation}
+ (-\nabla \cdot D \nabla + \Sigma - \Sigma_s) \epsilon = v \, ,
+\end{equation}
+or in operator form,
+\begin{equation}
+  \epsilon = \oper{C}^{-1} v = 
+    \oper{C}^{-1} \oper{S} (\phi^{n+\frac{1}{2}}- \phi^{n}) \, .
+\end{equation}
+This leads to the update
+\begin{equation}
+\begin{split}
+ \phi \approx \phi^{n+1} 
+   &= \phi^{n+\frac{1}{2}} + 
+      \oper{C}^{-1} \oper{S} (\phi^{n+\frac{1}{2}}- \phi^{n}) \\
+   &= (\oper{I} + \oper{C}^{-1} \oper{S}) \phi^{n+\frac{1}{2}} - 
+        \oper{C}^{-1} \oper{S} \phi^{n} \\
+   &= \Big (\oper{I} - (\oper{I} + \oper{C}^{-1} \oper{S}) 
+        ( \oper{I} -\oper{TMS}  ) \Big ) \phi^{n} 
+       +  (\oper{I} + \oper{C}^{-1} \oper{S})\oper{T}q \\
+   &= (\oper{I} - \oper{P}_{\text{WG-DSA}}^{-1}\oper{A}) \phi^{n} + 
+        \oper{P}^{-1}_{\text{WG-DSA}}  \oper{T}q \, ,
+\end{split}
+\end{equation}
+which is the preconditioned source iteration (i.e. source iteration 
+plus diffusion synthetic acceleration), and where
+\begin{equation}
+ \oper{P}^{-1}_{\text{WG-DSA}}
+   = (\oper{I} + \oper{C}^{-1} \oper{S})
+\end{equation}
+is the within-group diffusion preconditioning process.  In standard 
+left-preconditioner form, we have
+\begin{equation}
+  \oper{P}_{\text{WG-DSA}}^{-1}\oper{A}
+   =  \oper{P}^{-1}_{\text{WG-DSA}} \oper{T} q \, .
+\end{equation}
+Previous work indicates diffusion preconditioning coupled with a 
+Krylov solver is less restrictive with respect to discretization and more 
+effective for realistic problems \cite{warsa2004kim}.
+
+\section{Multigroup DSA}
+
+It is natural to extend the diffusion preconditioner to multigroup 
+problems, yielding the process
+\begin{equation}
+  \oper{P}^{-1}_{\text{MG-DSA}} \equiv 
+    \oper{I} + \oper{C}^{-1} 
+     \left(\oper{S} + \oper{X}\oper{F}^T\right) \, ,
+\label{eq:mgdsa}
+\end{equation}
+where $\oper{C}$ is the multigroup diffusion operator 
+defined block-wise as
+\begin{equation}
+ \oper{C}_{gg'} \equiv 
+   \delta_{gg'} 
+   \left( \nabla \cdot D_g(\vec{r}) \nabla + \Sigma_{tg}(\vec{r}) \right ) 
+   - \Sigma_{sgg'}(\vec{r}) - \chi_g \nu\Sigma_{fg'}(\vec{r}) \, .
+\end{equation}
+An initial review of the literature yielded no application of
+multigroup diffusion 
+as a preconditioner for multigroup transport problems.  
+Related work addressed 
+acceleration of outer Gauss-Seidel upscatter iterations \cite{adams1993tga}
+and fission iterations based on the rank one fission 
+operator ($\oper{X}\oper{F}^{\transp}$) \cite{morel1994fsa}, 
+but all using an equivalent one group formulation.  
+In general, the full multigroup diffusion problem is itself expensive
+for large problems (an issue addressed below), and this may explain why  
+it has not been used extensively.  
+
+\section{Coarse Mesh Diffusion Preconditioning}
+\index{preconditioner!coarse mesh diffusion preconditioner}
+
+Preconditioning the multigroup equations with diffusion can lead to 
+very large diffusion operators, and for many problems, the cost of 
+constructing and, more importantly, applying the preconditioner becomes
+prohibitive.  As an alternative, we investigate the use of coarse mesh
+diffusion preconditioners.  Coarse mesh diffusion operators have long been
+central to acceleration techniques in reactor analysis, a chief 
+example being the nonlinear diffusion acceleration scheme developed
+by Smith \cite{smith1984nms} for nodal diffusion methods and later 
+extended to transport methods \cite{smith2002fct}.  
+
+While no results could be found in the literature describing use of 
+coarse mesh diffusion as a preconditioner, more general coarse mesh 
+schemes in space, angle, and energy have been of substantial recent 
+interest, particularly for multigrid preconditioning.  
+Multigrid methods, like DSA (itself a two-grid method in angle), use 
+a coarse grid solution to improve a fine grid solution by way of 
+restriction (essentially averaging) and prolongation (essentially
+interpolation) operations.  The idea is that slowly-varying, 
+slowly-converging error modes become highly oscillatory, quickly-converging 
+modes on the coarse mesh. While a complete description of multigrid 
+methods is outside the present scope, the following sections describe 
+implementation of a two-grid diffusion preconditioner.  For a more 
+complete overview of multigrid methods, the reader would be best 
+served by one of the standard reviews 
+available, \eg Ref. \cite{briggs2000amt}.  
+
+\subsection{A Spatial Two-Grid Multigroup Diffusion Preconditioner}
+
+In this work, we apply a two-grid spatial scheme to the diffusion 
+preconditioner.  Recent 
+work suggests that multigrid methods in the energy variable can work very 
+well \cite{hamilton2011nsk, slaybaugh2013mep}.  While a slightly different 
+context, nonlinear diffusion acceleration also typically uses a coarse 
+energy mesh to great effect. However, our initial studies using a coarsened
+energy variable within a diffusion preconditioner suggests that the 
+simultaneous restriction of space, angle, and energy may have inherent 
+difficulties.
+
+The coarse mesh diffusion preconditioner is a natural extension 
+to Eq. \ref{eq:mgdsa} and is defined as
+\begin{equation}
+   \oper{P}^{-1}_{\text{MG-DSA}} \equiv 
+    \oper{I} + \bm{P}\oper{C}_H^{-1}\bm{R}
+     \left(\oper{S} + \oper{X}\oper{F}^T\right) \, ,
+\end{equation}
+where $\bm{P}$ and $\bm{R}$ are the \emph{ prolongation} and 
+\emph{ restriction} operators, respectively, and 
+$\oper{C}_H$ is the diffusion operator defined on the coarse 
+spatial mesh.  
+
+\subsubsection{Coarse Mesh Operator Homogenization}
+
+To define $\oper{C}_H$, cross sections must be \emph{ homogenized} over 
+the fine  mesh.  The most physically-sound approach for producing averaged 
+cross sections is to use flux-weighting in a manner that preserves reaction
+rates.  While a variety of such homogenization techniques exist, we use 
+a rather conventional homogenization scheme that is simple to apply  
+in preconditioning.  For the particular case of group constant generation
+via an assembly-level lattice physics solver, the results of the scheme are 
+referred to as \emph{ assembly homogenized cross sections} \cite{smith1986aht}.
+
+To illustrate, suppose we need the total cross section $\Sigma_t$ averaged 
+over coarse mesh cell $j$.  Denoting the fine mesh flux in cell $i \in j$ to 
+be $\phi_i$, we have
+\begin{equation}
+  \Sigma_{t,j} = \frac{ \sum_{i \in j} V_i \phi_i \Sigma_{t, i} }
+                      { \sum_{i \in j} V_i \phi_i } \, , 
+\end{equation}
+where $V_i$ is the fine mesh cell volume. If we define the coarse mesh 
+flux to be the volume average
+\begin{equation}
+ \phi_j = \frac{\sum_{i \in j} V_ i \phi_i} {V_j} \, ,
+\end{equation}
+where 
+\begin{equation}
+ V_j = \sum_{i \in j} V_i \, ,
+\end{equation}
+then the total interaction rate in coarse cell $j$ is
+\begin{equation}
+ \sum_{i \in j} V_i \Sigma_{t, i} \phi_i =  
+    \Sigma_j  \sum_{i \in j} V_i \phi_i =
+    V_j \phi_j \Sigma_{t, j} \, .
+\end{equation}
+Hence, the averaged quantities preserve the integrated reaction
+rate associated with the given fine mesh flux.  All group constants,
+including the diffusion coefficient $D$, can be generated in this way.
+
+The obvious problem with this approach is that the fine mesh flux 
+$\phi_i$ is not known. The simplest approximation is to assume a 
+constant flux, leading to  volume-weighted cross sections.  For 
+preconditioning,  this is a suitable approximation, since 
+conserving true reaction rates is not a prerequisite.  Unlike 
+certain nonlinear acceleration techniques (\eg CMFD) that rely on 
+conservation to provide an integral form of the \emph{ solution} at 
+each step, preconditioning---a linear process---only seeks to provide 
+an additive improvement.
+
+However, that certainly does \emph{ not} preclude use of more accurate 
+flux shapes to achieve better results. 
+In typical lattice physics applications, group constants are 
+found by solving the transport equation in a pincell or assembly subject 
+to reflecting conditions and using the resulting spectrum for weighting.  
+For preconditioning, a simple pincell homogenization scheme could be used, 
+in which 2-D pincell problems approximating parts of the full problem 
+are solved, and the resulting region-wise volume-averaged spectra are used to 
+produce homogenized materials in the appropriate cells.  Analysis of this 
+approach would be a natural extension to the present work.
+
+One might note that the current flux iterate is 
+freely available for use in homogenization; however, because the flux 
+and homogenization process would change from step to step, the entire 
+process would become nonlinear, and its application within the context 
+of standard Krylov linear solvers would be suspect.  Its use 
+in solvers allowing variable preconditioners (\eg FGMRES \cite{saad1993fio})
+would be valuable future research.
+
+\subsubsection{Restriction}
+
+To restrict the fine mesh input vector for application of the inverse coarse 
+mesh diffusion operator, a simple spatial average is used.  As an example, 
+consider a 1-D problem discretized into 6 fine meshes.  The coarse 
+meshing process is based on a level parameter $l$ that defines the 
+number of fine meshes per coarse mesh.  Suppose $l=2$, leading to 
+the fine-to-coarse mapping $[0,0,1,1,2,2]$.  The restriction operator
+is defined 
+\begin{equation}
+  \bm{R} = 
+           \left(
+           \begin{array}{cccccc}
+              v_0 & v_1 &  0  &  0  &  0  &  0  \\
+                0  &  0 & v_2 & v_3 &  0  &  0  \\
+                0  &  0 &  0  &  0  & v_4 & v_5  \\
+           \end{array} 
+           \right ) \, ,
+\end{equation}
+where
+\begin{equation}
+ v_i = \frac{V_i}{V_j} \, , \quad \quad
+   \text{for fine mesh $i$ in coarse mesh $j$} \, ,
+\end{equation}
+and hence $\sum_{i\in j} v_i = 1$.
+
+\subsubsection{Prolongation}
+
+To prolong the coarse mesh result back to the fine mesh, the coarse mesh 
+value is distributed on the fine grid based on the (approximate) 
+flux $\tilde{\phi}$ used to produce the coarse mesh diffusion operator.  
+Given a coarse mesh value $\phi_j$, the prolonged flux is defined as 
+\begin{equation}
+ \phi_{i \in j} =   \phi_j   \frac{l\tilde{\phi}_i}
+                                  {\sum_{i \in j} \tilde{\phi}_i} \, .
+\end{equation}
+For the example above, suppose each coarse region is assumed to have 
+a fine mesh flux shape of $\tilde{\phi} = [a, b]$, where $a + b = 1$.  The 
+prolongation operator is defined 
+\begin{equation}
+  \bm{P} = 
+           \left(
+           \begin{array}{ccc}
+                2 a  &  0      &  0     \\
+                2 b  &  0      &  0     \\
+                  0  &  2 a    &  0     \\
+                  0  &  2 b    &  0     \\
+                  0  &  0      &  2 a \\
+                  0  &  0      &  2 b \\
+           \end{array} 
+           \right ) \, .
+\end{equation}
+In the constant flux approximation ($a = b = 0.5$), multiplication 
+of $\bm{R} \in \mathbb{R}^{n\times m}$ by  
+$\bm{P} \in \mathbb{R}^{m\times n}$ yields the identity matrix 
+$\oper{I} \in \mathbb{R}^{n\times n}$.
+
+
+\subsubsection{Smoothing}
+
+While the coarse mesh scheme described so far represents a complete 
+preconditioner, it can be significantly improved by a \emph{ smoothing} 
+operation.  The motivation for smoothing is that the coarse mesh solve damps 
+low frequency error modes of the fine 
+mesh problem but not high frequency modes.  In more physical terms, a 
+coarse mesh solve can be expected to get the gross shape right, but 
+not the finer details.  A smoothing operator uses a few iterations of 
+a classical scheme like Richardson, Jacobi, or Gauss-Seidel with the fine 
+mesh operator.  In many multigrid algorithms, a smoother is also often 
+used before the coarse mesh solve to ensure the error is ``smooth'' 
+before restriction; however, in this case the joint scattering and 
+fission operator $\oper{S}+\frac{1}{k} \oper{XF}^{\transp}$ precedes 
+the coarse mesh solve and can be expected to provide a suitable input vector.
+
+For the coarse mesh diffusion preconditioner, smoothing requires the action 
+of the fine mesh diffusion matrix.  While the cost of producing this 
+matrix may be somewhat large, that cost is much smaller than inverting 
+the operator in a fine mesh preconditioner (and much, much smaller than
+application of the transport operator).  The smoothing process used is 
+the weighted Jacobi method, which for the generic problem $\oper{A}x=b$ is 
+defined  by the process 
+\begin{equation}
+ x^{(n+1)} = -\omega \oper{A}_D^{-1} ( \oper{A}_L + \oper{A}_U) x^{(n)}
+           + (1-\omega) \oper{A}_D^{-1} b \, ,
+\end{equation}
+where $\oper{A}_D$ represents the diagonal of $\oper{A}$, 
+$\oper{A}_L$ and $\oper{A}_U$ represent the strictly lower and strictly 
+upper triangular parts of $\oper{A}$, and $\omega$ is the weighting 
+parameter.  For completely solving the linear system, $\omega = 1$ is ideal 
+(with $\omega > 1$ potentially yielding instability);
+however, for the purposes of damping high frequency errors, the optimum is 
+typically smaller, with special 1-D and 2-D model cases having optima 
+of $\omega = \frac{2}{3}$ and $\omega = \frac{4}{5}$, 
+respectively \cite{saad2003ims}.  
+Algorithm \ref{alg:cmdsa} provides a basic outline of the coarse mesh 
+diffusion preconditioner.
+
+\begin{algorithm}[ht]
+  \SetCommentSty{small}
+  \DontPrintSemicolon
+  \KwData{Input vector $v_0$, 
+          number of smoothing iterations $N$,
+          weighting factor $\omega$}
+  \KwResult{Preconditioned vector $v_1$}
+  \tcp{Apply the scattering and fission operator}
+  $x = (\oper{S} + \frac{1}{k}\oper{XF}^{\transp}) v_0$ \;
+  \tcp{Apply restriction}
+  $x_H = \oper{r}x$ \;
+  \tcp{Solve the coarse mesh diffusion problem}
+  $y_H = \oper{C}^{-1}_H x_H$ \;
+  \tcp{Apply prolongation}
+  $z = \oper{p} y_H$ \;
+  \tcp{Optionally apply smoothing}
+  \For{$i$ from 1 to $N$}
+  {
+    $z =  -\omega \oper{C}_D^{-1} ( \oper{C}_L + \oper{C}_U) z
+       + (1-\omega) \oper{C}_D^{-1} x $
+  }
+  \tcp{Compute output vector}
+  $v_1 = v_0 + z$\;
+  %\tcp{If not converged, restart with $u$ and $\lambda$}
+  \caption{Two-Grid Coarse Mesh Multigroup Diffusion Preconditioner}
+  \label{alg:cmdsa}
+\end{algorithm}
+
+%---------------------------------------------------------------------------%
+\section{Transport-Corrected Diffusion Preconditioners}
+\label{sec:tcdpc}
+\index{preconditioner!transport-corrected diffusion preconditioner}
+
+\subsection{Explicit Versus Matrix-Free Transport Operators}
+
+A final technique developed is to form a preconditioner that contains
+information from the transport operator rather than relying solely on 
+the diffusion approximation.   In theory, forming the transport operator 
+defined by Eq. \ref{eq:mgto} explicitly is possible.
+With an explicit operator, various 
+approximate factorizations become natural preconditioner options. 
+However, constructing such operators implies working with matrices with 
+sizes proportional to the  number of angles, at least implicitly, as part 
+of the construction process. This can quickly lead to huge memory 
+requirements, a complicated  construction process, or both.  
+
+Construction of explicit transport operators have been studied for 
+for the discrete ordinates method \cite{patton2002apg} and for the method of 
+characteristics \cite{zhang2011ctm}. The former work treated the angular 
+flux directly, and the analysis was limited to relatively small multigroup
+1-D problems.  The latter work noted the cost of constructing the 
+transport operator was exceedingly large and developed a marginally 
+successful parallel scheme limited to the within-group equations.
+
+In the present work, the transport operator is always a 
+``matrix free'' operator,  meaning that the action $y \gets \oper{A}x$
+is done by functions and not explicit matrix operations.  Hence, while 
+the action of $\oper{A}$ is available, $\oper{A}$ itself is not,  
+so preconditioners based on approximate factorizations are not directly 
+applicable.  Ultimately, we restrict any preconditioner using a 
+transport operator to be based on actions only.
+
+\subsection{Newton-based Correction}
+
+As an alternative, suppose we have a matrix inverse 
+$\oper{M}^{-1}$ that represents an initial approximation of 
+$\oper{A}^{-1}  \in \mathbb{R}^{m\times m}$.  For application to 
+transport problems, we let $\oper{M}$ be the diffusion 
+preconditioner $\oper{P}_{\text{MG-DSA}}$ or its coarse mesh equivalent.
+Our goal is to improve this preconditioning process using the 
+(possibly approximate) action of $\oper{A}^{-1}$.
+
+To do this, we apply a method attributed by various sources to 
+Shulz or Hotelling and Bodewig \cite{schulz1933ibr, householder1975tmn}, 
+but in fact which represents application of Newton's method for 
+finding a matrix inverse.  For brevity, we refer to it as the 
+Newton-Shulz method.  While a more rigorous analysis of the method 
+can be found elsewhere \cite{householder1975tmn}, it is possible to
+motivate it by considering the simple problem $ax=1$ 
+following Ref. \cite{chow1998aip}.  Given
+$a$, we seek $x$.  One way to view this is as the nonlinear 
+problem $f(x) = 1/x-a = 0$.  Then $f'(x) = -1/x^2$, and Newton's 
+method (see Section \ref{sec:newtonsmethod}) gives the process
+\begin{equation}
+\begin{split}
+ x_{n} &= x_{n-1} + \frac{1}{x_{n-1}^{-2}} 
+           \left( \frac{1}{x_{n-1}} - a \right) \\
+       &= 2x_{n-1} - x_{n-1} a x_{n-1} \, .
+\end{split}
+\end{equation}
+For the more general case of matrices, this suggests 
+the process 
+\begin{equation}
+ \oper{X} = \oper{X}(2\oper{I} - \oper{A}\oper{X}) \, ,
+\end{equation}
+where $\oper{X} \approx \oper{A}^{-1}$.  
+
+As is always the case for Newton's method, convergence 
+to the solution depends on the initial guess being sufficiently close to 
+the solution.  
+% In practice, the guess $ \oper{X} = \alpha \oper{A}^T$ can 
+% be shown to guarantee convergence.  
+By using $\oper{P}_{\text{MG-DSA}}$ as 
+the initial guess, convergence has always been achieved in our studies.
+Hence, a simple one step transport-corrected diffusion preconditioning 
+process is defined by
+\begin{equation}
+ \oper{P}_{\text{TC-MG-DSA-1}}^{-1} = 
+   \oper{P}_{\text{MG-DSA}}^{-1}(2\oper{I} - 
+             \oper{A}_{\text{MG}} \oper{P}_{\text{MG-DSA}}^{-1}) \, .
+\label{eq:tc1mgdsa}
+\end{equation}
+
+While Eq. \ref{eq:tc1mgdsa} represents an improved preconditioner, 
+it adds the cost of an additional space-angle-energy sweep, the number 
+of which we are ultimately trying to minimize.  As an alternative, 
+we can substitute 
+\begin{equation}
+ \oper{A}_{\text{MG}} \approx \oper{\tilde{A}}_{\text{MG}} \, ,
+\end{equation}
+where the tilde indicates some approximation.  Here, we let that 
+imply a coarser angular quadrature.  While this appears at first to be a 
+multigrid method, note that the (approximate) transport operator is 
+not being inverted but rather is being used to improve the inversion of 
+the diffusion preconditioner.  In the terminology of Newton methods, 
+using the approximate operator results in an approximate Jacobian.
+
+Because only a few iterations of Newton's method are needed to 
+converge given an appropriate initial guess, using the approximate 
+operator $\oper{\tilde{A}}_{\text{MG}}$ will lead to \emph{ its} approximate
+inverse and \emph{ not} that of $\oper{{A}}_{\text{MG}}$.
+However, $\oper{\tilde{A}}^{-1}_{\text{MG}}$ should be even 
+closer to $ \oper{A}^{-1}_{\text{MG}}$ than the original diffusion 
+preconditioning process, and so application of the full transport operator 
+can be expected to yield a much more valuable improvement if used in one 
+final Newton iteration.  
+
+Algorithm \ref{alg:tcmgdsa} provides the 
+complete preconditioning process for application to an input 
+vector based on the recursive application of the Newton-Schulz method
+defined in Algorithm \ref{alg:newtonshulz}.  
+The true operator is only applied once in the last step, but the number of 
+actions of $\oper{\tilde{A}}$ grows exponentially with the number 
+of iterations: one for $k=2$, three for $k=3$, seven for $k=4$, and 
+so on.  
+Hence, the cost of applying the preconditioner is likely to 
+become excessive for more than two or three iterations unless the 
+approximate operator is significantly less expensive than the 
+true operator.
+
+\begin{algorithm}[ht]
+  \SetCommentSty{small}
+  \DontPrintSemicolon
+  \KwData{transport operator $\oper{A}$,
+          approximate transport operator $\oper{\tilde{A}}$,
+          diffusion preconditioner $\oper{P}_{\text{MGDPC}}$,
+          number of corrections $k$,
+          input vector $x$}
+  \KwResult{output vector $y$}
+  $y \gets \text{Newton-Shulz}(\oper{\tilde{A}}, \oper{P}_0, k-1, x)$ \;
+  $y \gets \oper{A}y$ \;
+  $y \gets 2x - y$ \;
+  $y \gets \oper{P}^{-1}_0 y$ \;
+  \caption{Transport-Corrected Diffusion Preconditioner}
+  \label{alg:tcmgdsa}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+  \SetCommentSty{small}
+  \DontPrintSemicolon
+  \KwData{operator $\oper{A}$, 
+          initial preconditioner $\oper{P}_0$,
+          number of corrections $k$,
+          input vector $x$}
+  \KwResult{output vector $y$}
+  \uIf{$k > 1$}
+  {
+    \tcp{Apply earlier steps recursively}
+    $y \gets \text{Newton-Shulz}(\oper{A}, \oper{P}_0, k - 1, x)$ \;
+    $y \gets 2x- \oper{A}y$\;
+    $y \gets \text{Newton-Shulz}(\oper{A}, \oper{P}_0, k - 1, y)$ \; 
+  }
+  \Else
+  {
+    \tcp{Apply the initial preconditioner}
+    $y \gets (2\oper{I}-\oper{A} \oper{P}^{-1}_0) x$ \;
+    $y \gets \oper{P}^{-1}_0 y$ \;
+  }
+  \caption{Newton-Shulz}
+  \label{alg:newtonshulz}
+\end{algorithm}
+
+\section{Summary}
+
+This chapter has presented the classic diffusion 
+synthetic acceleration technique and its multigroup analog in the 
+context of preconditioning for iterative transport solvers.  Additionally,
+a coarse mesh variant was proposed based on two spatial grids and 
+optional smoothing that represents in theory a 
+much less computationally-intensive process than the fine mesh 
+preconditioner. To incorporate more of the transport operator, 
+the Newton-Shulz method was used to form a transport-corrected 
+diffusion preconditioner that has the potential to yield better 
+preconditioners than diffusion alone can provide.

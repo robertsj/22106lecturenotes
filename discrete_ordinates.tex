@@ -1,7 +1,13 @@
 \chapter{Discrete Ordinates Method}
 \label{lec:discreteordinates}
 
-In the last two lectures, we dealt exclusively with the integral form of the transport equation and ways to solve it numerically.  Now, we return to the integro-differential form of the equation and introduce the \textit{discrete ordinates ($S_N$) method}, one of the most widely-used deterministic transport methods.  We subsequently introduce the method of \textit{source iteration} for treating the scattering source and finish with a brief overview of acceleration via the methods of coarse mesh rebalance (CMR) and coarse mesh finite difference (CMFD).  As in previous lectures, we provide a simple code that implements some of the concepts discussed.
+In the last two lectures, we dealt exclusively with the integral form of the 
+transport equation and ways to solve it numerically.  Now, we return to the 
+integro-differential form of the equation and introduce the \textit{discrete 
+ordinates ($S_N$) method}, one of the most widely-used deterministic transport 
+methods.  We subsequently introduce the method of \textit{source iteration} for 
+treating the scattering source, for which two nonlinear acceleration 
+schemes are presented in the next lecture.
 
 \section*{A Discrete Angle Domain}
 
@@ -196,94 +202,6 @@ for some small $\epsilon_{\phi}$.
 
 \section*{Acceleration}
 
-The discrete ordinates method is in theory a very fast, memory-efficient technique.  Unless the angular flux is needed explicitly, only one set of edge angular fluxes is needed at a time (e.g. the left edge flux for computing the right edge flux, which then can overwrite the left edge flux).  
-
-Despite the algorithmic simplicity of the method, the underlying source iteration scheme can be obnoxiously slow for problems with high scattering ratios.  Several methods have been introduced over the years to accelerate the source convergence.  Of these, diffusion synthetic acceleration (DSA) is probably the most powerful and widespread.  The method essentially involves performing a diffusion solve to update the scalar flux, and has shown spectacular success for a wide variety of problems.  However, DSA can be difficult if not impossible to implement for certain geometries and/or discretization schemes, as it requires a very strict consistency between the transport and diffusion mesh. Instead, we look at two other relatively simple methods that have been quite successful: the \textit{coarse mesh rebalance} (CMR) and \textit{coarse mesh finite difference} (CMFD) methods.
-
-\section*{Coarse Mesh Rebalance}
-
-CMR was probably the first wide-spread method for acceleration discrete ordinates calculations.  Its foundation rests in the \textit{neutron balance equation}, which we obtain in 1-d by integrating Eq. \ref{eq:slabtransportequation} over angle, yielding
-\begin{equation}
-\begin{split}
- \frac{\partial }{\partial x}J(x) + \Sigma_t(x) \phi(x) = \Sigma_{s}(x)\phi(x) + S(x) \, ,
-\end{split}
-\label{eq:balance}
-\end{equation}
-where $J = \mathbf{J}\cdot \hat{i}$ is the net current in the $x$ direction. Now suppose we divide the domain into a number of coarse meshes, indexed by $j$, with cell edges at $x_{j-\frac{1}{2}}$ and $x_{j+\frac{1}{2}}$.  Subtracting the scattering source from both sides and integrating over the $j$th coarse mesh, we obtain
-\begin{equation}
-\begin{split}
- J_{j+\frac{1}{2}} - J_{j-\frac{1}{2}}  + \int_{x_i} \Sigma_r(x) \phi(x) dx = \int_{x_i} S(x) dx \, .
-\end{split}
-\end{equation}
-Expressing Eq. \ref{eq:net2partial} as $J = J^+ - J^-$, where $+$ indicates to the right and $-$ to the left, we have
-\begin{equation}
-\begin{split}
- J^+_{j+\frac{1}{2}}- J^-_{j+\frac{1}{2}} - J^+_{j-\frac{1}{2}} + J^-_{j-\frac{1}{2}} + R_j = S_j \, ,
-\end{split}
-\label{eq:cmrbalance}
-\end{equation}
-where the partial currents are defined
-\begin{equation}
- J^{\pm}_{j+\frac{1}{2}} = \sum_{\mu_n \gtrless 0} \mu_n \psi_{j+\frac{1}{2},n} \, ,
-\end{equation}
-$R_j$ is the coarse mesh-integrated removal rate, and $S_j$ is the coarse mesh-integrated source.  
-
-Eq. \ref{eq:cmrbalance} must be satisfied by a fully converged fine mesh solution.  For an unconverged iterate, which we denote $\psi^{m+\frac{1}{2}}$, Eq. \ref{eq:cmrbalance} is generally not satisfied.  To force the flux to satisfy neutron balance, we introduce multiplicative rebalance factors $f_j$ such that
-\begin{equation}
- \psi^{m+1}_{i,n} =
- \begin{cases} f_j \psi^{m+\frac{1}{2}}_{i,n}     &   x_{j-\frac{1}{2}} < x_{i} < x_{j+\frac{1}{2}} \\
-               f_{j-1} \psi^{m+\frac{1}{2}}_{i,n} &   x_{i} = x_{j+\frac{1}{2}} \text{ and } \mu_n > 0 \\
-               f_{j+1} \psi^{m+\frac{1}{2}}_{i,n} &   x_{i} = x_{j+\frac{1}{2}} \text{ and } \mu_n < 0 \\
- \end{cases} \, .
- \label{eq:alpha}
-\end{equation}
-Note the appropriate factor's index denotes from which coarse mesh the neutrons originate. For the case of vacuum boundaries, the corresponding incident partial current vanishes.  For a reflective boundary at the left, $f_0 = f_1$, and similarly for the right boundary.
-
-To illustrate the method, consider a slab with vacuum boundaries divided into three coarse meshes.  Substituting the modified fluxes into the balance equation yields a set of three equations:
-\begin{equation}
-\begin{split}
-  f_1 J^+_{3/2}  - f_2 J^{-}_{3/2}                   + f_1 J^{-}_{1/2} + f_1 R_1 &= f_1 S_1 \\
-  f_2 J^+_{5/2}  - f_3 J^{-}_{5/2} - f_1 J^{+}_{3/2} + f_2 J^{-}_{3/2} + f_2 R_2 &= f_2 S_2 \\
-  f_3 J^+_{7/2}                    - f_2 J^{+}_{5/2} + f_3 J^{-}_{5/2} + f_3 R_3 &= f_3 S_3 \, ,
-\end{split}
-\end{equation}
-which yields a tridiagonal system written in condensed form as
-\begin{equation}
- \mathbf{A} \mathbf{f} = \mathbf{S} \, .
-\end{equation}
-Solving this equation for $\mathbf{f}$ and updating to $\psi^{m+1}$ allows us to recompute the scattering source, which---hopefully---converges faster than without the rebalancing scheme.  Look to the Further Reading section for references that investigate stability of coarse mesh rebalance.  Algorithm \ref{alg:accel} shows how CMR (or any low order acceleration scheme) can be used within source iteration.
-
-\begin{algorithm}
- \label{alg:accel}
- \caption{Accelerated Source Iteration}
-  initialization\;
-  \While{$\psi^m$ or $\phi^m$ not converged}{
-    compute scattering source \;
-    $\psi^{m+\frac{1}{2}} \leftarrow \text{sweep}(\psi^{m})$ \;
-    \eIf{using CMR}{
-      $\psi^{m+1} \leftarrow \text{cmr}(\psi^{m+\frac{1}{2}})$ \;
-    }{
-      $\psi^{m+1} \leftarrow \psi^{m+\frac{1}{2}}$ \;
-    }
-  }
-\end{algorithm}
-
-
-
-\section*{Coarse Mesh Finite Difference}
-
-The coarse mesh finite difference method has its origins in a nonlinear acceleration technique developed by K. Smith that makes use of discontinuity factors.  With discontinuity factors, any region-integrated high order solution (e.g. from fine mesh transport) can be represented by a low order method (e.g. coarse mesh diffusion).  CMFD makes use of this idea to represent partially converged high order solutions in low order form, followed by subsequent iterations in the low order domain.  This approach is a physical analog of multigrid methods, and its main effect is to dampen low order errors.  What this means is that the high order method will quickly get the ``shape'' right, and a low order acceleration will quickly get the ``magnitude'' right.
-
-We sketch the implementation.  Given a partially converged fine mesh solution, homogenized diffusion coefficients and cross-sections are found for each coarse mesh, as are volume-averaged sources and fluxes.  A coarse mesh diffusion equation is to be solved, but due to an incompletely converged fine mesh solution, discontinuity factors---additive corrections to the effective diffusion coefficients---must be computed to enforce net current continuity between coarse meshes. Once these are defined, the coarse mesh diffusion equations can be solved.  The ratio of the updated average flux to the original average flux of a coarse mesh is used to scale the original fine mesh solution.  The interested student should see the references and exercises for further details.
-
-%  For edge $j+\frac{1}{2}$ joining meshes $j$ and $j+1$, we compute from the high order solution the net current $J_{j+\frac{1}{2}}$ and enforce
-% \begin{equation}
-%  J_{j+\frac{1}{2}} = -\tilde{D}_{1+\frac{1}{2}} \Big ( \bar{\phi}_{j+1}-\bar{\phi}_{j} \Big ) -\hat{D}_{1+\frac{1}{2}} \Big ( \bar{\phi}_{j+1}-\bar{\phi}_{j} \Big ) \, ,
-% \end{equation}
-% where
-% \begin{equation}
-%  \D
-% \end{equation}
 
 \section*{A Simple Code}
 
@@ -297,13 +215,24 @@ Currently, the code is limited to the DD and $S_4$ approximations and vacuum bou
 % References
 \section*{Further Reading}
 
-A good introduction to the discrete ordinates method in 1-d can be found in Chapter 3 in Lewis and Miller \cite{lewis1993cmn}; higher dimensions are covered in Chapter 4 of the same work.  The foundation of the method is usually credited to Chandrasekhar (in the context of stellar radiation) and can be found in his monograph \cite{chandrasekhar1950rt}.  
+A good introduction to the discrete ordinates method in one dimension can be found in 
+Chapter 3 in Lewis and Miller \cite{lewis1993cmn}; higher dimensions are covered 
+in Chapter 4 of the same work.  The foundation of the method is usually credited 
+to Chandrasekhar (in the context of stellar radiation) and can be found in his 
+monograph \cite{chandrasekhar1950rt}.  
 
-A review paper by Adams and Larsen \cite{adams2002fim} provides a survey of the many acceleration techniques available for the discrete ordinates equations, and with its several hundred references, is the place to look for further information.  Lewis and Miller provides more information on coarse mesh rebalance, and Cefus and Larsen have assessed its stability \cite{cefus1990sac}.  Park and Cho \cite{park2004cma} have suggested angular-dependent rebalance schemes, and their work is a good place to start to find references to other CMR variations.  The discontinuity factors used in CMFD were first proposed by Smith in the context of homogenization \cite{smith1980shm}, and he later proposed their use for acceleration \cite{smith1983nms}. A recent paper by Zhong et al. \cite{zhong2008itl} provides a modern overview and advanced use of the approach along with a relatively detailed set of equations for implementation.  
 
-Recent advances in the discrete ordinates method include employing advanced Krylov subspace methods, outlined by Warsa, Wareing, and Morel \cite{warsa2004kim}, variations of which are implemented in the state-of-the-art code Denovo \cite{evans2010dnt}.  Moreover, the discrete ordinates equations can be parallelized; the most popular approach is that of Koch, Baker, and Alcouffe \cite{koch1992sfo} (also implemented in Denovo).
+Recent advances in the discrete ordinates method include employing advanced 
+Krylov subspace methods, outlined by Warsa, Wareing, and Morel 
+\cite{warsa2004kim}, variations of which are implemented in the state-of-the-art 
+code Denovo \cite{evans2010dnt}.  Moreover, the discrete ordinates equations can 
+be parallelized; the most popular approach is that of Koch, Baker, and Alcouffe 
+\cite{koch1992sfo} (also implemented in Denovo).
 
-For more information on numerical quadrature, see any number of numerical analysis books.  Also, MIT course 18.335 is also highly recommended, as it covers numerical quadrature and many other aspects of numerical methods (including a heavy focus on numerical linear algebra).
+For more information on numerical quadrature, see any number of numerical 
+analysis books.  Also, MIT course 18.335 is also highly recommended, as it 
+covers numerical quadrature and many other aspects of numerical methods 
+(including a heavy focus on numerical linear algebra).
 
 \begin{exercises}
 

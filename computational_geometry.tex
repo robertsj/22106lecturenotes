@@ -1,0 +1,86 @@
+\chapter{Computational Geometry for Transport}
+\label{app:computational_geometry}
+
+\section*{Quadratic Surfaces}
+
+A 2-D quadratic (or second-order) surface is defined 
+implicitly as
+\begin{equation}
+ f(x, y) = A x^2 + B y^2 + C xy + Dx + Ey + F \, .
+\end{equation}
+ 
+For points \emph{on the surface}, $f=0$, and for points outside/inside the 
+surface, $f \gtrless 0$.
+ 
+Let 
+\begin{equation*}
+ \mathbf{r} = [x, y, 1]^{\transp} 
+ \quad \text{and} \quad
+ \mathbf{M} =
+ \left [ 
+ \begin{array}{ccc}
+  2 A &   D  &   E   \\
+    D & 2 B  &   C   \\
+    E &   C  & 2 F   \, .
+ \end{array}
+ \right ]  
+\end{equation*}
+Then,
+\begin{equation}
+ f(x, y) = \frac{1}{2} \mathbf{r}^{\transp} \mathbf{M} \mathbf{r} \, .
+\label{eq:quadratic_residual}
+\end{equation}
+\emph{ Prove this to yourself!}
+
+\section*{Tracking Particles}
+
+
+\emph{ Common problem}: \emph{where does a ray intersect a surface?}
+
+Let a ray $\mathbf{r}$ be defined as 
+\begin{equation}
+ \mathbf{r} = \mathbf{r}_0 + t \mathbf{d}
+\end{equation}
+where $\mathbf{r}_0$ is some starting point, $\mathbf{d}$ is some 
+direction (so $|\mathbf{d}|=1$), and $t$ is the distance from 
+the starting point along the direction.
+
+\vfill
+Substitute this ray into \EQ{quadratic_residual} to find 
+where the ray intersects the surface (and, hence, $f=0$).
+The result is (\emph{ show this!})
+\begin{equation}
+  t^2 \overbrace{\mathbf{d}^{\transp} \mathbf{M} \mathbf{d}}^{a}
+  + t \overbrace{\mathbf{r_0}^{\transp} \mathbf{M} \mathbf{d}}^{b}
+  +   \overbrace{\mathbf{r_0}^{\transp} \mathbf{M} \mathbf{r_0}}^{c} = 0 \, ,
+\end{equation}
+which is quadratic in $t$.  If  
+\begin{equation*}
+  \begin{array}{cc}
+      b^2 > 4ac & \text{there are two intersections} \\
+      b^2 = 4ac & \text{there is one intersection (tangent)} \\
+      b^2 < 4ac & \text{there are no intersections} 
+  \end{array}
+ \, . 
+\end{equation*}
+
+
+\section*{Creating Geometries}
+
+Detran's computational geometry consists of \emph{ regions} 
+defined by combinations of \emph{ nodes}. 
+
+ 
+
+A \emph{ node} can be a  surface (called a \emph{ primitive}), 
+an \emph{ operator} between two nodes (e.g., \emph{ union} and 
+\emph{ intersection}), or a \emph{ translation} of another 
+node.
+
+ 
+It would be useful to simplify what is presented here using 
+Python (but still without function implementations).  Ultimately,
+all of the note presented so far will be typeset as formal
+lectures, and I'd like one solid set of Python routines to 
+form the core.
+

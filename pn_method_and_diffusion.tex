@@ -1,24 +1,52 @@
 \chapter{P$\mathrm{_N}$ Method and Diffusion}
 \label{lec:pn_method_and_diffusion}
 
-We continue in this lecture our treatment of the integro-differential form of the transport equation.  Here, we turn to expansion of the angular variable in an orthogonal basis, the well-known Legendre polynomials in slab geometry and the spherical harmonics in multidimensional settings.  This approach is typically referred to generically as the $P_N$ method, which is the common symbol for the Legendre polynomials.  We'll first start with a brief discussion of anisotropic scattering and how it can be handled using orthogonal expansions.  We'll then derive the $P_N$ equations for slab geometry, show how one formally arrives at the \textit{neutron diffusion equation}, and provide a simple code that illustrates some concepts.
+We continue in this lecture our treatment of the integro-differential form of 
+the transport equation.  Here, we turn to expansion of the angular variable in 
+an orthogonal basis, the well-known Legendre polynomials in slab geometry and 
+the spherical harmonics in multidimensional settings.  This approach is 
+typically referred to generically as the $P_N$ method, which is the common 
+symbol for the Legendre polynomials.  We'll first start with a brief discussion 
+of anisotropic scattering and how it can be handled using orthogonal expansions. 
+ We'll then derive the $P_N$ equations for slab geometry, show how one formally 
+arrives at the \textit{neutron diffusion equation}, and provide a simple code 
+that illustrates some concepts.
 
 \section*{Anisotropic Scattering}
 
-In the past several lectures, we presented equations appropriate for scattering that is isotropic in the laboratory system.  While it is often appropriate to assume isotropic scattering in the center of mass system (i.e. s-wave scattering), this corresponds to a forward peaked distribution in the laboratory system.  This is especially true for light scatterers, which are important moderators.  Since the neutron transport equation itself lives in the laboratory system, to account even for isotropic center of mass scattering requires we devise a way to include angular dependence in our scattering cross-section.
+In the past several lectures, we presented equations appropriate for scattering 
+that is isotropic in the laboratory system.  While it is often appropriate to 
+assume isotropic scattering in the center of mass system (i.e. s-wave 
+scattering), this corresponds to a forward peaked distribution in the laboratory 
+system.  This is especially true for light scatterers, which are important 
+moderators.  Since the neutron transport equation itself lives in the laboratory 
+system, to account even for isotropic center of mass scattering requires we 
+devise a way to include angular dependence in our scattering cross-section.
 
-Recall that the macroscopic scattering cross-section can be expressed by $\Sigma_s(\hat{\Omega}' \to \hat{\Omega})$, which roughly quantifies the probability that a neutron going in direction $\hat{\Omega}'$ will collide and end up in the direction $\hat{\Omega}$.  However, if the medium is isotropic, recall that this probability depends only on the cosine of the angle between the two direction vectors, i.e 
+Recall that the macroscopic scattering cross-section can be expressed by 
+$\Sigma_s(\hat{\Omega}' \to \hat{\Omega})$, which roughly quantifies the 
+probability that a neutron going in direction $\hat{\Omega}'$ will collide and 
+end up in the direction $\hat{\Omega}$.  However, if the medium is isotropic, 
+recall that this probability depends only on the cosine of the angle between the 
+two direction vectors, i.e 
 \begin{equation}
- \Sigma_s(\hat{\Omega}' \to \hat{\Omega}) = \Sigma_s(\hat{\Omega}' \cdot \hat{\Omega}) = \Sigma_s(\mu_0) \, ,
+ \Sigma_s(\hat{\Omega}' \to \hat{\Omega}) = \Sigma_s(\hat{\Omega}' \cdot 
+\hat{\Omega}) = \Sigma_s(\mu_0) \, ,
 \end{equation}
-where $\mu_0$ is the cosine of the scattering angle.  Note, this is not valid for a moving medium (perhaps a molten, flowing fuel) or single crystals.
+where $\mu_0$ is the cosine of the scattering angle.  Note, this is not valid 
+for a moving medium (perhaps a molten, flowing fuel) or single crystals.
 
-The expression $\Sigma_s(\mu_0)$ is often expressed as an expansion in Legendre polynomials.  This not only provides a satisfactory way to represent experimental data points in function form, but it also facilitates many analytic and numerical treatments of anisotropic scattering.  Using the Legendre polynomials $P_l(\mu_0)$, we write
+The expression $\Sigma_s(\mu_0)$ is often expressed as an expansion in Legendre 
+polynomials.  This not only provides a satisfactory way to represent 
+experimental data points in function form, but it also facilitates many analytic 
+and numerical treatments of anisotropic scattering.  Using the Legendre 
+polynomials $P_l(\mu_0)$, we write
 \begin{equation}
- \Sigma_s(\mu_0) = \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} \Sigma_{sl}P_{l}(\mu_0) \, , 
+ \Sigma_s(\mu_0) = \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} \Sigma_{sl}P_{l}(\mu_0) 
+\, , 
  \label{eq:scatterkernel}
 \end{equation}
-where the Legendre coefficients (or \textit{Legendre momements}) are defined
+where the Legendre coefficients (or \textit{Legendre moments}) are defined
 \begin{equation}
  \Sigma_{sl} = 2\pi \int^{1}_{-1} \Sigma_s(\mu_0) P_l(\mu_0) d\mu_0 \, .
  \label{eq:scattermoment}
@@ -60,14 +88,27 @@ For reference, the Legendre polynomials through $N=5$ are given in Figure \ref{f
     \label{fig:legendre_polynomials}
 \end{figure}
 
-The Legendre polynomials are useful for expanding the scattering cross-section because they are orthogonal over the range $-1 \leq \mu \leq 1$.  Moreover, expansions in the Legendre polynomials are unique in that the zeroth moment $\Sigma_{s0}$ preserves the integral properties of the underlying distribution (i.e the mean), whereas the other moments merely provide shape.  By looking at the $P_N$ in Figure \ref{fig:legendre_polynomials}, this becomes more obvious when one notes only $P_0$ has a non-vanishing integral over the domain.
+The Legendre polynomials are useful for expanding the scattering cross-section 
+because they are orthogonal over the range $-1 \leq \mu \leq 1$.  Moreover, 
+expansions in the Legendre polynomials are unique in that the zeroth moment 
+$\Sigma_{s0}$ preserves the integral properties of the underlying distribution 
+(i.e the mean), whereas the other moments merely provide shape.  By looking at 
+the $P_N$ in Figure \ref{fig:legendre_polynomials}, this becomes more obvious 
+when one notes only $P_0$ has a non-vanishing integral over the domain.
 
 \section*{Expanding the Angular Dependence}
 
-To derive the $P_N$ equations, we must be careful to choose a starting point consistent with our expansion of the scattering kernel defined by Eqs. \ref{eq:scatterkernel} and \ref{eq:scattermoment}.  If we're not, it's easy to encounter a phantom $2\pi$!  Take as our starting point the monoenergetic transport equation in slab geometry with arbitary angular dependence of the scattering and source terms,
+To derive the $P_N$ equations, we must be careful to choose a starting point 
+consistent with our expansion of the scattering kernel defined by Eqs. 
+\ref{eq:scatterkernel} and \ref{eq:scattermoment}.  If we're not, it's easy to 
+encounter a phantom $2\pi$!  Take as our starting point the monoenergetic 
+transport equation in slab geometry with arbitary angular dependence of the 
+scattering and source terms,
 \begin{equation}
 \begin{split}
- \mu \frac{\partial \psi}{\partial x} + \Sigma_t(x)\psi(x,\mu) &= \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu' \Sigma_s(x,\mu_0)\psi(x,\mu')  + S(x,\mu)  .
+ \mu \frac{\partial \psi}{\partial x} + \Sigma_t(x)\psi(x,\mu) &= 
+    \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu' \Sigma_s(x,\mu_0)\psi(x,\mu') 
+      + S(x,\mu)  .
 \end{split}
  \label{eq:slabtransportequationgeneral}
 \end{equation}
@@ -90,23 +131,23 @@ where
 \begin{equation}
  \psi_{n}(x) = 2\pi \int^{1}_{-1} \psi(x,\mu) P_n(\mu) d\mu \, .
 \end{equation}
-% Substituting Eqs. \ref{eq:sourceexp} and \ref{eq:psiexp} along with Eq. \ref{eq:scatterkernel} into Eq. \ref{eq:slabtransportequationgeneral}, we find
-% \begin{equation}
-%  \begin{split}
-%    & \mu \sum^{\infty}_{n=0} \frac{2n+1}{4\pi}P_{n}(\mu) \Big ( \frac{\partial \psi_n(x)}{\partial x} + \Sigma_t(x)\psi_n(x) \Big ) =  \sum^{\infty}_{n=0} \frac{2n+1}{4\pi} S_{n}(x)P_{n}(\mu) + \\
-%    & \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} \Sigma_{sl}P_{l}(\mu_0) \sum^{\infty}_{n=0} \frac{2n+1}{4\pi} \psi_{n}(x)P_{n}(\mu')    .
-%  \end{split}
-% \end{equation}
-Before substituting these expressions, it helps to simplify the scattering expression.  Using Eq. \ref{eq:scatterkernel}, we can write the scattering term of Eq. \ref{eq:slabtransportequationgeneral}
+Before substituting these expressions, it helps to simplify the 
+scattering expression.  Using Eq. \ref{eq:scatterkernel}, we can write the 
+scattering term of Eq. \ref{eq:slabtransportequationgeneral}
 \begin{equation}
 \begin{split}
-  \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  & \Sigma_s(x,\mu_0)\psi(x,\mu')  \\
-  &= \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} \Sigma_{sl}(x)P_{l}(\mu_0) \psi(x,\mu') \, .
+  \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  
+    & \Sigma_s(x,\mu_0)\psi(x,\mu')  \\
+    &= \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu' 
+           \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} 
+              \Sigma_{sl}(x)P_{l}(\mu_0) \psi(x,\mu') \, .
 \end{split}
 \end{equation}
 Here, we make use of the \textit{Legendre addition theorem}, which states 
 \begin{equation}
- P_l(\mu_0) = P_l(\mu)P_l(\mu') + 2\sum^l_{m=1}\frac{(l-m)!}{(l+m)!}P^m_l(\mu)P^m_l(\mu')\cos(m(\phi-\phi')) \, ,
+ P_l(\mu_0) = P_l(\mu)P_l(\mu') 
+    + 2\sum^l_{m=1}\frac{(l-m)!}{(l+m)!} 
+         P^m_l(\mu)P^m_l(\mu')\cos(m(\phi-\phi')) \, ,
 \end{equation}
 where $P^m_l(\mu)$ are the \textit{associated Legendre polynomials}, defined
 \begin{equation}
@@ -115,7 +156,9 @@ where $P^m_l(\mu)$ are the \textit{associated Legendre polynomials}, defined
 Substituting this in, we find
 \begin{equation}
 \begin{split}
-   \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  & \sum^{\infty}_{l=0} \frac{2l+1}{4\pi}  \Sigma_{sl}(x)P_{l}(\mu_0) \psi(x,\mu') \\
+   \int^{2\pi}_0 d\phi' \int^1_{-1} d\mu'  
+      & \sum^{\infty}_{l=0} \frac{2l+1}{4\pi}  
+         \Sigma_{sl}(x)P_{l}(\mu_0) \psi(x,\mu') \\
   = \sum^{\infty}_{l=0} \frac{2l+1}{4\pi} & \Sigma_{sl}(x) \int^1_{-1} d\mu'  \psi(x,\mu')   \int^{2\pi}_0 d\phi' \Bigg ( P_l(\mu)P_l(\mu') + \\  
   & 2\sum^l_{m=1}\frac{(l-m)!}{(l+m)!}P^m_l(\mu)P^m_l(\mu')\cos(m(\phi-\phi'))\Bigg )\, .
 \end{split}
@@ -198,7 +241,7 @@ The $P_N$ equations give us one formal way to derive the diffusion equation.  Su
 
 Then, we rearrange Eq. \ref{eq:p1approx} to find
 \begin{equation}
- \psi_1 (x) = \frac{-1}{3(\Sigma_t - \Sigma_{s0}\mu)} \frac{d\psi_0}{dx} \equiv -D(x) \frac{\psi_0}{dx} \, ,
+ \psi_1 (x) = \frac{-1}{3(\Sigma_t - \Sigma_{s1}\mu)} \frac{d\psi_0}{dx} \equiv -D(x) \frac{\psi_0}{dx} \, ,
 \end{equation}
 so that 
 \begin{equation}
@@ -244,18 +287,85 @@ To be continued.
 
 \begin{exercises}
 
-  \item  \textbf{P$_{\mathbf{1}}$ Boundary Conditions}. Derive the $P_1$ equations for isotropic scattering and an isotropic source.  Derive the Marshak vacuum conditions for arbitrary left and right boundaries in a slab.  Do the same for the Mark conditions. 
+  \item  \textbf{P$_{\mathbf{1}}$ Boundary Conditions}. Derive the $P_1$ 
+equations for isotropic scattering and an isotropic source.  Derive the Marshak 
+vacuum conditions for arbitrary left and right boundaries in a slab.  Do the 
+same for the Mark conditions. 
 
-  \item \textbf{P$_{\mathbf{2}}$ Equations}. Show for the case of linearly anisotropic scattering and isotropic source that the $P_2$ equations can be written as a second order partial differential equation similar in form to the typical neutron diffusion equation.
+  \item \textbf{P$_{\mathbf{2}}$ Equations}. Show for the case of linearly 
+anisotropic scattering and isotropic source that the $P_2$ equations can be 
+written as a second order partial differential equation similar in form to the 
+typical neutron diffusion equation.
 
-  \item \textbf{Numerical Solution of the P$_{\mathbf{1}}$ Equations}. Consider a slab of width 10 cm with $\Sigma_t = 1.0$ [cm$^{-1}$], and $c = \Sigma_s / \Sigma_t = 0.5$ (isotropic scattering in the lab system).  A uniform, isotropic source of $1$ [n/cm$^2$-s] is located in the first half of the slab, and both slab edges are subject to vacuum conditions. Write a code to solve the $P_1$ approximation to this problem using Marshak conditions.  Plot $\psi(x,\mu)$ at $x = 0$, $2.5$, $5.0$, $7.5$, and $10$ [cm].  Plot $\phi(x)$ over the whole slab.
+  \item \textbf{P$_{\mathbf{3}}$ Equations}. Starting from the 1-D transport 
+  equation with arbitrary anisotropic scattering
+  and an isotropic source, derive the P$_3$ equations.  Additionally, 
+  derive the Marshak vacuum conditions for arbitrary left and 
+  right boundaries in a slab.  
 
-  \item \textbf{Numerical Solution of the P$_{\mathbf{3}}$ Equations}. For the same problem, write a code to solve the $P_3$ approximation using Marshak conditions.
+  \item \textbf{Numerical Solution of the P$_{\mathbf{1}}$ Equations}. Consider 
+a slab of width 10 cm with $\Sigma_t = 1.0$ [cm$^{-1}$], and $c = \Sigma_s / 
+\Sigma_t = 0.5$ (isotropic scattering in the lab system).  A uniform, isotropic 
+source of $1$ [n/cm$^2$-s] is located in the first half of the slab, and both 
+slab edges are subject to vacuum conditions. Write a code to solve the $P_1$ 
+approximation to this problem using Marshak conditions. Use a
+finite-difference approximation in space. Plot $\psi(x,\mu)$ at 
+$x = 0$, $2.5$, $5.0$, $7.5$, and $10$ [cm], and plot $\phi(x)$ over the whole 
+slab.
 
-  \item \textbf{ Diffusion via asymptotics}.  Consider the following rescaling of the 1-d, mono-energetic transport equation with isotropic scattering. Finish me.
+  \item \textbf{Numerical Solution of the P$_{\mathbf{3}}$ Equations}. For the 
+same problem, write a code to solve the $P_3$ approximation using Marshak 
+conditions.
 
-  \item \textbf{Legendre Addition Theorem}. Prove the Legendre polynomial addition theorem.  You may use any resource you want, but make sure you understand all steps of the proof.  A particularly straightforward approach begins as follows.  Start with an expansion of an arbitrary function in the full spherical harmonics.  Then, substitute the definition of the expansion coefficients back into the expansion.  Noting that the integral and summation can be switched, what function must the summation be?  
+  \item \textbf{Diffusion via asymptotics}.  
+  Consider the 1-D transport equation in slab geometry.  
+  Suppose the angular flux varies significantly over ranges 
+  approximately equal to $l \gg \lambda = 1/\Sigma_t$.  
+  By letting
+  $\epsilon = \lambda / l$, $z=x/l$, $\tilde{\Sigma}_t = \lambda \Sigma_t$,
+  $\tilde{\Sigma}_s = \lambda \Sigma_s$, 
+  $\epsilon^2 \tilde{\Sigma}_a = \tilde{\Sigma}_t-\tilde{\Sigma}_s$,
+  and $\epsilon^2 \tilde{S} = \lambda S$, we can define
+  a scaled transport equation
+  \begin{equation}
+   \varepsilon \mu \frac{\partial \psi}{\partial z} 
+     + \tilde{\Sigma_t} \psi(z,\mu) = 
+     \frac{\tilde{\Sigma}_t - \tilde{\Sigma}_a \varepsilon^2}{2} \int^1_{-1} \psi(z,\mu')d\mu '
+     + \frac{\varepsilon^2 \tilde{S}}{2} \, ,
+  \end{equation}
+  where, for simplicity, a homogeneous medium is assumed.  Then let
+\begin{equation}
+  \psi(x, \mu) = \sum^{\infty}_{n=0} \varepsilon^n \psi_n(x,\mu) ,
+\end{equation}
+which is a \emph{perturbation series}.  Then do the following:
+\begin{enumerate}[(a)]
+ \item Substitute this approximation into the scaled transport equation and 
+       find equations corresponding to $\varepsilon^0$, $\varepsilon^1$, 
+       and $\varepsilon^2$.
+ \item From the first two of these equations, 
+       show that $\psi_1 = \phi_0/2 - (\mu/2\Sigma_t)d\phi_0/dx$, where 
+       $\phi_n(x) = \int^1_{-1} \psi_n(x,\mu)$.
+ \item Show that the third equation leads directly to the diffusion 
+       equation once the variables and cross sections 
+       are converted back to their original forms.       
+\end{enumerate}
+This problem provides a very quick taste of asymptotic analysis, a 
+tool that Ed Larsen has used successfully for various problems of interest in
+neutron transport; see, e.g., Ref.~\cite{larsen2009aan}.
 
-  \item \textbf{Defining the Scattering Angle}. Prove $\mu_0 = \cos(\theta)\cos(\theta')+\sin(\theta)\sin(\theta')\cos(\phi-\phi')$, where $\mu_0$ is the cosine of the scattering angle and ($\theta$,$\phi$) and $(\theta',\phi')$ are the original and final angles, respectively.  Include a diagram.
+
+  \item \textbf{Legendre Addition Theorem}. Prove the Legendre polynomial 
+addition theorem.  You may use any resource you want, but make sure you 
+understand all steps of the proof.  A particularly straightforward approach 
+begins as follows.  Start with an expansion of an arbitrary function in the full 
+spherical harmonics.  Then, substitute the definition of the expansion 
+coefficients back into the expansion.  Noting that the integral and summation 
+can be switched, what function must the summation be?  
+
+  \item \textbf{Defining the Scattering Angle}. Prove $\mu_0 = 
+\cos(\theta)\cos(\theta')+\sin(\theta)\sin(\theta')\cos(\phi-\phi')$, where 
+$\mu_0$ is the cosine of the scattering angle and ($\theta$,$\phi$) and 
+$(\theta',\phi')$ are the original and final angles, respectively.  Include a 
+diagram.
 
 \end{exercises}
