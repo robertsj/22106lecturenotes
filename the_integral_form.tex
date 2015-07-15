@@ -62,7 +62,7 @@ Then, the integral equation for the angular flux becomes
 
 In many cases, the emission density $Q$ is assumed to be isotropic in the lab system.  In this case, we can integrate out the angular dependence and arrive at an integral equation for the scalar flux often referred to as Peierl's equation.  To do so, we let the integration bound $p$ of Eq. \ref{eq:inteqpsi} go to infinity.  We assume the second term on the right hand side to vanish (i.e. either $\psi$ vanishes at infinity, or equivalently, the optical path length $\tau(\mathbf{r},\infty)$ goes to $\infty$, and so the exponential vanishes).  
 
-Letting $Q(\mathbf{r},\mathbf{\Omega}) = Q(\mathbf{r} -p\mathbf{\Omega})/4\pi$, and substituting $\mathbf{r}' = \mathbf{r} - p \mathbf{\Omega}$, we integrate Eq. \ref{eq:inteqpsi} over all angles to get
+Letting $Q(\mathbf{r},\mathbf{\Omega}) = Q(\mathbf{r})/4\pi$, and substituting $\mathbf{r}' = \mathbf{r} - p \mathbf{\Omega}$, we integrate Eq. \ref{eq:inteqpsi} over all angles to get
 \begin{equation}
  \phi(\mathbf{r}) = \int_{4\pi} d\Omega \int^{\infty}_0  \frac{Q(\mathbf{r}')}{4\pi}e^{-\tau(\mathbf{r},\mathbf{r}')}dp \, .
  \label{eq:integralphiPRE}
