@@ -1,0 +1,435 @@
+\chapter{Neutron Scattering II: Partial Waves}
+
+\sourcepage{1}
+\subsection*{From last time}
+\begin{enumerate}
+  \item Reactions, Bohr, and the compound nucleus.
+  \item Cross sections.
+  \item $\widehat H\psi=E\psi$ for a two-body system and a central potential $V(r)$.
+\end{enumerate}
+The probability current and continuity equation were left as
+\[
+  \bm j=\frac{\hbar}{2m\ii}\left(\overline\psi\nabla\psi-\psi\nabla\overline\psi\right),
+  \qquad
+  \frac{\partial}{\partial t}(\overline\psi\psi)+\nabla\cdot\bm j=0.
+\]
+The topics for the present notes are quantum-mechanical scattering and $\sigma(\theta)$, partial waves for $V(\bm r)=V(r)$, and a multichannel overview.
+
+\sourcepage{2}
+The differential cross section is
+\[
+  \sigma(\Omega)=\frac{\dd\sigma}{\dd\Omega}
+  =\frac{\text{number scattered}}
+  {\text{target}\times\text{incident flux}},
+\]
+with units of barns per steradian.  For
+\[
+  \psi_{\mathrm{in}}=A\ee^{\ii kz},
+  \qquad
+  \psi_{\mathrm{sc}}=A f(\Omega)\frac{\ee^{\ii kr}}{r},
+\]
+the currents are
+\[
+  j_i=v_i|A|^2,
+  \qquad
+  j_f=v_f|A|^2\frac{|f|^2}{R^2}.
+\]
+Particle balance through an element of solid angle gives
+\[
+  j_i\frac{\dd\sigma}{\dd\Omega}=j_fR^2,
+\]
+and hence
+\begin{equation}
+  \frac{\dd\sigma}{\dd\Omega}=\frac{v_f}{v_i}|f|^2.
+  \label{eq:ns2-diff-xs}
+\end{equation}
+
+\sourcepage{3}
+From the previous discussion, a plane wave incident along $z$ and scattered by a spherical potential has the asymptotic form
+\[
+  \psi_{\mathrm{asym}}\sim \ee^{\ii kz}+f(\theta,\phi)\frac{\ee^{\ii kr}}{r}.
+\]
+The incident plane wave has cylindrical symmetry about $z$, and the spherical potential cannot break that symmetry.  Therefore
+\[
+  f(\theta,\phi)=f(\theta),
+  \qquad
+  \sigma(\theta,\phi)=\sigma(\theta).
+\]
+Given a potential $V(r)$, the Schr\"odinger equation can in principle be solved to obtain the cross section.  Two general schemes are noted:
+\begin{enumerate}
+  \item the method of partial waves, an appropriate expansion into an infinite set of ordinary differential equations;
+  \item the Born series, an infinite sum whose first term gives the Born approximation.
+\end{enumerate}
+The notes remark that this is a common dichotomy in mathematical physics.
+
+\sourcepage{4}
+\section{Method of partial waves}
+The radial equation is recalled in the form
+\begin{equation}
+  \left[-\frac{\hbar^2}{2m}
+  \left(\frac{\dd^2}{\dd r^2}+\frac{2}{r}\frac{\dd}{\dd r}
+  -\frac{\ell(\ell+1)}{r^2}\right)
+  +V(r)-E\right]\psi_\ell(r)=0.
+  \label{eq:ns2-radial-psi}
+\end{equation}
+Expand the axially symmetric wave function in Legendre polynomials,
+\begin{equation}
+  \psi(r,\theta)
+  =\sum_{\ell=0}^{\infty}(2\ell+1)\ii^\ell
+  P_\ell(\cos\theta)\frac{1}{kr}\chi_\ell(r).
+  \label{eq:ns2-pw-expansion}
+\end{equation}
+The factor $1/(kr)$ is included for convenience.  For $V(r)=0$, $\chi_\ell$ is related to the spherical Bessel and Neumann functions $j_\ell$ and $y_\ell$.
+
+\sourcepage{5}
+Substitution of \eqref{eq:ns2-pw-expansion} into the Schr\"odinger equation, followed by multiplication by $P_m(\cos\theta)$ and integration over $\mu=\cos\theta$, uses
+\[
+  \int_{-1}^{1}P_m(\mu)P_\ell(\mu)\dd\mu
+  =\frac{2}{2\ell+1}\delta_{m\ell}.
+\]
+The result is one independent radial equation for each partial wave:
+\begin{equation}
+  \left[-\frac{\hbar^2}{2m}
+  \left(\frac{\dd^2}{\dd r^2}-\frac{\ell(\ell+1)}{r^2}\right)
+  +V(r)-E\right]\chi_\ell(r)=0.
+  \label{eq:ns2-chi-equation}
+\end{equation}
+
+\sourcepage{6}
+Each partial-wave equation requires two boundary conditions:
+\begin{enumerate}
+  \item For a finite wave function,
+  \[
+    \chi_\ell(0)=0.
+  \]
+  \item At some radius $r=a$ outside the range of the potential, match $\chi_\ell$ to its asymptotic form.  This assumes a short-range potential, $V(r)\simeq0$ for $r>a$.
+\end{enumerate}
+In vacuum, the solutions are proportional to $r h_\ell^{\pm}(kr)$.  The plane wave must be expressed in the same basis.  Since
+\[
+  \ee^{\ii kz}=\ee^{\ii kr\cos\theta}=\ee^{\ii\rho\cos\theta},
+\]
+write
+\[
+  \ee^{\ii\rho\cos\theta}
+  =\sum_{\ell=0}^{\infty}(2\ell+1)a_\ell(\rho)P_\ell(\cos\theta).
+\]
+Orthogonality gives
+\[
+  \frac{2}{2\ell+1}a_\ell(\rho)
+  =\int_{-1}^{1}\ee^{\ii\rho\mu}P_\ell(\mu)\dd\mu
+  =2\ii^\ell j_\ell(\rho),
+\]
+so
+\begin{equation}
+  \ee^{\ii kz}
+  =\sum_{\ell=0}^{\infty}(2\ell+1)\ii^\ell
+  j_\ell(kr)P_\ell(\cos\theta).
+  \label{eq:ns2-plane-wave-expansion}
+\end{equation}
+
+\sourcepage{7}
+Equivalently,
+\[
+  \ee^{\ii\rho\cos\theta}
+  =\sum_{\ell=0}^{\infty}(2\ell+1)a_\ell(\rho)P_\ell(\cos\theta),
+  \qquad
+  a_\ell(\rho)=\frac12\int_{-1}^{1}P_\ell(\mu)\ee^{\ii\rho\mu}\dd\mu.
+\]
+Using the integral representation
+\[
+  j_\ell(\rho)=\frac{(-\ii)^\ell}{2}
+  \int_{-1}^{1}\ee^{\ii\rho\mu}P_\ell(\mu)\dd\mu,
+\]
+one again finds $a_\ell=\ii^\ell j_\ell$ and obtains \eqref{eq:ns2-plane-wave-expansion}.
+
+\sourcepage{8}
+Since
+\[
+  h_\ell^\pm=j_\ell\pm\ii y_\ell,
+  \qquad
+  j_\ell=\frac12(h_\ell^-+h_\ell^+),
+\]
+the incident plane wave may be written
+\[
+  \ee^{\ii kz}
+  =\frac12\sum_{\ell=0}^{\infty}(2\ell+1)\ii^\ell
+  \left[h_\ell^-(kr)+h_\ell^+(kr)\right]P_\ell(\cos\theta).
+\]
+Thus the incident beam consists of incoming and outgoing radial waves of equal amplitude: it is a plane wave that approaches the target and leaves it unchanged.
+
+Outside the potential, the asymptotic partial-wave solution must be a linear combination of the two basic solutions.  The notes write
+\begin{equation}
+  \chi_\ell^{\mathrm{ext}}(r)
+  =A_\ell\left[H_\ell^-(kr)-S_\ell H_\ell^+(kr)\right],
+  \label{eq:ns2-exterior-solution}
+\end{equation}
+where $A_\ell$ and $S_\ell$ are complex coefficients.  The coefficient $S_\ell$ is the $S$-matrix element for the $\ell$th partial wave.
+% The source parenthetical appears to read ``S_l is zero for V=0,'' although the subsequent equations use S_l=1 for no scattering.
+
+\sourcepage{9}
+Within the potential, solve for a radial wave function $u_\ell(r)$.  Its overall normalization is arbitrary, so the actual solution is
+\[
+  \chi_\ell(r)=B u_\ell(r).
+\]
+At the matching radius $a$,
+\[
+  \chi_\ell(a)=\chi_\ell^{\mathrm{ext}}(a),
+  \qquad
+  \chi_\ell'(a)=\chi_\ell^{\mathrm{ext}\prime}(a).
+\]
+The notes define the dimensionless logarithmic-derivative quantity
+\begin{equation}
+  R_\ell
+  =\frac{1}{a}\frac{\chi_\ell(a)}{\chi_\ell'(a)}
+  =\frac{1}{a}\frac{u_\ell(a)}{u_\ell'(a)}.
+  \label{eq:ns2-R-def}
+\end{equation}
+This is the $R$-matrix element of the $\ell$th partial wave.  Combining \eqref{eq:ns2-exterior-solution} and \eqref{eq:ns2-R-def},
+\[
+  R_\ell
+  =\frac{1}{a}
+  \frac{H_\ell^-(ka)-S_\ell H_\ell^+(ka)}
+  {H_\ell^{-\prime}(ka)-S_\ell H_\ell^{+\prime}(ka)}.
+\]
+Solving for $S_\ell$ gives
+\begin{equation}
+  S_\ell
+  =\frac{H_\ell^-(ka)-aR_\ell H_\ell^{-\prime}(ka)}
+  {H_\ell^+(ka)-aR_\ell H_\ell^{+\prime}(ka)}.
+  \label{eq:ns2-S-from-R}
+\end{equation}
+The $S$-matrix element is independent of the normalization of the interior solution and is uniquely defined by the potential.
+
+\sourcepage{10}
+To compute the scattering amplitude, use the asymptotic partial-wave form
+\[
+  \psi^{\mathrm{asym}}
+  \sim \frac{1}{kr}\sum_{\ell=0}^{\infty}(2\ell+1)\ii^\ell
+  P_\ell(\cos\theta)A_\ell
+  \left[H_\ell^-(kr)-S_\ell H_\ell^+(kr)\right].
+\]
+For $kr\gg1$,
+\[
+  H_\ell^\pm(kr)\sim \ii^{\mp(\ell+1)}\ee^{\pm\ii kr}.
+\]
+Compare with
+\[
+  \psi^{\mathrm{asym}}=\ee^{\ii kz}+f(\theta)\frac{\ee^{\ii kr}}{r}
+\]
+and match the $\ee^{-\ii kr}$ and $\ee^{\ii kr}$ terms.  Matching the incoming term gives
+\[
+  A_\ell=\frac{\ii}{2}.
+\]
+
+\sourcepage{11}
+Expand the amplitude as
+\[
+  f(\theta)=\sum_{\ell=0}^{\infty}(2\ell+1)f_\ell P_\ell(\cos\theta),
+  \qquad
+  f_\ell=\frac12\int_{-1}^{1}P_\ell(\mu)f(\mu)\dd\mu.
+\]
+Matching outgoing terms and using orthogonality yields
+\begin{equation}
+  f_\ell=\frac{1}{2k\ii}(S_\ell-1).
+  \label{eq:ns2-fl}
+\end{equation}
+Therefore
+\begin{equation}
+  f(\theta)=\frac{1}{2k\ii}
+  \sum_{\ell=0}^{\infty}(2\ell+1)P_\ell(\cos\theta)(S_\ell-1),
+  \label{eq:ns2-f-S}
+\end{equation}
+and the differential cross section is
+\begin{equation}
+  \sigma(\theta)
+  =\frac{1}{4k^2}
+  \left|\sum_{\ell=0}^{\infty}(2\ell+1)P_\ell(\cos\theta)(S_\ell-1)\right|^2.
+  \label{eq:ns2-diff-xs-S}
+\end{equation}
+
+\sourcepage{12}
+The asymptotic partial waves are linear combinations of $H_\ell^+$ and $H_\ell^-$.  A more physical parametrization is
+\begin{equation}
+  S_\ell=\ee^{2\ii\delta_\ell},
+  \qquad
+  \delta_\ell=\frac{1}{2\ii}\ln S_\ell+n\pi,
+  \quad n\in\mathbb Z.
+  \label{eq:ns2-phase-shift}
+\end{equation}
+Then
+\begin{equation}
+  f(\theta)=\frac{1}{k}
+  \sum_{\ell=0}^{\infty}(2\ell+1)P_\ell(\cos\theta)
+  \ee^{\ii\delta_\ell}\sin\delta_\ell.
+  \label{eq:ns2-f-phase}
+\end{equation}
+The exterior partial wave can likewise be written
+\[
+  \chi_\ell^{\mathrm{ext}}
+  =\ee^{\ii\delta_\ell}
+  \left[\cos\delta_\ell\,F_\ell(kr)
+  +\sin\delta_\ell\,G_\ell(kr)\right]
+  \sim \ee^{\ii\delta_\ell}
+  \sin\left(kr+\delta_\ell-\frac{\ell\pi}{2}\right).
+\]
+Hence the name \emph{phase shift}.  The sketch notes that $\delta_\ell>0$ corresponds to a weakly attractive potential.
+
+\sourcepage{13}
+The phase-shift representation gives several useful results.  The elastic cross section for one partial wave is
+\begin{equation}
+  \sigma_{\mathrm{el},\ell}
+  =\pi\bar\lambda^2(2\ell+1)|1-S_\ell|^2,
+  \qquad \bar\lambda=\frac{1}{k}.
+  \label{eq:ns2-el-partial}
+\end{equation}
+The total elastic cross section is
+\begin{equation}
+  \sigma_{\mathrm{el}}
+  =\pi\bar\lambda^2
+  \sum_{\ell=0}^{\infty}(2\ell+1)|1-S_\ell|^2.
+  \label{eq:ns2-el-total}
+\end{equation}
+The forward amplitude obeys the optical theorem in the form
+\begin{equation}
+  \operatorname{Im}f(0)=\frac{k}{4\pi}\sigma_{\mathrm{el}}
+  \label{eq:ns2-optical-elastic}
+\end{equation}
+for purely elastic scattering.
+
+Since the exterior partial wave is proportional to $H_\ell^- -S_\ell H_\ell^+$, the difference between incoming and outgoing radial intensities is $1-|S_\ell|^2$.  Define the reaction cross section
+\begin{equation}
+  \sigma_R=\frac{\pi}{k^2}
+  \sum_{\ell=0}^{\infty}(2\ell+1)(1-|S_\ell|^2).
+  \label{eq:ns2-reaction-xs}
+\end{equation}
+It vanishes when $|S_\ell|=1$.
+
+\sourcepage{14}
+\subsection*{Net current through a large sphere}
+The probability current is
+\[
+  \bm j=\frac{\hbar}{2m\ii}
+  (\overline\psi\nabla\psi-\psi\nabla\overline\psi).
+\]
+At a large radius $R$, the net radial current is obtained from $\widehat{\bm r}\cdot\bm j$ and integrated over the sphere.  Using the asymptotic partial-wave form and Legendre orthogonality, the $\ell$th-wave contribution is proportional to the outgoing-minus-incoming intensity,
+\[
+  \left(1-|S_\ell|^2\right).
+\]
+The notes reduce the angular integral with
+\[
+  \int_0^{2\pi}\dd\phi\int_{-1}^{1}P_\ell^2(\mu)\dd\mu
+  =\frac{4\pi}{2\ell+1}.
+\]
+
+\sourcepage{15}
+The total net outward current is recorded as
+\[
+  j_{\mathrm{out}}
+  =-\frac{\hbar\pi}{mk}
+  \sum_{\ell=0}^{\infty}(2\ell+1)(1-|S_\ell|^2).
+\]
+The reaction cross section is defined as the loss of current divided by the incident current.  For $\psi_{\mathrm{in}}=\ee^{\ii kz}$,
+\[
+  j_{\mathrm{in}}=v=\frac{\hbar k}{m},
+\]
+which recovers
+\[
+  \sigma_R=-\frac{j_{\mathrm{out}}}{j_{\mathrm{in}}}
+  =\pi\bar\lambda^2
+  \sum_{\ell=0}^{\infty}(2\ell+1)(1-|S_\ell|^2).
+\]
+Thus
+\begin{align}
+  \sigma_{R,\ell}
+  &=\pi\bar\lambda^2(2\ell+1)(1-|S_\ell|^2),\\
+  \sigma_R
+  &=\pi\bar\lambda^2\sum_{\ell=0}^{\infty}(2\ell+1)(1-|S_\ell|^2).
+\end{align}
+The total cross section is
+\begin{align}
+  \sigma_{T,\ell}
+  &=\sigma_{\mathrm{el},\ell}+\sigma_{R,\ell}\\
+  &=\pi\bar\lambda^2(2\ell+1)
+  \left(|1-S_\ell|^2+1-|S_\ell|^2\right)\\
+  &=2\pi\bar\lambda^2(2\ell+1)
+  \left[1-\operatorname{Re}(S_\ell)\right],\\
+  \sigma_T
+  &=2\pi\bar\lambda^2\sum_{\ell=0}^{\infty}(2\ell+1)
+  \left[1-\operatorname{Re}(S_\ell)\right].
+\end{align}
+
+\sourcepage{16}
+Return to \eqref{eq:ns2-S-from-R}.  Dropping the partial-wave subscript temporarily,
+\[
+  S
+  =\frac{1-a(H^{-\prime}/H^-)R}{1-a(H^{+\prime}/H^+)R}
+  \frac{H^-}{H^+}.
+\]
+Writing $H^+=G+\ii F$,
+\begin{align*}
+  a\frac{H^{+\prime}}{H^+}
+  &=a\frac{G'+\ii F'}{G+\ii F}\\
+  &=a\frac{GG'+FF'}{G^2+F^2}
+  +\ii a\frac{GF'-FG'}{G^2+F^2}\\
+  &\equiv \widehat S+\ii\widehat P,
+\end{align*}
+where $\widehat S$ is the shift function and $\widehat P$ the penetrability.  For the first partial waves, the notes list
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+$\ell$ & $\widehat S_\ell(\rho)$ & $\widehat P_\ell(\rho)$\\
+\midrule
+$0$ & $0$ & $\rho$\\
+$1$ & $-1/(\rho^2+1)$ & $\rho^3/(\rho^2+1)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Also define the hard-sphere phase $\Delta$ by
+\[
+  \frac{H^-}{H^+}=\frac{G-\ii F}{G+\ii F}=\ee^{2\ii\Delta}.
+\]
+The resulting $S$-matrix expression is recorded in the notes as a ratio involving $1-R\widehat S$ and $R\widehat P$, multiplied by $\ee^{2\ii\Delta}$.  Consistent with the immediately following phase decomposition, one may write
+\begin{equation}
+  S_\ell
+  =\frac{1-R_\ell\widehat S_\ell+\ii R_\ell\widehat P_\ell}
+  {1-R_\ell\widehat S_\ell-\ii R_\ell\widehat P_\ell}
+  \ee^{2\ii\Delta_\ell}.
+  \label{eq:ns2-S-shift-penetration}
+\end{equation}
+\editorial{The handwritten signs in the boxed fraction are difficult to distinguish; the displayed form follows the algebra and the phase relation on the next source page.}
+
+\sourcepage{17}
+For elastic scattering,
+\[
+  \sigma_{\mathrm{el},\ell}
+  =\pi\bar\lambda^2(2\ell+1)|1-S_\ell|^2.
+\]
+Let
+\[
+  1-R_\ell\widehat S_\ell=\cos\alpha_\ell,
+  \qquad
+  R_\ell\widehat P_\ell=\sin\alpha_\ell,
+\]
+up to an arbitrary common normalization.  Then
+\[
+  \frac{\cos\alpha_\ell+\ii\sin\alpha_\ell}
+  {\cos\alpha_\ell-\ii\sin\alpha_\ell}
+  =\frac{1+\ii\tan\alpha_\ell}{1-\ii\tan\alpha_\ell}
+  =\ee^{2\ii\alpha_\ell}.
+\]
+Consequently,
+\begin{equation}
+  S_\ell=\ee^{2\ii\alpha_\ell+2\ii\Delta_\ell},
+  \qquad
+  \delta_\ell=\alpha_\ell+\Delta_\ell.
+  \label{eq:ns2-compound-hard-sphere-phase}
+\end{equation}
+The notes label $\alpha_\ell$ as the compound-elastic contribution and $\Delta_\ell$ as the hard-sphere or potential contribution.
+
+\subsection*{Exercise}
+Write $1-S_\ell$ as $\ee^{2\ii\Delta_\ell}$ times a sum of potential and compound-elastic amplitudes.  Then show or investigate:
+\begin{enumerate}
+  \item the decomposition of $\sigma_{\mathrm{el},\ell}$ into potential-elastic, compound-elastic, and interference contributions;
+  \item the total partial-wave cross section as a function of the corresponding amplitudes;
+  \item for $\ell=0$, the low-energy behavior $\sigma_{T,0}\propto 1/v$ in the absorptive case indicated in the notes.
+\end{enumerate}

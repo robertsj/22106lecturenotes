@@ -1,0 +1,383 @@
+\chapter{Resonances and Multiple Channels}
+
+\marginnoteinline{Project goal at the top of the first page: develop a numerical scheme for evaluating optical models, including volume, surface, and spin--orbit terms.}
+
+\sourcepage{1}
+\section{The collision matrix and the logarithmic derivative}
+From the preceding discussion,
+\begin{equation}
+  S_\ell
+  =\frac{1-R_\ell\widehat S_\ell+\ii R_\ell\widehat P_\ell}
+         {1-R_\ell\widehat S_\ell-\ii R_\ell\widehat P_\ell}
+   \ee^{2\ii\Delta_\ell}
+  =\ee^{2\ii(\alpha_\ell+\Delta_\ell)}.
+  \label{eq:res-S-R}
+\end{equation}
+Here $\widehat S_\ell$ is the shift factor, $\widehat P_\ell$ is the penetrability, and $\Delta_\ell$ is the hard-sphere phase.  The partial elastic and reaction cross sections are
+\begin{align}
+  \sigma_{\mathrm{el},\ell}
+  &=\pi\bar\lambda^2(2\ell+1)|1-S_\ell|^2,
+  \label{eq:res-elastic-partial}\\
+  \sigma_{r,\ell}
+  &=\pi\bar\lambda^2(2\ell+1)(1-|S_\ell|^2).
+  \label{eq:res-reaction-partial}
+\end{align}
+
+Define the logarithmic derivative
+\[
+  D_\ell\equiv\frac{1}{R_\ell}.
+\]
+Then
+\begin{equation}
+  S_\ell
+  =\frac{D_\ell-\widehat S_\ell+\ii\widehat P_\ell}
+         {D_\ell-\widehat S_\ell-\ii\widehat P_\ell}
+   \ee^{2\ii\Delta_\ell}.
+  \label{eq:res-S-D}
+\end{equation}
+Consequently,
+\begin{equation}
+  1-S_\ell
+  =\ee^{2\ii\Delta_\ell}
+  \left[
+    \left(\ee^{-2\ii\Delta_\ell}-1\right)
+    -\frac{2\ii\widehat P_\ell}
+    {D_\ell-\widehat S_\ell-\ii\widehat P_\ell}
+  \right].
+  \label{eq:res-amplitude-split}
+\end{equation}
+The two terms exhibit the possible interference between the potential-scattering amplitude and the compound or direct-reaction amplitude.
+
+Writing
+\[
+  D_\ell=D_\ell^{\mathrm{Re}}+\ii D_\ell^{\mathrm{Im}},
+\]
+the modulus of the collision matrix follows from
+\begin{equation}
+  |S_\ell|^2
+  =\frac{(D_\ell^{\mathrm{Re}}-\widehat S_\ell)^2
+          +(D_\ell^{\mathrm{Im}}+\widehat P_\ell)^2}
+         {(D_\ell^{\mathrm{Re}}-\widehat S_\ell)^2
+          +(D_\ell^{\mathrm{Im}}-\widehat P_\ell)^2}.
+  \label{eq:res-S-modulus}
+\end{equation}
+
+\sourcepage{2}
+Therefore
+\begin{equation}
+  \boxed{
+  1-|S_\ell|^2
+  =\frac{-4D_\ell^{\mathrm{Im}}\widehat P_\ell}
+  {(D_\ell^{\mathrm{Re}}-\widehat S_\ell)^2
+   +(D_\ell^{\mathrm{Im}}-\widehat P_\ell)^2}.}
+  \label{eq:res-reaction-factor}
+\end{equation}
+Let the formal resonance energy $E_0'$ be defined by
+\begin{equation}
+  \operatorname{Re}D_\ell(E_0')=0.
+  \label{eq:res-formal-energy}
+\end{equation}
+Near this energy,
+\begin{equation}
+  \operatorname{Re}D_\ell(E)
+  \simeq
+  (E-E_0')
+  \left.
+    \frac{\dd}{\dd E}\operatorname{Re}D_\ell(E)
+  \right|_{E=E_0'}.
+  \label{eq:res-D-linearization}
+\end{equation}
+
+Why does this condition identify a resonance?  For $\ell=0$,
+\[
+  \widehat S_0=0,
+  \qquad
+  \widehat P_0=kr.
+\]
+Both the elastic expression based on Eq.~\eqref{eq:res-amplitude-split} and the reaction factor in Eq.~\eqref{eq:res-reaction-factor} are maximized when $D_0^{\mathrm{Re}}=0$.  The page emphasizes that this simple conclusion is not generally true for $\ell>0$, where the shift and penetrability have additional energy dependence.
+
+\sourcepage{3}
+\section{Wave-function picture of a resonance}
+The source sketches several interior and exterior radial wave functions separated by the channel radius $r=a$.  At a resonance, an interior eigenfunction happens to join smoothly to an exterior solution near an extremum, so that the logarithmic derivative at the boundary approaches zero:
+\[
+  \left.\frac{\psi'}{\psi}\right|_{r=a}\longrightarrow0.
+\]
+The drawing contrasts nonresonant matches with the resonant case in which the interior oscillation has the appropriate phase at the boundary.
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex]
+  \draw[->] (0,0) -- (10,0) node[right] {$r$};
+  \draw[dashed] (4.5,-2.0) -- (4.5,2.1) node[above] {$r=a$};
+  \node at (2.2,1.8) {interior};
+  \node at (7.0,1.8) {exterior};
+  \draw[domain=0.2:4.5,samples=140,smooth]
+    plot (\x,{0.72*sin(155*\x)});
+  \draw[domain=4.5:9.2,samples=140,smooth]
+    plot (\x,{0.8*cos(42*(\x-4.5)) * exp(-0.13*(\x-4.5))});
+  \fill (4.5,{0.72*sin(155*4.5)}) circle (1.6pt);
+  \draw[->] (7.5,-1.25) -- (4.75,-0.55);
+  \node[align=left] at (8.0,-1.45) {$\psi'/\psi\to0$\\at the match};
+\end{tikzpicture}
+\end{center}
+\editorial{The TikZ figure is a schematic transcription of the three hand-drawn wave-function examples rather than a digitization of their exact curves.}
+
+\sourcepage{4}
+\section{Neutron width, reaction width, and observed energy}
+Define
+\begin{align}
+  \Gamma_n
+  &\equiv
+  \frac{-2\widehat P_\ell}
+  {\left.
+    \dfrac{\dd}{\dd E}\operatorname{Re}D_\ell(E)
+   \right|_{E=E_0'}},
+  \label{eq:res-neutron-width}\\
+  \Gamma_r
+  &\equiv
+  \frac{2\operatorname{Im}D_\ell}
+  {\left.
+    \dfrac{\dd}{\dd E}\operatorname{Re}D_\ell(E)
+   \right|_{E=E_0'}},
+  \label{eq:res-reaction-width}\\
+  \Gamma&\equiv\Gamma_n+\Gamma_r.
+  \label{eq:res-total-width}
+\end{align}
+The observed resonance energy is shifted from the formal resonance energy:
+\begin{equation}
+  E_0
+  =E_0'
+  +\frac{\widehat S_\ell}
+  {\left.
+    \dfrac{\dd}{\dd E}\operatorname{Re}D_\ell(E)
+   \right|_{E=E_0'}}.
+  \label{eq:res-observed-energy}
+\end{equation}
+Thus the formal resonance energy is inferred from the observed resonance after accounting for the shift factor.  The page also notes that $\sigma_r$ is proportional to the penetrability $\widehat P_\ell$.
+
+With these definitions, the elastic cross section is written
+\begin{equation}
+  \sigma_{\mathrm{el},\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \left|
+    \ee^{2\ii\Delta_\ell}
+    \left[
+      \left(\ee^{-2\ii\Delta_\ell}-1\right)
+      +\frac{\ii\Gamma_n}
+       {E-E_0+\ii\Gamma/2}
+    \right]
+  \right|^2,
+  \label{eq:res-elastic-bw}
+\end{equation}
+and the reaction cross section becomes
+\begin{equation}
+  \sigma_{r,\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \frac{\Gamma_n\Gamma_r}
+  {(E-E_0)^2+(\Gamma/2)^2}.
+  \label{eq:res-reaction-bw}
+\end{equation}
+If the compound-nucleus formation cross section is
+\[
+  \sigma_{c,\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \frac{\Gamma_n\Gamma}
+  {(E-E_0)^2+(\Gamma/2)^2},
+\]
+then
+\begin{equation}
+  \sigma_{r,\ell}=\sigma_{c,\ell}\frac{\Gamma_r}{\Gamma}.
+  \label{eq:res-branching-xsec}
+\end{equation}
+
+\sourcepage{5}
+\section{Meaning of the resonance width}
+The widths $\Gamma$ have units of energy.  Earlier they were connected to the lifetime before decay; the page asks what else $\Gamma$ means and records
+\[
+  \Gamma\propto\frac{1}{\tau_c}.
+\]
+
+Consider the Lorentzian factor in Eq.~\eqref{eq:res-reaction-bw}.  Its maximum occurs at $E=E_0$.  When
+\[
+  (E-E_0)^2=(\Gamma/2)^2,
+\]
+the cross section is one-half of its maximum value.  Hence
+\[
+  |E-E_0|=\frac{\Gamma}{2},
+\]
+and the full width at half maximum is
+\begin{equation}
+  \boxed{\mathrm{FWHM}=\Gamma.}
+  \label{eq:res-fwhm}
+\end{equation}
+
+The reduced width is defined by
+\begin{equation}
+  \boxed{
+  \gamma^2
+  \equiv
+  -\left[
+  \left.
+    \frac{\dd}{\dd E}\operatorname{Re}D_\ell(E)
+  \right|_{E=E_0'}
+  \right]^{-1}
+  =\frac{\Gamma_n}{2\widehat P_\ell}.}
+  \label{eq:res-reduced-width}
+\end{equation}
+The handwritten comment calls this the ``reduced width'': the neutron width reduced by the penetrability factor.
+
+\sourcepage{6}
+\section{Multichannel scattering and angular-momentum coupling}
+Consider compound-nucleus formation,
+\[
+  a+X\longrightarrow C,
+\]
+with relative orbital angular momentum $L$, projectile spin $I_p$, and target spin $I_t$.  First couple the intrinsic spins to form the channel spin,
+\begin{equation}
+  \bm I_p+\bm I_t=\bm S,
+  \label{eq:res-channel-spin}
+\end{equation}
+and then couple channel spin and orbital angular momentum to total angular momentum,
+\begin{equation}
+  \bm S+\bm L=\bm J.
+  \label{eq:res-total-J-coupling}
+\end{equation}
+Here $S$ is the channel spin and $J$ is the total angular momentum.
+
+An alternative coupling scheme first forms a projectile orbital angular momentum,
+\[
+  \bm I_p+\bm L=\bm J_p,
+  \qquad
+  \bm J_p+\bm I_t=\bm J.
+\]
+The conservation statements written on the page are
+\begin{align*}
+  \text{total angular momentum:}\quad
+  &\bm J=\bm I_p+\bm I_t+\bm L
+   =\bm I_p'+\bm I_t'+\bm L',\\
+  \text{parity:}\quad
+  &\pi=\pi_p\pi_t(-1)^L
+  =\pi_p'\pi_t'(-1)^{L'},\\
+  \text{azimuthal quantum number:}\quad
+  &m_J=-J,-J+1,\ldots,J.
+\end{align*}
+
+\sourcepage{7}
+\section{Example: neutron entrance channels}
+Take a neutron incident on a target with
+\[
+  I_t^\pi=\left(\frac32\right)^-
+\]
+to form a compound state with
+\[
+  J^\pi=2^+.
+\]
+The neutron has spin $I_p=1/2$, so the possible channel spins are
+\[
+  S=1,2.
+\]
+For a given $S$, the triangle rule is
+\begin{equation}
+  |J-S|\le L\le J+S.
+  \label{eq:res-L-triangle}
+\end{equation}
+Thus
+\begin{align*}
+  S=1:&\qquad 1\le L\le3,\\
+  S=2:&\qquad 0\le L\le4.
+\end{align*}
+The source page uses check marks and crosses to test candidate $L$ values against these bounds.
+
+Parity conservation gives
+\[
+  \pi=\pi_p\pi_t(-1)^L
+  =(+1)(-1)(-1)^L
+  =(-1)^{L+1}.
+\]
+Since the compound nucleus has positive parity,
+\begin{equation}
+  L=1,3
+  \label{eq:res-example-odd-L}
+\end{equation}
+for the candidate range shown.  For spinless projectile and target, $S=0$, so $J=L$; the page remarks that all $L$ values are then in principle applicable.
+
+\editorial{A few of the handwritten row labels/check marks in the channel table are visually ambiguous.  The inequalities and parity conclusion above are transcribed from the clearly legible statements surrounding the table.}
+
+\sourcepage{8}
+\section{Statistical spin factor}
+Given $I_p$, $I_t$, and $L$, there are
+\[
+  (2I_p+1)(2I_t+1)(2L+1)
+\]
+uncoupled magnetic substates.  Only $2J+1$ of the coupled states correspond to a specified $J$.  Define the statistical spin factor
+\begin{equation}
+  \boxed{
+  g_J=\frac{2J+1}{(2I_p+1)(2I_t+1)}.}
+  \label{eq:res-statistical-spin-factor}
+\end{equation}
+The factor $(2L+1)$ is omitted from $g_J$ because it replaces the partial-wave degeneracy already appearing in expressions such as $(2\ell+1)\bar\lambda^2$.
+
+For spinless projectile and target, the preceding single-resonance formation expression was
+\[
+  \sigma_{c,\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \frac{\Gamma_n\Gamma}
+  {(E-E_0)^2+(\Gamma/2)^2}.
+\]
+When conservation of $J$ and the particle spins are included, replace it by
+\begin{equation}
+  \boxed{
+  \sigma_{c,J}
+  =\pi\bar\lambda^2 g_J
+  \frac{\Gamma_n\Gamma}
+  {(E-E_0)^2+(\Gamma/2)^2}.}
+  \label{eq:res-spin-dependent-formation}
+\end{equation}
+Thus $g_J$ depends on $J$ and on the projectile and target spins.  The page closes with the prompt: think about the effect of conservation on the decay scheme.
+
+\sourcepage{9}
+\section{Channel functions and the multichannel \texorpdfstring{$S$}{S} matrix}
+For a single spinless channel, the angular and radial ingredients are
+\[
+  P_\ell(\cos\theta)
+  \qquad\text{and}\qquad
+  h_\ell^\pm(kr).
+\]
+For a multichannel problem, label a channel by
+\begin{equation}
+  c=[\alpha,L,S,J,m_J],
+  \label{eq:res-channel-label}
+\end{equation}
+where $\alpha$ denotes the particle arrangement and any additional quantum numbers.  The channel wave function contains a spin-angular function
+\[
+  \mathcal{Y}_{LS}^{Jm_J}
+\]
+built by coupling a spherical harmonic $Y_L^{m_L}(\theta,\phi)$ to a spin function $\chi_S^{m_S}$, together with the radial function $h_L^\pm$.
+
+Explicitly, the coupling indicated by the diagram may be written
+\begin{equation}
+  \mathcal{Y}_{LS}^{Jm_J}(\widehat{\bm r})
+  =\sum_{m_L,m_S}
+  \langle Lm_L,Sm_S\mid Jm_J\rangle
+  Y_L^{m_L}(\widehat{\bm r})\chi_S^{m_S}.
+  \label{eq:res-spin-angular-function}
+\end{equation}
+\editorial{Equation~\eqref{eq:res-spin-angular-function} makes explicit the Clebsch--Gordan coupling shown pictorially in the scan.}
+The result is a multichannel collision matrix $S_{cc'}$.
+
+As a simple $m=0$ illustration with $L=0$ and $L=1$, the notes write coupled radial equations of the form
+\begin{align}
+  \left(-\frac{\hbar^2}{2m}\frac{\dd^2}{\dd r^2}-E\right)\psi_0
+  +V_{00}\psi_0+V_{01}\psi_1&=0,
+  \label{eq:res-coupled-l0}\\
+  \left(-\frac{\hbar^2}{2m}\frac{\dd^2}{\dd r^2}
+  +\frac{\hbar^2L(L+1)}{2mr^2}-E\right)\psi_1
+  +V_{11}\psi_1+V_{10}\psi_0&=0,
+  \qquad (L=1).
+  \label{eq:res-coupled-l1}
+\end{align}
+The angular coupling matrix is defined on the page by
+\begin{equation}
+  V_{LL'}
+  =\int_{-1}^{1}P_L(\mu)V(\mu)P_{L'}(\mu)\,\dd\mu.
+  \label{eq:res-angular-potential-matrix}
+\end{equation}

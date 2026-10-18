@@ -148,7 +148,7 @@ where
  \begin{cases} 0             &   \text{for DD}  \\
                |\mu_n|/\mu_n &   \text{for SD}  \\
  \end{cases} \, .
- \label{eq:alpha}
+ \label{eq:sn_alpha}
 \end{equation}
 
 The DD method is probably the most ubiquitous of the simple schemes available.  It essentially says the angular flux varies linearly within a cell, and it provides second-order accuracy.  Unfortunately, the DD method can lead to negative fluxes for $\Delta_i$ too large, demonstration of which is left as an exercise.  On the other hand, the SD method cannot yield negative fluxes, but is only first-order accurate.  For the SD method, note that the cell-center angular flux is equal to the outgoing angular flux at the edge.
@@ -249,7 +249,7 @@ covers numerical quadrature and many other aspects of numerical methods
     \psi_{i+\frac{1}{2},n}  =  \psi_{i-\frac{1}{2},n} e^{- \frac{\Delta_i \Sigma_{ti}}{\mu}} + \frac{Q_i}{2\Sigma_{ti}} \Big ( 1-e^{-\frac{\Delta_i \Sigma_{ti}}{\mu}} \Big ) \, .
   \end{equation*}
   \begin{enumerate}[(a)]
-    \item Derive an expression for $\alpha_{mi}$ as in Eq. \ref{eq:alpha} for use with the SC method.  Note that $\alpha$ in this case is also indexed by the fine mesh index $i$. 
+    \item Derive an expression for $\alpha_{mi}$ as in Eq. \ref{eq:sn_alpha} for use with the SC method.  Note that $\alpha$ in this case is also indexed by the fine mesh index $i$.
     \item Implement the SC method.
   \end{enumerate}
  

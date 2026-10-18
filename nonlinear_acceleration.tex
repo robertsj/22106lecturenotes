@@ -35,7 +35,7 @@ equation}, which we obtain in one dimension by integrating
  \frac{\partial }{\partial x}J(x) + \Sigma_t(x) \phi(x) 
    = \Sigma_{s}(x)\phi(x) + S(x) \, ,
 \end{split}
-\label{eq:balance}
+\label{eq:cmr_balance}
 \end{equation}
 where $J = \mathbf{J}\cdot \hat{i}$ is the net current in the $x$ direction. Now 
 suppose we divide the domain into a number of coarse meshes, indexed by $j$, 
@@ -81,7 +81,7 @@ such that
                f_{j+1} \psi^{m+\frac{1}{2}}_{i,n} &   x_{i} = x_{j+\frac{1}{2}} 
 \text{ and } \mu_n < 0 \\
  \end{cases} \, .
- \label{eq:alpha}
+ \label{eq:cmr_alpha}
 \end{equation}
 Note the appropriate factor's index denotes from which coarse mesh the neutrons 
 originate. For the case of vacuum boundaries, the corresponding incident partial 
@@ -135,9 +135,9 @@ Nonlinear Diffusion (or Coarse-Mesh, Finite-Difference) Acceleration (NDA
 or CMFD) was originally developed by Kord Smith as a way to reduce the 
 memory requirements of advanced, nodal-diffusion solvers \cite{smith1983nms}.  
 The method also
-led to signficant speed-ups and has since been applied routinely in 
-for lattice-physics computations based on the method of characteristics
-\cite{2002}.  
+led to significant speed-ups and has since been applied routinely in
+lattice-physics computations based on the method of characteristics
+\cite{adams2002fim}.
 
 We begin along the same lines as we did for CMR by integrating the 
 transport equation over a coarse mesh indexed by $j$, which leads to 
@@ -237,7 +237,7 @@ process can be repeated.
 
 
 Like CMR, if the NDA converges, it must converge to 
-the right answer.  However, that convergence is not guaranteed \cite{}.
+the right answer.  However, that convergence is not guaranteed.
 Sometimes, for a given $\tilde{D}$, the computed $\hat{D}$ leads to 
 a diffusion matrix that is not diagonally dominant.  While this does 
 not prevent solution of the equations, the updated, coarse-mesh flux 
@@ -257,7 +257,7 @@ help convergence.
 
 Finally, it has been found that instabilities can be reduced 
 significantly by using under-relaxation of the 
-nonlinear coupling coefficient \cite{}.  In other words, 
+nonlinear coupling coefficient.  In other words,
 the coefficients are defined
 \begin{equation}
  \hat{D}^{n+1}_{j+1/2} = \alpha \hat{D}^{n+1}_{j+1/2} + (1-\alpha)\hat{D}^{n}_{j+1/2}  \, ,

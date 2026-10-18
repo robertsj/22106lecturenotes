@@ -1,0 +1,490 @@
+\chapter{\texorpdfstring{$R$}{R}-Matrix Theory}
+
+\sourcepage{1}
+\section{Interior expansion in place of direct integration}
+The notes begin by comparing two ways to connect an interior wave function to its asymptotic exterior form.  In a direct calculation, the interior solution is computed by analytic or numerical integration and then matched at a channel radius $r=a$:
+\[
+  \chi^{\mathrm{in}}(a)=\chi^{\mathrm{ext}}(a),
+  \qquad
+  \chi^{\mathrm{in}\prime}(a)=\chi^{\mathrm{ext}\prime}(a).
+\]
+The two degrees of freedom in the interior solution are thereby fixed by matching $\chi$ and $\chi'$.  The sketch emphasizes that the channel radius is chosen beyond the complicated interior region, where only the exterior barrier and asymptotic behavior remain.
+
+The $R$-matrix method instead computes the interior wave function as an expansion in a set of functions orthogonal over the compound-nucleus region.  Consider
+\begin{equation}
+  \left[
+    -\frac{\hbar^2}{2m}\frac{\dd^2}{\dd r^2}
+    +V(r)-E
+  \right]X(r)=0,
+  \label{eq:rmat-physical-radial}
+\end{equation}
+where the effective potential may be written
+\[
+  V(r)=V_{\mathrm{nuc}}(r)
+  +\frac{\hbar^2\ell(\ell+1)}{2mr^2}.
+\]
+
+\sourcepage{2}
+Write
+\begin{equation}
+  X(r)=\sum_{\lambda=1}^{\infty}A_\lambda w_\lambda(r),
+  \qquad
+  A_\lambda=\int_0^a w_\lambda(r)X(r)\,\dd r.
+  \label{eq:rmat-expansion}
+\end{equation}
+The basis functions satisfy
+\begin{equation}
+  \left[
+    -\frac{\hbar^2}{2m}\frac{\dd^2}{\dd r^2}
+    +V(r)-E_\lambda
+  \right]w_\lambda(r)=0
+  \label{eq:rmat-basis-eqn}
+\end{equation}
+and are orthonormal on the interior interval,
+\[
+  \int_0^a w_i(r)w_j(r)\,\dd r=\delta_{ij}.
+\]
+The key condition is a fixed logarithmic derivative at the channel radius:
+\begin{equation}
+  \left.a\frac{w_\lambda'}{w_\lambda}\right|_{r=a}=\beta.
+  \label{eq:rmat-fixed-boundary}
+\end{equation}
+In principle, $a$ and $\beta$ are arbitrary; the margin note says that physics suggests good values and refers the reader to Vogt for more detail.
+
+\sourcepage{3}
+\section{Orthogonality under the fixed boundary condition}
+Let $w_i$ and $w_j$ satisfy Eq.~\eqref{eq:rmat-basis-eqn} with $E_i\ne E_j$.  Multiply the $i$ equation by $w_j$, the $j$ equation by $w_i$, and subtract:
+\[
+  -\frac{\hbar^2}{2m}
+  \left(w_jw_i''-w_iw_j''\right)
+  +(E_j-E_i)w_iw_j=0.
+\]
+Integration from $0$ to $a$ gives
+\begin{align*}
+  0={}&
+  -\frac{\hbar^2}{2m}
+  \left[w_j(r)w_i'(r)-w_i(r)w_j'(r)\right]_{0}^{a}
+  +(E_j-E_i)\int_0^a w_iw_j\,\dd r.
+\end{align*}
+The regular radial solutions vanish at the origin.  At $r=a$, Eq.~\eqref{eq:rmat-fixed-boundary} makes the boundary term
+\[
+  w_i(a)w_j(a)
+  \left(\frac{\beta}{a}-\frac{\beta}{a}\right)=0.
+\]
+Hence
+\[
+  \int_0^a w_i(r)w_j(r)\,\dd r=0,
+  \qquad i\ne j,
+\]
+which is the desired orthogonality.
+
+\sourcepage{4}
+\section{The one-channel \texorpdfstring{$R$}{R} function}
+The physical matching conditions still apply, but one cannot simply match $X'/X$ to $w_\lambda'/w_\lambda$: the latter has been fixed to $\beta$ for every basis state, whereas the former depends on the scattering energy.
+
+Substitute $X(r)$ for one member of the preceding two-solution identity.  After integration,
+\begin{equation}
+  -\frac{\hbar^2}{2m}
+  \left[X(a)w_i'(a)-X'(a)w_i(a)\right]
+  +(E-E_i)A_i=0.
+  \label{eq:rmat-Ai-boundary}
+\end{equation}
+Thus
+\begin{equation}
+  A_i=\frac{\hbar^2}{2m}
+  \frac{X(a)w_i'(a)-X'(a)w_i(a)}{E-E_i}.
+  \label{eq:rmat-Ai}
+\end{equation}
+Using $w_i'(a)=\beta w_i(a)/a$ and inserting the coefficients into Eq.~\eqref{eq:rmat-expansion} relates the complete interior solution to the physical boundary data.
+
+For the especially convenient choice $\beta=0$,
+\[
+  A_i=\frac{\hbar^2}{2m}
+  \frac{w_i(a)X'(a)}{E_i-E},
+\]
+and evaluation of the expansion at $r=a$ gives the boxed result in the notes:
+\begin{equation}
+  \boxed{
+  R(E)
+  \equiv
+  \left.\frac{1}{a}\frac{X}{X'}\right|_{r=a}
+  =\sum_{\lambda=1}^{\infty}
+  \frac{\hbar^2}{2ma}
+  \frac{w_\lambda^2(a)}{E_\lambda-E}.}
+  \label{eq:rmat-one-channel}
+\end{equation}
+
+\sourcepage{5}
+Define the reduced-width amplitude
+\begin{equation}
+  \gamma_\lambda
+  \equiv
+  \sqrt{\frac{\hbar^2}{2ma}}\,w_\lambda(a).
+  \label{eq:rmat-reduced-width}
+\end{equation}
+The neutron width is recalled in the form
+\[
+  \Gamma_{n\lambda}=2\widehat P_\lambda\gamma_\lambda^2.
+\]
+The notes then ask how a reaction width $\Gamma_{r\lambda}$ enters.
+
+For a complex potential, take
+\[
+  V=V_0+\ii V_1,
+\]
+while constructing the orthogonal basis $w_\lambda$ from the real, Hermitian operator containing $V_0$.  Repeating the subtraction between the physical equation and the basis equation yields the same boundary term but now with
+\[
+  A_\lambda\bigl(E-E_\lambda-\ii V_1\bigr).
+\]
+For $\beta=0$, the notes write the corresponding result as
+\begin{equation}
+  R(E)=\sum_{\lambda=1}^{\infty}
+  \frac{\gamma_\lambda^2}{E_\lambda-E+\ii V_1}.
+  \label{eq:rmat-complex-well}
+\end{equation}
+Only the real part of the potential is used to define the orthogonal basis; the imaginary part supplies a reaction width.
+
+\sourcepage{6}
+Using the resonance-width definition introduced earlier, the notes identify
+\[
+  \Gamma_{r\lambda}=-2V_1.
+\]
+Thus Eq.~\eqref{eq:rmat-complex-well} becomes
+\begin{equation}
+  \boxed{
+  R(E)=\sum_{\lambda=1}^{\infty}
+  \frac{\gamma_\lambda^2}
+  {E_\lambda-E-\ii\Gamma_{r\lambda}/2}.}
+  \label{eq:rmat-reaction-width}
+\end{equation}
+For a real potential this reduces to
+\begin{equation}
+  R(E)=\sum_{\lambda=1}^{\infty}
+  \frac{\gamma_\lambda^2}{E_\lambda-E}.
+  \label{eq:rmat-real-pole-form}
+\end{equation}
+The important observation is that the $\gamma_\lambda$ are energy independent.  The energy dependence of $R$ therefore appears solely through its resonance-like denominators.  The partial elastic width is recalled as
+\[
+  \Gamma_{\mathrm{el},\lambda\ell}
+  =2\gamma_{\lambda\ell}^{2}\widehat P_\ell.
+\]
+
+\sourcepage{7}
+\section{Two-level example}
+For two levels, following the example attributed in the notes to Foderaro,
+\begin{equation}
+  R_\ell(E)=
+  \frac{\gamma_{1\ell}^{2}}{E_1-E}
+  +\frac{\gamma_{2\ell}^{2}}{E_2-E}.
+  \label{eq:rmat-two-level-R}
+\end{equation}
+The associated one-channel collision-matrix element is
+\begin{equation}
+  S_\ell=
+  \frac{1-(\widehat S_\ell-\ii\widehat P_\ell)R_\ell}
+       {1-(\widehat S_\ell+\ii\widehat P_\ell)R_\ell}
+  \ee^{2\ii\Delta_\ell},
+  \label{eq:rmat-two-level-S}
+\end{equation}
+which the page labels ``MLBW.''  Introduce
+\begin{equation}
+  B(E)=
+  \gamma_{1\ell}^{2}(E_2-E)
+  +\gamma_{2\ell}^{2}(E_1-E).
+  \label{eq:rmat-two-level-B}
+\end{equation}
+Then the elastic cross section is written in the form
+\begin{equation}
+  \sigma_{\mathrm{el},\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \left|
+  \ee^{2\ii\Delta_\ell}
+  \left[
+    \left(\ee^{-2\ii\Delta_\ell}-1\right)
+    +\frac{2\ii\widehat P_\ell B}
+    {(E_1-E)(E_2-E)
+      -(\widehat S_\ell+\ii\widehat P_\ell)B}
+  \right]
+  \right|^2.
+  \label{eq:rmat-two-level-xsec}
+\end{equation}
+
+The scan next compares this with a sum of single-level Breit--Wigner terms, schematically
+\begin{equation}
+  \sigma_{\mathrm{el},\ell}^{(\mathrm{SL})}
+  =\pi\bar\lambda^2(2\ell+1)
+  \left|
+    \sum_{\lambda=1}^{2}
+    \left[
+      \ee^{2\ii\Delta_\ell}
+      \left(\ee^{-2\ii\Delta_\ell}-1\right)
+      +\frac{\ii\Gamma_{\mathrm{el},\lambda\ell}}
+      {E-E_{0\lambda}+\ii\Gamma_\lambda/2}
+    \right]
+  \right|^2,
+  \label{eq:rmat-two-level-slbw-comparison}
+\end{equation}
+with shifted level energy
+\[
+  E_{0\lambda}=E_\lambda-
+  \gamma_{\lambda\ell}^{2}\widehat S_\ell.
+\]
+\uncertain{The exact placement of the two-level summation and the potential-scattering term in the handwritten comparison is faint; Eq.~\eqref{eq:rmat-two-level-slbw-comparison} preserves the visible grouping.}
+
+The source closes the example with the instruction: work out the difference exactly; better yet, obtain parameters from ENDF and plot the two expressions.
+
+\sourcepage{8}
+\section{Computational square-well example}
+Consider neutron scattering from
+\[
+  V(r)=
+  \begin{cases}
+    -V, & r\le a,\\
+    0, & r>a.
+  \end{cases}
+\]
+For $a=8\unit{fm}$, consider only $\ell=0$ and define
+\[
+  k=\frac{\sqrt{2mE}}{\hbar},
+  \qquad
+  \alpha=\frac{\sqrt{2m(E+V)}}{\hbar}.
+\]
+The standard approach uses
+\begin{align*}
+  \chi^{\mathrm{int}}(r)&=F_0(r)=\sin(\alpha r),
+  &\chi^{\mathrm{int}\prime}(r)&=\alpha\cos(\alpha r),\\
+  \chi^{\mathrm{ext}}(r)&=
+  A\ee^{\ii\delta}
+  \left[\cos\delta\,\sin(kr)+\sin\delta\,\cos(kr)\right],
+  &\chi^{\mathrm{ext}\prime}(r)&=
+  kA\ee^{\ii\delta}
+  \left[\cos\delta\,\cos(kr)-\sin\delta\,\sin(kr)\right].
+\end{align*}
+The $R$ function is therefore
+\begin{equation}
+  R(E)=\left.\frac{1}{a}\frac{\chi}{\chi'}\right|_{r=a}
+  =\frac{1}{a\alpha}\tan(\alpha a).
+  \label{eq:rmat-square-well-R}
+\end{equation}
+Matching gives
+\begin{equation}
+  \delta=	an^{-1}\!\left[
+    \frac{k\sin(\alpha a)\cos(ka)
+      -\alpha\cos(\alpha a)\sin(ka)}
+    {\alpha\cos(\alpha a)\cos(ka)
+      +k\sin(\alpha a)\sin(ka)}
+  \right],
+  \label{eq:rmat-square-well-delta}
+\end{equation}
+and then
+\begin{equation}
+  A=
+  \frac{\sin(\alpha a)}
+  {\ee^{\ii\delta}
+   [\cos\delta\,\sin(ka)+\sin\delta\,\cos(ka)]}.
+  \label{eq:rmat-square-well-amplitude}
+\end{equation}
+These relations define $\chi_0$ completely.  The source notes: ``Plot on slides.''
+
+\sourcepage{9}
+\section{The same square well from the \texorpdfstring{$R$}{R}-matrix expansion}
+Choose the fixed boundary condition
+\[
+  \frac{w_\lambda'(a)}{w_\lambda(a)}=0,
+\]
+which the notes call an easy choice.  Then
+\[
+  w_\lambda(r)=\sin(\alpha_\lambda r),
+\]
+and the boundary condition requires
+\[
+  \alpha_\lambda\cos(\alpha_\lambda a)=0,
+  \qquad
+  \alpha_\lambda=\frac{(2\lambda-1)\pi}{2a},
+  \qquad \lambda=1,2,\ldots.
+\]
+Since
+\[
+  \alpha_\lambda^2=\frac{2m}{\hbar^2}(E_\lambda+V),
+\]
+the level energies are
+\begin{equation}
+  E_\lambda
+  =\frac{\hbar^2\alpha_\lambda^2}{2m}-V
+  =\frac{\pi^2\hbar^2}{2ma^2}
+   \left(\lambda-\frac12\right)^2-V.
+  \label{eq:rmat-square-well-levels}
+\end{equation}
+After normalizing $w_\lambda$, compute
+\begin{equation}
+  R_0(E)=\sum_{\lambda=1}^{\infty}
+  \frac{\hbar^2}{2ma}
+  \frac{w_\lambda^2(a)}{E_\lambda-E}
+  \label{eq:rmat-square-well-series}
+\end{equation}
+and use it to obtain $\delta_0$.
+
+The interior function follows from
+\begin{equation}
+  \chi(r)=
+  \sum_{\lambda=1}^{\infty}
+  \frac{\hbar^2}{2ma}
+  \frac{w_\lambda(a)\chi'(a)}{E_\lambda-E}
+  w_\lambda(r).
+  \label{eq:rmat-square-well-reconstruction}
+\end{equation}
+One may set $\chi'(a)$ arbitrarily, which fixes $\chi(a)$; the normalization can then be matched to the direct solution.  Again, the source calls for a plot.
+
+\sourcepage{10}
+\section{Multichannel and multilevel form}
+The previous collision-matrix relation is recalled in matrix notation as
+\begin{equation}
+  \overline S=
+  \left[H^+-aRH^{+\prime}\right]^{-1}
+  \left[H^--aRH^{-\prime}\right],
+  \label{eq:rmat-S-matrix-H}
+\end{equation}
+where the channel functions $H^\pm$ are diagonal matrices.  The multichannel $R$ matrix has elements
+\begin{equation}
+  R_{cc'}(E)=
+  \sum_{\lambda=1}^{\infty}
+  \frac{\gamma_{\lambda c}\gamma_{\lambda c'}}{E_\lambda-E}.
+  \label{eq:rmat-multichannel-elements}
+\end{equation}
+
+One could use the method as a direct solver of $H\psi=E\psi$ for known potentials.  Its main practical value, however, is the simple and tunable pole form.  Only the level energies $E_\lambda$ and reduced-width amplitudes $\gamma_{\lambda c}$ are needed, and these can be adjusted to experiment.  This is the basis of $R$-matrix phenomenology.
+
+In practice one introduces a level matrix $A_{\lambda\lambda'}$; the number of retained levels is usually smaller than the number of channels.  In the loose notation used on the page,
+\[
+  \overline R
+  =\overline\gamma^{\,T}
+   [\overline E-E]^{-1}
+   \overline\gamma,
+\]
+where the diagonal level-energy matrix is understood.
+
+\sourcepage{11}
+\section{Simplifying the matrix collision formula}
+Ignoring channel masses, radii, and wave numbers for the moment, write
+\[
+  \overline S=
+  [H^+-aRH^{+\prime}]^{-1}
+  [H^--aRH^{-\prime}].
+\]
+The $H^\pm$ matrices are diagonal.  Define the diagonal logarithmic-derivative matrices
+\begin{equation}
+  (H^+)^{-1}H^{+\prime}=L
+  =\frac1a(\widehat S+\ii\widehat P),
+  \qquad
+  (H^-)^{-1}H^{-\prime}=L^*
+  =\frac1a(\widehat S-\ii\widehat P).
+  \label{eq:rmat-L-matrices}
+\end{equation}
+Then
+\begin{equation}
+  \overline S=(H^+)^{-1}
+  [I-aRL]^{-1}[I-aRL^*]H^-.
+  \label{eq:rmat-S-L}
+\end{equation}
+The page notes that $H_c^+H_c^-=F_c^2+G_c^2$ and introduces the diagonal hard-sphere phase matrix
+\[
+  \Omega=\operatorname{diag}\!\left(\ee^{\ii\Delta_c}\right).
+\]
+With penetration factors restored, the collision matrix is written
+\begin{equation}
+  \overline S=
+  \Omega\widehat P^{1/2}
+  [I-aRL]^{-1}[I-aRL^*]
+  \widehat P^{-1/2}\Omega,
+  \label{eq:rmat-S-penetration-1}
+\end{equation}
+and equivalently
+\begin{equation}
+  \boxed{
+  \overline S=
+  \Omega\left[
+    I+2\ii\widehat P^{1/2}
+    (I-aRL)^{-1}R
+    \widehat P^{1/2}
+  \right]\Omega.}
+  \label{eq:rmat-S-penetration-2}
+\end{equation}
+
+\sourcepage{12}
+Let
+\[
+  R=\gamma^T\widetilde R\gamma,
+  \qquad
+  \widetilde R=(\overline E-E)^{-1},
+\]
+where $\gamma_{\lambda c}$ carries one level and one channel index.  The desired collision matrix is placed in the form
+\begin{equation}
+  S=\Omega\left[
+    I+2\ii\widehat P^{1/2}
+    \gamma^T A\gamma
+    \widehat P^{1/2}
+  \right]\Omega.
+  \label{eq:rmat-S-level-matrix}
+\end{equation}
+The level matrix satisfies
+\begin{equation}
+  \boxed{
+  A^{-1}=\widetilde R^{-1}
+  -\gamma\widehat S\gamma^T
+  -\ii\gamma\widehat P\gamma^T.}
+  \label{eq:rmat-A-inverse}
+\end{equation}
+Define the level-shift and width matrices by
+\begin{align}
+  \Delta_{\lambda\lambda'}
+  &\equiv
+  [\gamma\widehat S\gamma^T]_{\lambda\lambda'}
+  =\sum_c\gamma_{\lambda c}\widehat S_c\gamma_{\lambda'c},
+  \label{eq:rmat-level-shift}\\
+  \Gamma_{\lambda\lambda'}
+  &\equiv
+  2[\gamma\widehat P\gamma^T]_{\lambda\lambda'}
+  =2\sum_c\gamma_{\lambda c}\widehat P_c\gamma_{\lambda'c}.
+  \label{eq:rmat-width-matrix}
+\end{align}
+Therefore
+\begin{equation}
+  \boxed{
+  A^{-1}_{\lambda\lambda'}
+  =\delta_{\lambda\lambda'}(E_\lambda-E)
+  -\Delta_{\lambda\lambda'}
+  -\frac{\ii}{2}\Gamma_{\lambda\lambda'}.}
+  \label{eq:rmat-level-matrix-elements}
+\end{equation}
+
+\sourcepage{13}
+\section{\texorpdfstring{$R$}{R}-matrix approximations}
+\subsection*{Reich--Moore}
+The Reich--Moore approximation ignores explicit photon channels in the off-diagonal sums.  In the notation of the page,
+\begin{equation}
+  A^{-1}_{\lambda\lambda'}
+  =\delta_{\lambda\lambda'}(E_\lambda-E)
+  -\Delta_{\lambda\lambda'}
+  -\ii\sum_{c\ne\gamma}
+  \gamma_{\lambda c}\widehat P_c\gamma_{\lambda'c},
+  \label{eq:rmat-reich-moore}
+\end{equation}
+with the many weak photon channels represented through averaged radiative-width information.  The source motivation is that there are many $\gamma$ channels and their individual off-diagonal effects are small on average.
+
+\subsection*{Multilevel Breit--Wigner (MLBW)}
+Ignore all off-diagonal level-matrix elements:
+\begin{equation}
+  A^{-1}_{\lambda\lambda'}
+  =\left(E_\lambda-E-\Delta_{\lambda\lambda}
+  -\frac{\ii}{2}\Gamma_{\lambda\lambda}\right)
+  \delta_{\lambda\lambda'}.
+  \label{eq:rmat-mlbw}
+\end{equation}
+The accompanying exercise asks the reader to show that two levels and one channel give the result written earlier.
+
+\subsection*{Single-level Breit--Wigner (SLBW)}
+Retain one level only:
+\begin{equation}
+  A^{-1}=E_\lambda-E-\Delta-\frac{\ii}{2}\Gamma.
+  \label{eq:rmat-slbw}
+\end{equation}

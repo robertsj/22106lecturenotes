@@ -244,9 +244,8 @@ difference of successive fluxes, either as an absolute norm as indicated
 or a norm of the relative point-wise difference.  Assessing convergence 
 in this way can be misleading.  The difference between successive
 iterates can be much smaller than the difference between an iterate
-and the solution, sometimes resulting in premature convergence.  Section 
-\ref{sec:comparison_of_norms} provides a numerical comparison of various
-convergence criteria.
+and the solution, sometimes resulting in premature convergence.  A numerical
+comparison of various convergence criteria can make this distinction clearer.
 
 \begin{algorithm}[h]
   \SetCommentSty{small}
@@ -414,7 +413,7 @@ cannot in general be expected to yield a set of eigenvalues equal to unity,
 any clustering typically improves convergence.  Often, even pushing 
 eigenvalues away from the origin tends to improve 
 convergence \cite{larsen2010ado}.
-Chapter \ref{chp:transport_pc} provides a relatively thorough 
+Lecture \ref{lec:linear_acceleration} provides a relatively thorough
 development of several diffusion-based preconditioners for the 
 transport equation.
 
@@ -436,4 +435,3 @@ However, when fission is included, as is often true for response
 function generation, there is always
 thermal-to-fast coupling, and solving the full system via
 a Krylov method is to be preferred.
-

@@ -21,6 +21,10 @@
 \DefineNamedColor{named}{darkgray}   {cmyk}{0,0,0,0.90}
 
 \usepackage{format106}
+\usepackage{mathtools,array}
+\usepackage[shortlabels]{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning,shapes.geometric}
 \usepackage{hyperref} 
 \newcommand{\cov}{{$\, \mathbf{C}_{\sigma\sigma} \,$}}
 \newcommand{\transp}{\mathsf{T}}
@@ -38,6 +42,21 @@
 \newcommand{\eg}{\textit{e.g. }}
 
 \newcommand{\LECTURE}[1]{Lecture~\ref{lec:#1}}
+\newcommand{\sourcepage}[1]{%
+  \par\medskip\noindent
+  \textcolor{black!45}{\rule{0.31\linewidth}{0.4pt}\hfill\textsc{Source page #1}\hfill\rule{0.31\linewidth}{0.4pt}}%
+  \par\smallskip
+}
+\newcommand{\marginnoteinline}[1]{\par\smallskip\noindent\textit{Margin note: #1}\par\smallskip}
+\newcommand{\editorial}[1]{\textcolor{blue!55!black}{\textit{[Editorial note: #1]}}}
+\newcommand{\uncertain}[1]{\textcolor{red!65!black}{\textit{[uncertain: #1]}}}
+\providecommand{\CN}{\mathrm{CN}}
+\providecommand{\dd}{\,\mathrm{d}}
+\providecommand{\ii}{\mathrm{i}}
+\providecommand{\ee}{\mathrm{e}}
+\renewcommand{\unit}[1]{\,\mathrm{#1}}
+\newcommand{\ketc}[1]{\lvert #1\rangle}
+\newcommand{\brac}[1]{\langle #1\rangle}
 %---------------------------------------------------------------%
 % DOCUMENT
 %---------------------------------------------------------------%
@@ -60,28 +79,19 @@
 %\part{Preliminaries}
 
 
-% \part{Nuclear Data}
-% 
-% \include{microscopic_interactions}
-% \include{macroscopic_interactions}
-% \include{shielding_and_moderation}
-% \include{neutron_detection_and_spectroscopy}
-% \include{nuclear_data}
-% \include{r_matrix_theory}
-% \include{neutron_thermalization}
-% \include{scattering_laws}
-% 
-% \part{Monte Carlo Transport}
-% 
-% \include{probability_and_statistics}
-% \include{monte_carlo_methods}
-% \include{collision_physics}
-% \include{tallies_and_uncertainties}
-% \include{variance_reduction}
-% \include{criticality}
-% \include{criticality_safety}
-% 
-\part{Deterministic Transport} 
+\part{Nuclear Data}
+
+\include{nuclear_data_scattering/neutron_scattering_1}
+\include{nuclear_data_scattering/quantum_scattering}
+\include{nuclear_data_scattering/neutron_scattering_2}
+\include{nuclear_data_scattering/reaction_theory_1}
+\include{nuclear_data_scattering/reaction_theory_2}
+\include{nuclear_data_scattering/quantum_angular_momentum}
+\include{nuclear_data_scattering/optical_model}
+\include{nuclear_data_scattering/r_matrix_theory}
+\include{nuclear_data_scattering/resonances_and_multiple_channels}
+
+\part{Deterministic Methods}
 
 \include{transport_equation}
 \include{neutron_scattering}
@@ -105,6 +115,16 @@
 %\include{monte_carlo_1}
 % \include{random_numbers_and_collision_physics}
 % \include{tallies_and_statistics}
+
+\part{Monte Carlo Methods}
+
+% Several Monte Carlo source files exist in this repository, but the
+% previously active master did not include them as formal lectures.
+% Uncomment these as the fall 2026 Monte Carlo sequence is filled in.
+%\include{monte_carlo_1}
+%\include{random_numbers_and_collision_physics}
+%\include{tallies_and_statistics}
+% \include{advanced_variance_reduction}
 
 
 \part{Additional Topics} 

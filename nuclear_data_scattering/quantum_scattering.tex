@@ -1,0 +1,373 @@
+\chapter{Quantum Scattering from a Spherical Potential}
+
+\sourcepage{1}
+We begin with the Schr\"odinger equation for a pair of particles for which the influence of a potential $V(\bm r)$ depends only on the relative coordinate
+\[
+  \bm r=\bm r_2-\bm r_1:
+\]
+\begin{equation}
+  \left[-\frac{\hbar^2}{2m}\nabla^2+V(\bm r)\right]\psi(\bm r)=E\psi(\bm r),
+  \label{eq:qs-schrodinger}
+\end{equation}
+where
+\[
+  m=\frac{m_1m_2}{m_1+m_2}
+\]
+is the reduced mass.
+
+Assume that
+\[
+  V(\bm r)=V(r),
+\]
+i.e. a spherical potential.  The notes ask whether this is physically valid and answer: not strictly, because the nuclear potential has spin dependence.  Nevertheless, the model is rich enough to develop and understand the basic theory.
+
+Write
+\[
+  \psi(\bm r)=\psi(r,\theta,\phi)=R(r)Y(\theta,\phi).
+\]
+The spherical-coordinate Laplacian is
+\[
+  \nabla^2=
+  \frac{1}{r^2}\frac{\partial}{\partial r}
+  \left(r^2\frac{\partial}{\partial r}\right)
+  +\frac{1}{r^2\sin\theta}\frac{\partial}{\partial\theta}
+  \left(\sin\theta\frac{\partial}{\partial\theta}\right)
+  +\frac{1}{r^2\sin^2\theta}\frac{\partial^2}{\partial\phi^2},
+\]
+where $\theta$ is the polar angle in the center-of-mass system.
+
+\sourcepage{2}
+Equation~\eqref{eq:qs-schrodinger} becomes
+\[
+  \frac{1}{r^2}\frac{\partial}{\partial r}
+  \left(r^2\frac{\partial\psi}{\partial r}\right)
+  +\frac{1}{r^2\sin\theta}\frac{\partial}{\partial\theta}
+  \left(\sin\theta\frac{\partial\psi}{\partial\theta}\right)
+  +\frac{1}{r^2\sin^2\theta}\frac{\partial^2\psi}{\partial\phi^2}
+  +\frac{2m}{\hbar^2}[E-V(r)]\psi=0.
+\]
+Substituting $\psi=RY$ and dividing by $RY$ gives
+\[
+  \frac{1}{Rr^2}\frac{\dd}{\dd r}
+  \left(r^2\frac{\dd R}{\dd r}\right)
+  +\frac{1}{Yr^2\sin\theta}\frac{\partial}{\partial\theta}
+  \left(\sin\theta\frac{\partial Y}{\partial\theta}\right)
+  +\frac{1}{Yr^2\sin^2\theta}\frac{\partial^2Y}{\partial\phi^2}
+  +\frac{2m}{\hbar^2}[E-V(r)]=0.
+\]
+Multiplying by $r^2$, the radial and angular parts must separately equal a constant, denoted $\beta$:
+\begin{align*}
+  \frac{1}{R}\frac{\dd}{\dd r}\left(r^2\frac{\dd R}{\dd r}\right)
+  +\frac{2mr^2}{\hbar^2}[E-V(r)]
+  &=\beta,\\
+  -\frac{1}{Y}\left[
+  \frac{1}{\sin\theta}\frac{\partial}{\partial\theta}
+  \left(\sin\theta\frac{\partial Y}{\partial\theta}\right)
+  +\frac{1}{\sin^2\theta}\frac{\partial^2Y}{\partial\phi^2}
+  \right]
+  &=\beta.
+\end{align*}
+Thus the radial equation may be written
+\begin{equation}
+  \frac{\dd}{\dd r}\left(r^2\frac{\dd R}{\dd r}\right)
+  +\left\{\frac{2mr^2}{\hbar^2}[E-V(r)]-\beta\right\}R(r)=0.
+  \label{eq:qs-radial-beta}
+\end{equation}
+
+\sourcepage{3}
+The associated angular equation is
+\begin{equation}
+  \frac{1}{\sin\theta}\frac{\partial}{\partial\theta}
+  \left(\sin\theta\frac{\partial Y}{\partial\theta}\right)
+  +\frac{1}{\sin^2\theta}\frac{\partial^2Y}{\partial\phi^2}
+  +\beta Y=0.
+  \label{eq:qs-angular}
+\end{equation}
+Its general solutions are the spherical harmonics $Y_\ell^m(\theta,\phi)$.  To show their construction, separate again:
+\[
+  Y(\theta,\phi)=T(\theta)F(\phi).
+\]
+Substitution into \eqref{eq:qs-angular} yields
+\[
+  \frac{1}{T}\frac{1}{\sin\theta}\frac{\dd}{\dd\theta}
+  \left(\sin\theta\frac{\dd T}{\dd\theta}\right)
+  +\frac{1}{F\sin^2\theta}\frac{\dd^2F}{\dd\phi^2}
+  +\beta=0.
+\]
+After multiplying by $\sin^2\theta$, separation introduces a second constant $\gamma^2$:
+\begin{align}
+  \frac{\dd^2F}{\dd\phi^2}+\gamma^2F&=0,
+  \label{eq:qs-azimuth}\\
+  \frac{1}{\sin\theta}\frac{\dd}{\dd\theta}
+  \left(\sin\theta\frac{\dd T}{\dd\theta}\right)
+  +\left(\beta-\frac{\gamma^2}{\sin^2\theta}\right)T&=0.
+  \label{eq:qs-polar}
+\end{align}
+
+\sourcepage{4}
+The azimuthal equation has the solution
+\[
+  F(\phi)=a\ee^{\ii\gamma\phi}+b\ee^{-\ii\gamma\phi}.
+\]
+Periodicity requires
+\[
+  F(\phi)=F(\phi+2\pi),
+\]
+so $\gamma$ must be an integer.  The notes write this integer as $m_\ell$, the azimuthal quantum number, to distinguish it from the mass $m$.  Normalizing the positive-exponential solution gives
+\[
+  1=\int_0^{2\pi}|F_{m_\ell}(\phi)|^2\dd\phi,
+\]
+and hence
+\begin{equation}
+  F_{m_\ell}(\phi)=\frac{1}{\sqrt{2\pi}}\ee^{\ii m_\ell\phi}.
+  \label{eq:qs-Fm}
+\end{equation}
+
+\sourcepage{5}
+Turn now to the polar equation.  Let
+\[
+  \mu=\cos\theta,
+  \qquad
+  \dd\mu=-\sin\theta\dd\theta.
+\]
+Then \eqref{eq:qs-polar} may be written in the form recorded in the notes,
+\begin{equation}
+  \left[(\mu^2-1)\frac{\dd^2}{\dd\mu^2}
+  +2\mu\frac{\dd}{\dd\mu}
+  +\frac{m_\ell^2}{1-\mu^2}\right]T(\mu)
+  =\beta T(\mu).
+  \label{eq:qs-associated-legendre}
+\end{equation}
+The eigenvalues are
+\[
+  \beta=\ell(\ell+1),
+\]
+where
+\[
+  \ell=k+|m_\ell|,
+  \qquad k=0,1,2,\ldots.
+\]
+Thus, for a fixed $\ell$,
+\[
+  m_\ell=-\ell,-\ell+1,\ldots,\ell.
+\]
+
+\sourcepage{6}
+The functions $T_{m_\ell}^{\ell}(\theta)$ are normalized associated Legendre polynomials.  The first few values recorded in the notes are
+\begin{center}
+\begin{tabular}{c c c c}
+\toprule
+$m_\ell$ & $\ell=0$ & $\ell=1$ & $\ell=2$\\
+\midrule
+$0$ & $\sqrt{\tfrac12}$
+& $\sqrt{\tfrac32}\,\mu$
+& $\sqrt{\tfrac58}(3\mu^2-1)$\\[2mm]
+$\pm1$ &
+& $\pm\sqrt{\tfrac34}\sqrt{1-\mu^2}$
+& $\pm\sqrt{\tfrac{15}{4}}\,\mu\sqrt{1-\mu^2}$\\[2mm]
+$\pm2$ & & & $\sqrt{\tfrac{15}{16}}(1-\mu^2)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+For $m_\ell=0$, $P_\ell^0(\mu)=P_\ell(\mu)$, the Legendre polynomial.
+
+Returning to the radial equation and substituting $\beta=\ell(\ell+1)$ gives
+\begin{equation}
+  \frac{\dd}{\dd r}\left(r^2\frac{\dd R}{\dd r}\right)
+  +\left\{\frac{2mr^2}{\hbar^2}[E-V(r)]-\ell(\ell+1)\right\}R(r)=0.
+  \label{eq:qs-radial-l}
+\end{equation}
+The general radial solution depends on the as-yet-unspecified potential $V(r)$.
+
+\sourcepage{7}
+The form of the solution when $V(r)\to0$ is useful even when $V$ is not known.  In this region,
+\[
+  \frac{\dd}{\dd r}\left(r^2\frac{\dd R_\ell}{\dd r}\right)
+  +\left(\frac{2mE}{\hbar^2}r^2-\ell(\ell+1)\right)R_\ell(r)=0.
+\]
+Let
+\[
+  k=\sqrt{\frac{2mE}{\hbar^2}},
+  \qquad
+  \rho=kr.
+\]
+Then
+\begin{equation}
+  \frac{\dd}{\dd\rho}\left(\rho^2\frac{\dd R_\ell}{\dd\rho}\right)
+  +\left[\rho^2-\ell(\ell+1)\right]R_\ell(\rho)=0,
+  \label{eq:qs-spherical-bessel}
+\end{equation}
+which is the spherical Bessel equation.  Its two independent solutions are the spherical Bessel functions of the first kind, $j_\ell(\rho)$, and of the second kind, $n_\ell(\rho)$, also called spherical Neumann functions.  The $j_\ell$ are regular at the origin; the $n_\ell$ are not.
+
+\sourcepage{8}
+The spherical Hankel functions are
+\[
+  h_\ell^+(\rho)=j_\ell(\rho)+\ii n_\ell(\rho),
+  \qquad
+  h_\ell^-(\rho)=j_\ell(\rho)-\ii n_\ell(\rho).
+\]
+Useful representations are
+\begin{align*}
+  j_\ell(\rho)
+  &=\rho^\ell\left(-\frac{1}{\rho}\frac{\dd}{\dd\rho}\right)^\ell
+  \frac{\sin\rho}{\rho},\\
+  n_\ell(\rho)
+  &=-\rho^\ell\left(-\frac{1}{\rho}\frac{\dd}{\dd\rho}\right)^\ell
+  \frac{\cos\rho}{\rho}.
+\end{align*}
+In particular,
+\[
+  j_0(\rho)=\frac{\sin\rho}{\rho},
+  \qquad
+  n_0(\rho)=-\frac{\cos\rho}{\rho}.
+\]
+For $\rho\ll1$,
+\begin{align*}
+  j_\ell(\rho)&\sim
+  \frac{\rho^\ell}{1\cdot3\cdot5\cdots(2\ell+1)},\\
+  n_\ell(\rho)&\sim
+  -\frac{1\cdot3\cdot5\cdots(2\ell-1)}{\rho^{\ell+1}}.
+\end{align*}
+For $\rho\gg1$,
+\begin{align*}
+  j_\ell(\rho)&\sim \frac{1}{\rho}\sin\left(\rho-\frac{\ell\pi}{2}\right),\\
+  n_\ell(\rho)&\sim-\frac{1}{\rho}\cos\left(\rho-\frac{\ell\pi}{2}\right).
+\end{align*}
+The notes next review probability-current density in order to define cross sections formally.
+
+\sourcepage{9}
+The probability density of a particle position is
+\[
+  p(\bm r)\dd^3r=\psi^*(\bm r)\psi(\bm r)\dd^3r,
+\]
+the probability of finding the particle in the differential volume $\dd^3r$ about $\bm r$.  By definition,
+\[
+  \int_{-\infty}^{\infty}\psi^*(\bm r)\psi(\bm r)\dd^3r=1.
+\]
+A flux of incident particles denotes the number crossing a unit area per second.  For particles of velocity $\bm v$, the notes write the plane-wave form
+\[
+  \bm j=\bm v|\psi|^2
+  =\frac{\hbar\bm k}{m}(\psi^*\psi).
+\]
+
+\sourcepage{10}
+For a general wave function, start from
+\[
+  \frac{\partial}{\partial t}(\psi^*\psi)
+  =\psi^*\psi_t+\psi\psi_t^*.
+\]
+The time-dependent Schr\"odinger equation and its conjugate are
+\begin{align*}
+  \ii\hbar\psi_t&=\left(-\frac{\hbar^2}{2m}\nabla^2+V\right)\psi,\\
+  -\ii\hbar\psi_t^*&=\left(-\frac{\hbar^2}{2m}\nabla^2+V^*\right)\psi^*.
+\end{align*}
+For a real potential, these imply
+\[
+  \frac{\partial}{\partial t}(\psi^*\psi)
+  =\frac{\ii\hbar}{2m}
+  \left(\psi^*\nabla^2\psi-\psi\nabla^2\psi^*\right)
+  =-\nabla\cdot\left[
+  \frac{\hbar}{2m\ii}
+  (\psi^*\nabla\psi-\psi\nabla\psi^*)\right].
+\]
+Thus
+\begin{equation}
+  \frac{\partial}{\partial t}(\psi^*\psi)+\nabla\cdot\bm j=0,
+  \qquad
+  \bm j=\frac{\hbar}{2m\ii}
+  (\psi^*\nabla\psi-\psi\nabla\psi^*).
+  \label{eq:qs-continuity}
+\end{equation}
+The vector $\bm j$ is the probability current or flux.
+
+\sourcepage{11}
+\subsection*{Complex potential}
+Suppose
+\[
+  V=V_R+\ii V_I.
+\]
+The same calculation gives
+\begin{equation}
+  \frac{\partial}{\partial t}(\psi^*\psi)
+  +\nabla\cdot\bm j
+  +\frac{2V_I}{\hbar}\psi\psi^*=0.
+  \label{eq:qs-complex-continuity}
+\end{equation}
+The last term is a sink.  The notes compare this with the source-free neutron-transport balance
+\[
+  \frac{1}{v}\frac{\partial\phi}{\partial t}
+  +\nabla\cdot\bm J+\Sigma\phi=0.
+\]
+For the real-potential plane wave
+\[
+  \psi=A\ee^{\ii kz},
+\]
+one obtains
+\[
+  \bm j=|A|^2\frac{\hbar k}{m}\hat{\bm z}.
+\]
+For $A=1$, $j=\hbar k/m=v$.
+
+\sourcepage{12}
+\section{Differential cross section}
+The differential cross section is defined as
+\[
+  \sigma(\Omega)=\frac{\dd\sigma}{\dd\Omega}
+  =\frac{\text{particles scattered per unit time per scattering center}}
+  {\text{incident flux per steradian}}.
+\]
+A steradian is a measure of solid angle.  For a surface element $\dd A$ on a sphere of radius $r$,
+\[
+  \dd\Omega=\frac{\dd A}{r^2}=\sin\theta\dd\theta\dd\phi.
+\]
+The sketch in the notes shows an incident beam, a localized target potential of characteristic size roughly $10^{-12}$--$10^{-8}\unit{cm}$, and a detector at a macroscopic radius of order $100\unit{cm}$.
+
+\sourcepage{13}
+The incident wave is a plane wave,
+\begin{equation}
+  \psi_{\mathrm{inc}}=A\ee^{\ii kz},
+  \label{eq:qs-inc-wave}
+\end{equation}
+representing particles of velocity
+\[
+  v_i=\frac{\hbar k_i}{m}.
+\]
+Assume that the scattered wave has the form
+\begin{equation}
+  \psi_{\mathrm{sc}}
+  \sim A f(\theta,\phi)\frac{\ee^{\ii k_fr}}{r},
+  \label{eq:qs-sc-wave}
+\end{equation}
+where $f$ is the scattering amplitude.  The factor $1/r$ keeps the flux through a fixed solid angle constant, independent of radius.  The scattered radial current is
+\[
+  j_f=v_f|A|^2\frac{|f(\theta,\phi)|^2}{r^2}.
+\]
+For an area $\dd A=R^2\dd\Omega$ on a large detector sphere, the number of particles crossing that area per unit time is
+\[
+  j_f\dd A=v_f|A|^2|f(\theta,\phi)|^2\dd\Omega.
+\]
+
+\sourcepage{14}
+Away from the target, the asymptotic wave function is
+\begin{equation}
+  \psi_{\mathrm{asym}}
+  \sim A\left(\ee^{\ii kz}+f(\theta,\phi)\frac{\ee^{\ii k_fr}}{r}\right).
+  \label{eq:qs-asym-wave}
+\end{equation}
+Balancing incident and scattered particle rates gives
+\[
+  j_i\frac{\dd\sigma}{\dd\Omega}=j_fR^2,
+\]
+so
+\begin{equation}
+  \frac{\dd\sigma}{\dd\Omega}
+  =\frac{j_fR^2}{j_i}
+  =\frac{v_f}{v_i}|f(\theta,\phi)|^2.
+  \label{eq:qs-diff-xs-velocity}
+\end{equation}
+The velocity ratio can be absorbed into a redefined amplitude, so the notes write
+\begin{equation}
+  \sigma(\theta,\phi)=|\widetilde f(\theta,\phi)|^2.
+  \label{eq:qs-diff-xs-amplitude}
+\end{equation}
+The chief goal is to use the Schr\"odinger equation and simple models to define $f(\theta,\phi)$ and the other quantities used to describe cross sections formally.

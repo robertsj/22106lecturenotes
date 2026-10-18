@@ -1,0 +1,315 @@
+\chapter{Reaction Theory II: Resonances and the \texorpdfstring{$R$}{R} Matrix}
+\marginnoteinline{Source date: 01/08/2010.  Source pages 1 and 2 are duplicate scans; source page 11 is blank.}
+
+\sourcepage{1}
+\section{Single-level Breit--Wigner form}
+The goal is to continue Reaction Theory I, derive the Breit--Wigner form, and begin the foundations for an elementary treatment of $R$-matrix theory.
+
+From Reaction Theory I,
+\begin{align*}
+  f_\ell(k)
+  &=\frac{1}{k}\ee^{\ii\delta_\ell}\sin\delta_\ell\\
+  &=\frac{1}{k}\frac{\sin\delta_\ell}
+  {\cos\delta_\ell-\ii\sin\delta_\ell}\\
+  &=\frac{1}{k}\frac{1}{\cot\delta_\ell-\ii}.
+  \tag{1}
+\end{align*}
+The partial-wave cross section is
+\begin{equation*}
+  \sigma_\ell=\frac{4\pi}{k^2}(2\ell+1)\sin^2\delta_\ell.
+  \tag{2}
+\end{equation*}
+It is maximal when
+\[
+  \delta_\ell=\frac{(2n+1)\pi}{2},
+\]
+which corresponds to a resonance of the effective potential for the $\ell$th partial wave.
+
+Let $E_0$ be the energy at which the resonance occurs.  Near $E_0$, $\cot\delta_\ell(E_0)=0$, and a Taylor expansion gives
+\[
+  \cot\delta_\ell(E)
+  \simeq \cot\delta_\ell(E_0)
+  +(E-E_0)\left[\frac{\dd}{\dd E}\cot\delta_\ell(E)\right]_{E=E_0}
+  +\text{higher-order terms},
+\]
+or
+\begin{equation*}
+  \cot\delta_\ell(E)
+  \simeq(E-E_0)\left[\frac{\dd}{\dd E}\cot\delta_\ell(E)\right]_{E=E_0}.
+  \tag{3}
+\end{equation*}
+
+\sourcepage{2}
+\textit{This source page duplicates source page 1.}
+
+\sourcepage{3}
+Define the resonance width
+\begin{equation*}
+  \Gamma_\ell
+  \equiv-2\left[\frac{\dd}{\dd E}\cot\delta_\ell(E)\right]^{-1}_{E=E_0}.
+  \tag{4}
+\end{equation*}
+Then
+\[
+  \cot\delta_\ell(E)\simeq-\frac{2}{\Gamma_\ell}(E-E_0).
+\]
+Substitution into the partial-wave amplitude gives
+\begin{align*}
+  f_\ell
+  &=\frac{1}{k}\frac{1}{-2(E-E_0)/\Gamma_\ell-\ii}\\
+  &=-\frac{1}{k}
+  \frac{\Gamma_\ell/2}{E-E_0+\ii\Gamma_\ell/2}.
+  \tag{5}
+\end{align*}
+Therefore
+\begin{equation*}
+  \sigma_\ell
+  =4\pi(2\ell+1)|f_\ell|^2
+  =\frac{4\pi}{k^2}(2\ell+1)
+  \frac{\Gamma_\ell^2/4}
+  {(E-E_0)^2+\Gamma_\ell^2/4}.
+  \tag{6}
+\end{equation*}
+This is the Breit--Wigner formula for a resonant cross section.
+
+\marginnoteinline{Question recorded in the notes: how do the cross sections factor into quantities that are actually obtained from, and used in, ENDF?  Additional self-notes point back to earlier sections and toward a more robust SLBW treatment, spinless one-channel reductions, and eventually two-channel/two-level examples.}
+
+\sourcepage{4}
+\section{Elastic and reaction cross sections in terms of the reflection factor}
+Reaction Theory I gave
+\begin{align*}
+  \sigma_s
+  &=\frac{4\pi}{k^2}\sum_{\ell=0}^{\infty}(2\ell+1)\sin^2\delta_\ell\\
+  &=\pi\bar\lambda^2\sum_{\ell=0}^{\infty}(2\ell+1)|1-U_\ell|^2,
+  \qquad \bar\lambda=\frac{1}{k},
+  \tag{7}
+\end{align*}
+where the $\ell$-wave reflection factor is
+\begin{equation*}
+  U_\ell=\ee^{2\ii\delta_\ell}.
+  \tag{8}
+\end{equation*}
+The partial elastic cross section is therefore
+\begin{equation*}
+  \sigma_{s,\ell}=\pi\bar\lambda^2(2\ell+1)|1-U_\ell|^2.
+  \tag{9}
+\end{equation*}
+
+For reaction processes, let $N_{i,\ell}$ be the number of $\ell$-wave reactions per second per target nucleus:
+\[
+  N_{i,\ell}=\sigma_{r,\ell}\phi_{\mathrm{inc}},
+\]
+with the incident flux normalized to $v=\hbar k/m$.  Equivalently, $N_{i,\ell}$ is the net current through a large sphere about the target.  Inserting the appropriate asymptotic wave function into the current integral gives
+\begin{equation*}
+  \sigma_{r,\ell}=\pi\bar\lambda^2(2\ell+1)(1-|U_\ell|^2).
+  \tag{11}
+\end{equation*}
+No reaction can occur without elastic scattering, as indicated by this decomposition.
+
+\sourcepage{5}
+Hence
+\begin{align*}
+  \sigma_{\mathrm{total},\ell}
+  &=\sigma_{s,\ell}+\sigma_{r,\ell}\\
+  &=\pi\bar\lambda^2(2\ell+1)
+  \left[|1-U_\ell|^2+1-|U_\ell|^2\right]\\
+  &=2\pi\bar\lambda^2(2\ell+1)
+  \left[1-\operatorname{Re}(U_\ell)\right].
+  \tag{12}
+\end{align*}
+
+\subsection*{Calculation of the reflection factor}
+For $r\ge b$, write the reduced radial wave function as
+\begin{equation*}
+  w_\ell(r)=C_\ell\left[w_\ell^-(r)-U_\ell w_\ell^+(r)\right].
+  \tag{13}\label{eq:rt2-external-wave}
+\end{equation*}
+The external functions are
+\begin{equation*}
+  w_\ell^\pm=kr\left[n_\ell(kr)\pm\ii j_\ell(kr)\right]
+  =A_\ell(r)\pm\ii B_\ell(r),
+  \tag{13b}
+\end{equation*}
+which are spherical Hankel functions in the notation of the notes.
+
+Define the logarithmic derivative
+\begin{equation*}
+  D_\ell\equiv b\left[\frac{\dd w_\ell/\dd r}{w_\ell}\right]_{r=b}.
+  \tag{14}\label{eq:rt2-log-derivative}
+\end{equation*}
+Substitution of \eqref{eq:rt2-external-wave} into \eqref{eq:rt2-log-derivative} and solution for $U_\ell$ gives
+\begin{equation*}
+  U_\ell
+  =\left[
+  \frac{D_\ell-b(w_\ell^{-\prime}/w_\ell^-)}
+  {D_\ell-b(w_\ell^{+\prime}/w_\ell^+)}
+  \frac{w_\ell^-}{w_\ell^+}
+  \right]_{r=b}.
+  \tag{15}
+\end{equation*}
+
+\sourcepage{6}
+Further define
+\begin{equation*}
+  b\left[\frac{\dd w_\ell^\pm/\dd r}{w_\ell^\pm}\right]_{r=b}
+  \equiv a_\ell\pm\ii b_\ell.
+  \tag{16}
+\end{equation*}
+Using $w_\ell^\pm=A_\ell\pm\ii B_\ell$ gives the shift factor
+\begin{equation*}
+  a_\ell
+  =b\left[
+  \frac{A_\ell'A_\ell+B_\ell'B_\ell}
+  {A_\ell^2+B_\ell^2}
+  \right]_{r=b},
+  \tag{17}
+\end{equation*}
+and the penetration factor
+\begin{equation*}
+  b_\ell
+  =b\left[
+  \frac{A_\ell'B_\ell-B_\ell'A_\ell}
+  {A_\ell^2+B_\ell^2}
+  \right]_{r=b}.
+  \tag{18}
+\end{equation*}
+Both are tabulated functions.  Define the hard-sphere phase $\Delta_\ell$ by
+\begin{equation*}
+  \left[\frac{w_\ell^-}{w_\ell^+}\right]_{r=b}
+  \equiv\ee^{2\ii\Delta_\ell}.
+  \tag{19}
+\end{equation*}
+For an impenetrable sphere, the phase $\Delta_\ell$ is the full phase shift, and the reflection factor reduces to the ratio $w_\ell^-/w_\ell^+$, as expected.
+
+\sourcepage{7}
+\section{Elementary \texorpdfstring{$R$}{R}-matrix construction}
+$R$-matrix theory can be viewed as an accurate and relatively convenient functional form to which experimental data in the resolved-resonance region can be fitted.  The fitted parameters $E_\lambda$ and $\gamma_{\lambda c}$ describe, in a suitable sense, resonance locations and widths.
+
+The notes first consider simple spinless particles and a scalar partial wave, postponing the full matrix representation.  Expand the internal wave function as
+\begin{equation*}
+  \phi_\ell(E,r)=\sum_\lambda A_{\lambda\ell}\phi_\ell(E_\lambda,r).
+  \tag{20}\label{eq:rt2-internal-expansion}
+\end{equation*}
+The functions obey
+\begin{equation*}
+  \left\{\frac{\dd^2}{\dd r^2}
+  +\frac{2m}{\hbar^2}\left[E-V(r)
+  -\frac{\ell(\ell+1)\hbar^2}{2mr^2}\right]\right\}
+  \phi_\ell(E,r)=0,
+  \tag{21}\label{eq:rt2-physical-equation}
+\end{equation*}
+\begin{equation*}
+  \left\{\frac{\dd^2}{\dd r^2}
+  +\frac{2m}{\hbar^2}\left[E_\lambda-V(r)
+  -\frac{\ell(\ell+1)\hbar^2}{2mr^2}\right]\right\}
+  \phi_\ell(E_\lambda,r)=0.
+  \tag{22}\label{eq:rt2-basis-equation}
+\end{equation*}
+A common boundary condition is imposed at $r=b$:
+\begin{equation*}
+  \left[\frac{\dd\phi_\ell(E_\lambda,r)}{\dd r}\right]_{r=b}
+  =b^{-1}B_\ell\phi_\ell(E_\lambda,b),
+  \tag{23}\label{eq:rt2-basis-boundary}
+\end{equation*}
+with the same constant $B_\ell$ for the complete basis.
+
+\sourcepage{8}
+By orthogonality,
+\begin{equation*}
+  A_{\lambda\ell}
+  =\int_0^b\phi_\ell(E_\lambda,r)\phi_\ell(E,r)\dd r.
+  \tag{24}
+\end{equation*}
+Multiply \eqref{eq:rt2-physical-equation} and \eqref{eq:rt2-basis-equation} by the opposite wave functions and subtract.  The result can be arranged as
+\begin{equation*}
+  0=\frac{2m}{\hbar^2}(E-E_\lambda)
+  \phi_\ell(E,r)\phi_\ell(E_\lambda,r)
+  -\phi_\ell''(E,r)\phi_\ell(E_\lambda,r)
+  +\phi_\ell''(E_\lambda,r)\phi_\ell(E,r).
+  \tag{25}
+\end{equation*}
+Integrating from $0$ to $b$ gives
+\begin{equation*}
+  A_{\lambda\ell}
+  =\frac{\hbar^2}{2m(E-E_\lambda)}
+  \left[
+  \phi_\ell'(E_\lambda,r)\phi_\ell(E,r)
+  -\phi_\ell'(E,r)\phi_\ell(E_\lambda,r)
+  \right]_{r=b}.
+  \tag{26}
+\end{equation*}
+Use the boundary condition \eqref{eq:rt2-basis-boundary} in the expansion \eqref{eq:rt2-internal-expansion}.  At the boundary,
+\begin{equation*}
+  \phi_\ell(E,b)
+  =\frac{\hbar^2}{2mb}
+  \sum_\lambda
+  \frac{\phi_\ell^2(E_\lambda,b)}{E_\lambda-E}
+  \left[b\phi_\ell'(E,b)-B_\ell\phi_\ell(E,b)\right].
+  \tag{27}\label{eq:rt2-boundary-expansion}
+\end{equation*}
+
+\sourcepage{9}
+The $R$ matrix---a scalar $R$ function here---is therefore
+\begin{align*}
+  R_\ell(E)
+  &=\frac{\hbar^2}{2mb}
+  \sum_\lambda
+  \frac{\phi_\ell^2(E_\lambda,b)}{E_\lambda-E}
+  \tag{28a}\\
+  &=\sum_\lambda\frac{\gamma_{\lambda\ell}^2}{E_\lambda-E},
+  \tag{28b}
+\end{align*}
+where the reduced-width amplitude is
+\begin{equation*}
+  \gamma_{\lambda\ell}
+  \equiv\sqrt{\frac{\hbar^2}{2mb}}\,\phi_\ell(E_\lambda,b).
+  \tag{29}
+\end{equation*}
+From \eqref{eq:rt2-boundary-expansion},
+\begin{equation*}
+  R_\ell(E)
+  =\left[
+  \frac{\phi_\ell(E,r)}
+  {r\phi_\ell'(E,r)-B_\ell\phi_\ell(E,r)}
+  \right]_{r=b}.
+  \tag{30}\label{eq:rt2-R-logderivative}
+\end{equation*}
+For $B_\ell=0$, this is the previously used reciprocal logarithmic derivative.
+
+Using the exterior form
+\[
+  \phi_\ell(E,r)=C_\ell\left[\phi_\ell^-(E,r)-U_\ell\phi_\ell^+(E,r)\right],
+\]
+substitution into \eqref{eq:rt2-R-logderivative} gives a direct relation between $R_\ell$ and $U_\ell$.
+
+\sourcepage{10}
+Define the external logarithmic derivatives
+\[
+  L_\ell^\pm
+  \equiv\left[
+  \frac{r}{\phi_\ell^\pm}
+  \frac{\dd\phi_\ell^\pm}{\dd r}
+  \right]_{r=b}.
+\]
+Then the notes record
+\begin{equation*}
+  U_\ell
+  =\left.\frac{\phi_\ell^-}{\phi_\ell^+}\right|_{r=b}
+  \frac{1-R_\ell(L_\ell^- -B_\ell)}
+  {1-R_\ell(L_\ell^+ -B_\ell)}.
+  \tag{33}
+\end{equation*}
+This relates the internal $R$ function to the observable reflection factor.
+
+The multichannel matrix form is sketched schematically as
+\[
+  \bm U
+  =\bm\rho^{1/2}\bm\phi_{\mathrm{out}}
+  [\bm I-\bm R(\bm L-\bm B)]^{-1}
+  [\bm I-\bm R(\bm L^*-\bm B)]
+  \bm\phi_{\mathrm{inc}}\bm\rho^{-1/2},
+\]
+with notation left for later development.  The $R$ matrix has elements $R_{cc'}$, where $c$ and $c'$ label entrance and exit channels.  A channel label collects the particle type, spins, and other quantum numbers needed to specify a particular partial wave.  The source ends with: ``Next time: level matrix and simplifications.''
+
+\sourcepage{11}
+\textit{Blank source page.}

@@ -1,0 +1,255 @@
+\chapter{Reaction Theory I}
+\marginnoteinline{Source date: 01/07/2010.  The handwritten references appear to include Foderaro, Chapter 4, and a second chapter reference that is not fully legible.}
+
+\sourcepage{1}
+\section{Goal and scattering geometry}
+Beginning with partial-wave analysis, review several simple examples of computing cross sections for elastic scattering.  Thereafter, derive the single-level Breit--Wigner formula for a resonance.
+
+The sketch shows a plane incident beam, a target potential of characteristic radius $10^{-8}$--$10^{-12}\unit{cm}$, and a detector at a macroscopic radius of order $100\unit{cm}$.  The incident wave is
+\begin{equation*}
+  \psi_{\mathrm{inc}}\sim \ee^{\ii kz}=\ee^{\ii kr\cos\theta}.
+  \tag{1}
+\end{equation*}
+At the detector, the scattered wave has the form
+\begin{equation*}
+  \psi_{\mathrm{sc}}\sim f(\theta)\frac{\ee^{\ii kr}}{r}.
+  \tag{2}
+\end{equation*}
+Azimuthal symmetry is assumed, so $f$ depends only on $\theta$.  The factor $r^{-1}$ conserves radial flux.
+
+\sourcepage{2}
+\section{Differential cross section from current balance}
+The differential scattering cross section is the probability that an incident particle scatters through the solid-angle element $\dd\Omega$.  Particle balance gives
+\begin{equation*}
+  J_{\mathrm{inc}}\dd\sigma=J_{\mathrm{sc}}\dd A.
+  \tag{3}
+\end{equation*}
+Since
+\begin{equation*}
+  \dd A=r^2\sin\theta\dd\theta\dd\phi=r^2\dd\Omega,
+  \tag{4}
+\end{equation*}
+we have
+\[
+  J_{\mathrm{inc}}\dd\sigma=J_{\mathrm{sc}}r^2\dd\Omega
+\]
+and therefore
+\begin{equation*}
+  \frac{\dd\sigma}{\dd\Omega}
+  =\frac{J_{\mathrm{sc}}r^2}{J_{\mathrm{inc}}}.
+  \tag{5}
+\end{equation*}
+
+Recall
+\[
+  J=\frac{\hbar}{2m\ii}(\psi^*\psi'-\psi^{*\prime}\psi).
+\]
+For the incident plane wave,
+\[
+  J_{\mathrm{inc}}=\frac{\hbar k}{m}=v.
+\]
+For the outgoing spherical wave $f(\theta)\ee^{\ii kr}/r$, the radial-current calculation gives
+\begin{equation*}
+  J_{\mathrm{sc}}=v\frac{|f(\theta)|^2}{r^2}.
+  \tag{6}
+\end{equation*}
+Hence
+\begin{equation*}
+  \frac{\dd\sigma}{\dd\Omega}=|f(\theta)|^2.
+  \tag{7}
+\end{equation*}
+
+\sourcepage{3}
+From a previous result,
+\begin{equation*}
+  f(\theta)=\frac{1}{k}\sum_{\ell=0}^{\infty}(2\ell+1)
+  \ee^{\ii\delta_\ell}\sin\delta_\ell
+  P_\ell(\cos\theta).
+  \tag{7a}
+\end{equation*}
+Therefore
+\begin{equation*}
+  \sigma(\theta)
+  =\frac{1}{k^2}\left|
+  \sum_{\ell=0}^{\infty}(2\ell+1)
+  \ee^{\ii\delta_\ell}\sin\delta_\ell
+  P_\ell(\cos\theta)
+  \right|^2.
+  \tag{8}
+\end{equation*}
+The total elastic scattering cross section is
+\[
+  \sigma_s=\int_0^\pi 2\pi\sin\theta\dd\theta\,\sigma(\theta).
+\]
+Using Legendre orthogonality,
+\begin{equation*}
+  \sigma_s=\frac{4\pi}{k^2}
+  \sum_{\ell=0}^{\infty}(2\ell+1)\sin^2\delta_\ell.
+  \tag{9}
+\end{equation*}
+
+In general, expand
+\[
+  f(\theta)=\sum_{\ell=0}^{\infty}(2\ell+1)f_\ell(k)P_\ell(\cos\theta),
+\]
+where $f_\ell$ is the partial-wave amplitude.  From above,
+\begin{equation*}
+  f_\ell(k)=\frac{1}{k}\ee^{\ii\delta_\ell}\sin\delta_\ell
+  =\frac{1}{2\ii k}\left[S_\ell(k)-1\right],
+  \qquad
+  S_\ell(k)=\ee^{2\ii\delta_\ell}.
+  \tag{10}
+\end{equation*}
+
+\sourcepage{4}
+\section{Infinite repulsive sphere: setup}
+Consider the infinite repulsive sphere or ``low neutron potential''
+\[
+  V(r)=
+  \begin{cases}
+    \infty, & r\le b,\\
+    0, & r>b.
+  \end{cases}
+\]
+The inner wave function is identically zero.  The outer wave function is a linear combination of $j_\ell(kr)$ and $n_\ell(kr)$.  Continuity at the surface requires
+\[
+  \psi_\ell^{\mathrm{out}}(b)=0.
+\]
+Far from the origin, the outer wave must have the phase-shifted form
+\begin{equation*}
+  \psi_\ell^{\mathrm{out}}
+  =\frac{1}{kr}\sin\left(kr-\frac{\ell\pi}{2}+\delta_\ell\right).
+  \tag{11}
+\end{equation*}
+The large-$r$ asymptotic forms are
+\begin{align*}
+  j_\ell(kr)&\sim \frac{1}{kr}\cos\left(kr-\frac{(\ell+1)\pi}{2}\right),\\
+  n_\ell(kr)&\sim \frac{1}{kr}\sin\left(kr-\frac{(\ell+1)\pi}{2}\right).
+  \tag{12}
+\end{align*}
+
+\sourcepage{5}
+Expanding the shifted sine in exponentials and equating the incoming and outgoing exponential coefficients with a general combination
+\[
+  a_\ell j_\ell(kr)+b_\ell n_\ell(kr)
+\]
+gives
+\begin{equation*}
+  b_\ell=\sin\delta_\ell,
+  \tag{15}
+\end{equation*}
+\begin{equation*}
+  a_\ell=\cos\delta_\ell.
+  \tag{16}
+\end{equation*}
+
+\sourcepage{6}
+Thus the general exterior wave function is
+\begin{equation*}
+  \psi_\ell^{\mathrm{out}}(r)
+  =\cos\delta_\ell\,j_\ell(kr)
+  -\sin\delta_\ell\,n_\ell(kr).
+  \tag{17}
+\end{equation*}
+For a finite interior potential, continuity of $\psi$ and $\psi'$ at $r=b$ gives
+\begin{align*}
+  \psi_\ell^{\mathrm{in}}(b)
+  &=\cos\delta_\ell\,j_\ell(kb)
+  -\sin\delta_\ell\,n_\ell(kb),\\
+  \psi_\ell^{\mathrm{in}\prime}(b)
+  &=\cos\delta_\ell\,j_\ell'(kb)
+  -\sin\delta_\ell\,n_\ell'(kb).
+\end{align*}
+Define the logarithmic derivative
+\begin{equation*}
+  D\equiv\left[\frac{\dd\psi_\ell^{\mathrm{in}}/\dd r}
+  {\psi_\ell^{\mathrm{in}}}\right]_{r=b}.
+  \tag{18}
+\end{equation*}
+Then
+\begin{equation*}
+  D=\frac{\cos\delta_\ell\,j_\ell'(kb)-\sin\delta_\ell\,n_\ell'(kb)}
+  {\cos\delta_\ell\,j_\ell(kb)-\sin\delta_\ell\,n_\ell(kb)}.
+  \tag{19}
+\end{equation*}
+Solving for the phase shift,
+\begin{equation*}
+  \tan\delta_\ell
+  =\frac{j_\ell'(kb)-D j_\ell(kb)}
+  {n_\ell'(kb)-D n_\ell(kb)}.
+  \tag{20}
+\end{equation*}
+The notes emphasize that $D$ still has to be computed or otherwise known.
+
+\sourcepage{7}
+For the solid sphere, the interior radial wave function is zero everywhere.  Therefore
+\[
+  \psi_\ell^{\mathrm{out}}(kb)=0
+  =\cos\delta_\ell\,j_\ell(kb)-\sin\delta_\ell\,n_\ell(kb),
+\]
+and
+\begin{equation*}
+  \tan\delta_\ell=\frac{j_\ell(kb)}{n_\ell(kb)}.
+  \tag{21}\label{eq:rt1-hard-sphere-phase}
+\end{equation*}
+
+For low energies, $kb\ll1$, and only the $\ell=0$ ($s$-wave) term matters.  The small-argument forms are
+\begin{align*}
+  j_\ell(x)&\sim\frac{x^\ell}{1\cdot3\cdot5\cdots(2\ell+1)},\\
+  n_\ell(x)&\sim-\frac{1\cdot3\cdot5\cdots(2\ell-1)}{x^{\ell+1}}.
+  \tag{22}
+\end{align*}
+Hence
+\begin{equation*}
+  \tan\delta_\ell
+  \sim-\frac{(kb)^{2\ell+1}}
+  {\left[1\cdot3\cdot5\cdots(2\ell-1)\right]^2(2\ell+1)}.
+  \tag{23}
+\end{equation*}
+For $kb\ll1$, the $\ell=0$ term dominates:
+\[
+  \tan\delta_0\simeq-kb,
+  \qquad
+  \delta_0\simeq-kb.
+\]
+Thus
+\begin{equation*}
+  \sigma(\theta)=\frac{1}{k^2}\sin^2\delta_0\simeq b^2,
+  \tag{24}
+\end{equation*}
+and
+\begin{equation*}
+  \sigma_s=4\pi b^2,
+  \tag{25}
+\end{equation*}
+four times the classical geometric cross section.
+
+\sourcepage{8}
+For high energies, use Eq.~\eqref{eq:rt1-hard-sphere-phase} to write
+\[
+  \sin\delta_\ell
+  =\frac{j_\ell(kb)}{\sqrt{j_\ell^2(kb)+n_\ell^2(kb)}},
+\]
+so
+\begin{equation*}
+  \sin^2\delta_\ell
+  =\frac{j_\ell^2(kb)}{j_\ell^2(kb)+n_\ell^2(kb)}.
+  \tag{26}
+\end{equation*}
+Using the large-$kb$ asymptotic forms,
+\begin{equation*}
+  \sin^2\delta_\ell
+  \simeq\cos^2\left(kb-\frac{(\ell+1)\pi}{2}\right).
+  \tag{27}
+\end{equation*}
+The partial-wave sum is cut off semiclassically at $\ell\sim kb$.  Averaging the rapid oscillation, $\cos^2\to1/2$, gives
+\begin{align*}
+  \sigma_s
+  &\simeq\frac{4\pi}{k^2}
+  \sum_{\ell=0}^{kb}(2\ell+1)
+  \cos^2\left(kb-\frac{(\ell+1)\pi}{2}\right)\\
+  &\simeq\frac{4\pi}{k^2}
+  \int_0^{kb}(2\ell+1)\frac12\dd\ell\\
+  &\simeq 2\pi b^2.
+\end{align*}
+Thus the high-energy quantum result approaches twice the classical geometric cross section.

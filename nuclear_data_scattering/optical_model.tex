@@ -1,0 +1,251 @@
+\chapter{The Optical Model}
+
+\sourcepage{1}
+\section{From a real well to absorption}
+An explicit square-well model is
+\[
+  V(r)=
+  \begin{cases}
+    -V_0, & r\le R,\\
+    0, & r>R,
+  \end{cases}
+\]
+where $R$ is the nuclear radius.  The benefit is that it is very easy to use.  The issue is that a real potential cannot explain the low-energy capture observed by Szilard, Fermi, and others.
+
+The next-best step is to enforce absorption of neutrons that are not reflected from the target, following Feshbach (1949).  In a one-dimensional planar analogue, take
+\[
+  \psi^{I}=\ee^{\ii kx}+A\ee^{-\ii kx},
+  \qquad
+  \psi^{II}=B\ee^{\ii\alpha x},
+\]
+with
+\[
+  k=\frac{\sqrt{2mE}}{\hbar},
+  \qquad
+  \alpha=\frac{\sqrt{2m(E+V_0)}}{\hbar}.
+\]
+Continuity of the wave function and derivative at the interface gives
+\[
+  1+A=B,
+  \qquad
+  \ii k-\ii kA=\ii\alpha B.
+\]
+Therefore
+\[
+  B=\frac{2k}{\alpha+k},
+  \qquad
+  A=\frac{k-\alpha}{k+\alpha}.
+\]
+
+\sourcepage{2}
+The transmission coefficient is
+\begin{align*}
+  T
+  &=\frac{|1|^2-|A|^2}{|1|^2}\\
+  &=1-\left(\frac{\alpha-k}{\alpha+k}\right)^2\\
+  &=\frac{4\alpha k}{(\alpha+k)^2}.
+\end{align*}
+A semiclassical capture cross section is then written
+\[
+  \sigma_c=\pi(R+\bar\lambda)^2T,
+\]
+which is the ``black nucleus'' model.  A typical well depth is $V_0\simeq40\unit{MeV}$, corresponding to $\alpha$ of order $10^{13}\unit{cm^{-1}}$.
+
+The benefit is that this model captures the $1/v$ behavior.  The issue is that it produces a monotonic $\sigma(E)$ and therefore does not reproduce fine resonance structure.  The source includes the reminder: ``Add plot to demonstrate.''
+
+\sourcepage{3}
+The same idea is equivalent to an interior converging wave,
+\[
+  r\psi\sim\ee^{-\ii\alpha r},
+  \qquad r<a,
+\]
+so that neutrons flow into the target without an outgoing interior component.  The corresponding logarithmic derivative is
+\[
+  D=a\frac{\dd(r\psi)/\dd r}{r\psi}=-\ii\alpha a.
+\]
+\editorial{A sticky note on the scan asks whether this should be $-\ii\alpha a$; the expression shown here follows the derivative of $\ee^{-\ii\alpha r}$.}
+
+Use the same matching procedure as before.  For the exterior partial wave,
+\[
+  \chi_\ell^{\mathrm{ext}}(kr)
+  =H_\ell^-(kr)-S_\ell H_\ell^+(kr)
+  \sim \ee^{-\ii(kr-\ell\pi/2)}
+  -S_\ell\ee^{\ii(kr-\ell\pi/2)}.
+\]
+Matching the logarithmic derivative at $r=a$ gives an $S$-matrix ratio of the form
+\[
+  S_\ell
+  =\frac{H_\ell^{-\prime}-(D/a)H_\ell^-}
+  {H_\ell^{+\prime}-(D/a)H_\ell^+}.
+\]
+For $\ell=0$, this reduces to the same reflection-amplitude behavior as the planar model,
+\[
+  S_0\sim\frac{\alpha-k}{\alpha+k},
+\]
+so $1-|S_0|^2$ gives the absorbed fraction used in the usual definitions of $\sigma_{r,\ell}$ and related cross sections.
+
+\sourcepage{4}
+\section{Feshbach's question and the strong-coupling model}
+The main question is: does a particle necessarily form a compound nucleus after entering the target?  In other words, is the strong-coupling model valid?
+
+With less interaction, assume that the target acts first as a potential well.  A particle has a chance to enter and, once inside, a chance to form a compound nucleus.  The notes organize the cross sections as
+\begin{align*}
+  \sigma_t&=\sigma_{\mathrm{el}}+\sigma_r,\\
+  \sigma_{\mathrm{el}}&=\sigma_{\mathrm{pe}}+\sigma_{\mathrm{el},c},\\
+  \sigma_c&=\sigma_{\mathrm{el},c}+\sigma_r,
+\end{align*}
+where ``pe'' denotes potential elastic scattering and the subscript $c$ denotes compound-nucleus contributions.
+
+Model the target with a complex potential,
+\[
+  V(r)=
+  \begin{cases}
+    V_0+\ii V_1, & r<a,\\
+    0, & r\ge a.
+  \end{cases}
+\]
+Such a model should yield scattering that reproduces the potential-elastic component, while the absorptive part represents the compound-nucleus cross section averaged over many resonances.
+
+\sourcepage{5}
+The optical-model sketch separates three conceptual stages:
+\begin{enumerate}
+  \item A projectile enters the optical potential, where it may be elastically scattered or absorbed.
+  \item Absorption creates a ``compound system,'' including interactions of the projectile with part of the target, such as the surface, or a collective excitation in which the nucleus is excited together.
+  \item The compound system evolves and decays, possibly through a fully equilibrated compound nucleus.
+\end{enumerate}
+Thus the treatment moves from Bohr's two stages to Weisskopf's three stages.
+
+The optical potential is non-Hermitian so that absorption is produced.  Its simplest form is
+\[
+  V(r)=
+  \begin{cases}
+    V_0+\ii V_1, & r<a,\\
+    0, & r\ge a.
+  \end{cases}
+\]
+
+\sourcepage{6}
+\section{Energy averaging and the optical \texorpdfstring{$S$}{S} matrix}
+Previously,
+\begin{align*}
+  \sigma_{\mathrm{el},\ell}
+  &=\pi\bar\lambda^2(2\ell+1)|1-S_\ell|^2,\\
+  \sigma_{r,\ell}
+  &=\pi\bar\lambda^2(2\ell+1)(1-|S_\ell|^2),\\
+  \sigma_{t,\ell}
+  &=2\pi\bar\lambda^2(2\ell+1)(1-\operatorname{Re}S_\ell),
+\end{align*}
+with
+\[
+  S_\ell=\ee^{2\ii\delta_\ell}.
+\]
+Define an energy-averaged $S$ matrix by
+\begin{equation}
+  \brac{S_\ell(E)}
+  \equiv\frac{1}{\Delta E}
+  \int_{E-\Delta E/2}^{E+\Delta E/2}S_\ell(E')\dd E'.
+  \label{eq:om-average-S}
+\end{equation}
+The averaged cross sections are
+\begin{align*}
+  \overline\sigma_{\mathrm{el},\ell}
+  &=\pi\bar\lambda^2(2\ell+1)\brac{|1-S_\ell|^2},\\
+  \overline\sigma_{r,\ell}
+  &=\pi\bar\lambda^2(2\ell+1)\left[1-\brac{|S_\ell|^2}\right],\\
+  \overline\sigma_{t,\ell}
+  &=2\pi\bar\lambda^2(2\ell+1)
+  \left[1-\operatorname{Re}\brac{S_\ell}\right].
+\end{align*}
+The averaging interval is assumed small enough that $\bar\lambda^2$ need not itself be averaged.
+
+Now
+\begin{align*}
+  \brac{|1-S_\ell|^2}
+  &=1-\brac{S_\ell}-\brac{S_\ell^*}+\brac{|S_\ell|^2}\\
+  &=|1-\brac{S_\ell}|^2
+  +\brac{|S_\ell|^2}-|\brac{S_\ell}|^2.
+\end{align*}
+
+\sourcepage{7}
+This decomposition defines
+\begin{equation}
+  \overline\sigma_{\mathrm{el},p,\ell}
+  =\pi\bar\lambda^2(2\ell+1)|1-\brac{S_\ell}|^2,
+  \label{eq:om-potential-elastic}
+\end{equation}
+and
+\begin{equation}
+  \overline\sigma_{\mathrm{el},c,\ell}
+  =\pi\bar\lambda^2(2\ell+1)
+  \left(\brac{|S_\ell|^2}-|\brac{S_\ell}|^2\right).
+  \label{eq:om-compound-elastic}
+\end{equation}
+The compound-formation cross section is then
+\begin{align}
+  \overline\sigma_{c,\ell}
+  &=\overline\sigma_{r,\ell}
+  +\overline\sigma_{\mathrm{el},c,\ell}\\
+  &=\pi\bar\lambda^2(2\ell+1)
+  \left(1-|\brac{S_\ell}|^2\right)\\
+  &=\pi\bar\lambda^2(2\ell+1)T_\ell(E),
+  \label{eq:om-transmission-coefficient}
+\end{align}
+where
+\[
+  T_\ell(E)=1-|\brac{S_\ell}|^2
+\]
+is the transmission coefficient.
+
+Usually $\brac{S_\ell}$ yields the ``gross-structure'' problem.  The potential-elastic contribution is the pure one-particle scattering part.  At very large energy, $\brac{S_\ell}\to S_\ell$ and the compound-elastic fluctuation term vanishes.  In a compound-nucleus model, the probability for the system to decay back to the entrance channel is then small because many other exit channels are available.  The averaged elastic and compound-formation cross sections can therefore be described by a one-particle complex potential.
+
+\sourcepage{8}
+Both the black-nucleus and optical models yield
+\begin{equation}
+  \sigma_{c,\ell}
+  =\pi\bar\lambda^2(2\ell+1)(1-|S_\ell|^2)
+  =\pi\bar\lambda^2(2\ell+1)T_\ell(E),
+\end{equation}
+where $T_\ell(E)$ is the transmission coefficient.
+
+The sketch of neutron cross section on $^{235}$U distinguishes low-energy behavior, isolated resonances with a background, and overlapping resonances beyond which the average optical description captures the physics.
+
+A more complicated optical potential may be written schematically as
+\[
+  V(r)
+  =(V_0+\ii V_1)f_{\mathrm{vol}}(r)
+  +(V_2+\ii V_3)f_{\mathrm{surf}}(r)
+  +\bm\ell\cdot\bm s\,(V_4+\ii V_5)f_{\mathrm{so}}(r),
+\]
+with volume, surface, and spin--orbit form factors.
+
+\sourcepage{9}
+\section{Hauser--Feshbach connection}
+Bohr's hypothesis gives
+\[
+  \sigma_{\alpha\beta}
+  =\sigma_c(\alpha)\frac{\Gamma_\beta}{\Gamma},
+\]
+where the branching ratio is the decay probability into channel $\beta$.
+
+The optical model supplies the channel transmission coefficient,
+\[
+  \sigma_{c,\ell}^{(\alpha)}
+  =\pi\bar\lambda_\alpha^2(2\ell+1)T_{\alpha\ell},
+  \qquad
+  T_{\alpha\ell}=1-|S_{\alpha\ell}|^2.
+\]
+Reciprocity or detailed balance gives
+\[
+  k_\alpha^2\sigma_{\alpha\beta}
+  =k_\beta^2\sigma_{\beta\alpha}.
+\]
+Neglecting spins, the basic Hauser--Feshbach form is
+\begin{equation}
+  \sigma_{\alpha\beta}
+  =\pi\bar\lambda_\alpha^2(2\ell+1)
+  \frac{T_\alpha T_\beta}{\sum_\gamma T_\gamma}.
+  \label{eq:om-hauser-feshbach}
+\end{equation}
+The expression becomes much more elaborate when spins and angular dependence are included, but the basic structure is unchanged.
+
+In the Weisskopf--Ewing approximation, the channel transmissions are replaced or supplemented by a continuum level density for the residual nucleus.  The source points to the Wigner distribution as the next example.

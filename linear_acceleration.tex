@@ -28,14 +28,12 @@ in this case represents solving the original problem.  While preconditioners
 cannot in general be expected to yield a set of eigenvalues equal to unity, 
 any clustering typically improves convergence.  Often, even pushing 
 eigenvalues away from the origin tends to improve 
-convergence \cite{larsen2010ado}.
-Chapter \ref{chp:transport_pc} provides a relatively thorough 
-development of several diffusion-based preconditioners for the 
-transport equation.
+convergence \cite{larsen2010ado}.  In this lecture, we develop several
+diffusion-based preconditioners for the transport equation.
 
 
 
-Chapter \ref{chp:transport_methods} provided a short survey of trends in 
+The previous transport lectures provided a short survey of trends in
 transport discretizations and solvers applicable to the fixed source 
 multiplying problems relevant to response matrix methods.  As noted, 
 Krylov methods have quickly become important tools for a variety of 
@@ -161,10 +159,9 @@ defined block-wise as
 An initial review of the literature yielded no application of
 multigroup diffusion 
 as a preconditioner for multigroup transport problems.  
-Related work addressed 
-acceleration of outer Gauss-Seidel upscatter iterations \cite{adams1993tga}
-and fission iterations based on the rank one fission 
-operator ($\oper{X}\oper{F}^{\transp}$) \cite{morel1994fsa}, 
+Related work reviewed by Adams and Larsen \cite{adams2002fim} addressed
+acceleration of outer Gauss-Seidel upscatter iterations and fission iterations
+based on the rank one fission operator ($\oper{X}\oper{F}^{\transp}$),
 but all using an equivalent one group formulation.  
 In general, the full multigroup diffusion problem is itself expensive
 for large problems (an issue addressed below), and this may explain why  
@@ -180,7 +177,7 @@ prohibitive.  As an alternative, we investigate the use of coarse mesh
 diffusion preconditioners.  Coarse mesh diffusion operators have long been
 central to acceleration techniques in reactor analysis, a chief 
 example being the nonlinear diffusion acceleration scheme developed
-by Smith \cite{smith1984nms} for nodal diffusion methods and later 
+by Smith \cite{smith1983nms} for nodal diffusion methods and later
 extended to transport methods \cite{smith2002fct}.  
 
 While no results could be found in the literature describing use of 
@@ -204,7 +201,7 @@ available, \eg Ref. \cite{briggs2000amt}.
 In this work, we apply a two-grid spatial scheme to the diffusion 
 preconditioner.  Recent 
 work suggests that multigrid methods in the energy variable can work very 
-well \cite{hamilton2011nsk, slaybaugh2013mep}.  While a slightly different 
+well \cite{slaybaugh2013mep}.  While a slightly different
 context, nonlinear diffusion acceleration also typically uses a coarse 
 energy mesh to great effect. However, our initial studies using a coarsened
 energy variable within a diffusion preconditioner suggests that the 
@@ -232,7 +229,7 @@ rates.  While a variety of such homogenization techniques exist, we use
 a rather conventional homogenization scheme that is simple to apply  
 in preconditioning.  For the particular case of group constant generation
 via an assembly-level lattice physics solver, the results of the scheme are 
-referred to as \emph{ assembly homogenized cross sections} \cite{smith1986aht}.
+referred to as \emph{ assembly homogenized cross sections} \cite{smith1980shm}.
 
 To illustrate, suppose we need the total cross section $\Sigma_t$ averaged 
 over coarse mesh cell $j$.  Denoting the fine mesh flux in cell $i \in j$ to 
@@ -432,13 +429,12 @@ sizes proportional to the  number of angles, at least implicitly, as part
 of the construction process. This can quickly lead to huge memory 
 requirements, a complicated  construction process, or both.  
 
-Construction of explicit transport operators have been studied for 
-for the discrete ordinates method \cite{patton2002apg} and for the method of 
-characteristics \cite{zhang2011ctm}. The former work treated the angular 
-flux directly, and the analysis was limited to relatively small multigroup
-1-D problems.  The latter work noted the cost of constructing the 
-transport operator was exceedingly large and developed a marginally 
-successful parallel scheme limited to the within-group equations.
+Construction of explicit transport operators has been studied for
+the discrete ordinates method \cite{patton2002apg}. That work treated the
+angular flux directly, and the analysis was limited to relatively small
+multigroup 1-D problems. For the method of characteristics, the cost of
+constructing the transport operator can be exceedingly large, and practical
+schemes are naturally limited by that cost.
 
 In the present work, the transport operator is always a 
 ``matrix free'' operator,  meaning that the action $y \gets \oper{A}x$
@@ -449,6 +445,7 @@ applicable.  Ultimately, we restrict any preconditioner using a
 transport operator to be based on actions only.
 
 \subsection{Newton-based Correction}
+\label{sec:newtonsmethod}
 
 As an alternative, suppose we have a matrix inverse 
 $\oper{M}^{-1}$ that represents an initial approximation of 

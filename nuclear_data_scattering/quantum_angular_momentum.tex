@@ -1,0 +1,192 @@
+\chapter{Quantum Angular Momentum}
+
+\sourcepage{1}
+\section{Angular-momentum operators}
+Recall the orbital angular-momentum operators
+\begin{align*}
+  \widehat L_x
+  &=y\widehat p_z-z\widehat p_y
+  =-\ii\hbar\left(y\frac{\partial}{\partial z}-z\frac{\partial}{\partial y}\right),\\
+  \widehat L_y
+  &=z\widehat p_x-x\widehat p_z
+  =-\ii\hbar\left(z\frac{\partial}{\partial x}-x\frac{\partial}{\partial z}\right),\\
+  \widehat L_z
+  &=x\widehat p_y-y\widehat p_x
+  =-\ii\hbar\left(x\frac{\partial}{\partial y}-y\frac{\partial}{\partial x}\right).
+\end{align*}
+Equivalently,
+\[
+  \widehat{\bm L}=-\ii\hbar\,\bm r\times\nabla.
+\]
+The commutation relations are
+\[
+  [\widehat L_y,\widehat L_z]=\ii\hbar\widehat L_x,
+  \qquad
+  [\widehat L_z,\widehat L_x]=\ii\hbar\widehat L_y,
+  \qquad
+  [\widehat L_x,\widehat L_y]=\ii\hbar\widehat L_z,
+\]
+or symbolically
+\[
+  \ii\hbar\widehat{\bm L}=\widehat{\bm L}\times\widehat{\bm L}.
+\]
+Also,
+\[
+  [\widehat L^2,\widehat L_z]=0
+\]
+(and similarly for $x$ and $y$ components).
+
+For example, if $L^2=30\hbar^2$, then $\ell=5$, and the allowed $L_z$ eigenvalues are
+\[
+  L_z\in\{-5\hbar,-4\hbar,\ldots,5\hbar\}.
+\]
+The notation used later is
+\[
+  \widehat{\bm J}:\text{ total angular momentum},
+  \qquad
+  \widehat{\bm L}:\text{ orbital angular momentum},
+  \qquad
+  \widehat{\bm S}:\text{ spin}.
+\]
+
+\sourcepage{2}
+\section{Eigenvalues and spherical harmonics}
+The simultaneous eigenvalues of $\widehat J^2$ and $\widehat J_z$ are
+\[
+  J^2=\hbar^2j(j+1),
+  \qquad
+  J_z=\hbar m_j,
+  \qquad
+  m_j=-j,-j+1,\ldots,j.
+\]
+The eigenfunctions of $\widehat L^2$ and $\widehat L_z$ are the spherical harmonics,
+\begin{equation}
+  Y_\ell^m(\theta,\phi)
+  =\left[\frac{2\ell+1}{4\pi}
+  \frac{(\ell-m)!}{(\ell+m)!}\right]^{1/2}
+  P_\ell^m(\cos\theta)\ee^{\ii m\phi}.
+  \label{eq:qam-spherical-harmonics}
+\end{equation}
+An arbitrary angular function can be expanded as
+\[
+  f(\theta,\phi)
+  =\sum_{\ell=0}^{\infty}\sum_{m=-\ell}^{\ell}
+  a_{\ell m}Y_\ell^m(\theta,\phi),
+\]
+with
+\[
+  a_{\ell m}
+  =\int_0^{2\pi}\dd\phi\int_{-1}^{1}\dd\mu\,
+  Y_\ell^{m*}(\mu,\phi)f(\mu,\phi).
+\]
+
+\section{Addition of angular momenta}
+For
+\[
+  \widehat{\bm L}=\widehat{\bm L}_1+\widehat{\bm L}_2,
+\]
+we have
+\[
+  \widehat L^2=(\widehat{\bm L}_1+\widehat{\bm L}_2)^2
+  =\widehat L_1^2+\widehat L_2^2+2\widehat{\bm L}_1\cdot\widehat{\bm L}_2,
+\]
+and
+\[
+  \widehat L_z=\widehat L_{1z}+\widehat L_{2z}.
+\]
+The uncoupled product state is denoted
+\[
+  \ketc{\ell_1,\ell_2,m_1,m_2}.
+\]
+
+\sourcepage{3}
+For fixed $\ell_1,\ell_2,m_1,m_2$, the uncoupled state
+\[
+  \ketc{\ell_1,\ell_2,m_1,m_2}
+\]
+is characterized by the mutually commuting operators $\widehat L_1^2$, $\widehat L_{1z}$, $\widehat L_2^2$, and $\widehat L_{2z}$.
+
+An equally valid description is the coupled state
+\[
+  \ketc{\ell,m,\ell_1,\ell_2},
+\]
+characterized by the mutually commuting operators $\widehat L^2$, $\widehat L_z$, $\widehat L_1^2$, and $\widehat L_2^2$.
+
+Thus there are two sets of ``good quantum numbers'':
+\begin{center}
+\begin{tabular}{c c}
+\toprule
+Coupled & Uncoupled\\
+\midrule
+$\ell,m,\ell_1,\ell_2$ & $\ell_1,\ell_2,m_1,m_2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The sketches emphasize the vector-coupling picture: in the coupled representation, $\bm L_1$ and $\bm L_2$ add to a fixed resultant $\bm L$; in the uncoupled representation, their separate projections are specified.
+
+\sourcepage{4}
+\section{Coupled representation}
+The state $\ketc{\ell,m,\ell_1,\ell_2}$ is a simultaneous eigenstate of
+\[
+  \widehat L^2
+  =\widehat L_1^2+\widehat L_2^2+2\widehat{\bm L}_1\cdot\widehat{\bm L}_2,
+  \qquad
+  \widehat L_z=\widehat L_{1z}+\widehat L_{2z},
+  \qquad
+  \widehat L_1^2,
+  \qquad
+  \widehat L_2^2.
+\]
+It can be expressed in the uncoupled product basis,
+\[
+  \ketc{\ell,m,\ell_1,\ell_2}
+  =f(\Omega_1,\Omega_2)
+  =\sum_{m_1=-\ell_1}^{\ell_1}
+   \sum_{m_2=-\ell_2}^{\ell_2}
+  f_{\ell m m_1m_2}
+  Y_{\ell_1}^{m_1}(\Omega_1)Y_{\ell_2}^{m_2}(\Omega_2).
+\]
+The expansion coefficients are obtained by projection onto the product harmonics.  Conservation of angular momentum restricts the allowed total quantum numbers to
+\[
+  |\ell_1-\ell_2|\le\ell\le\ell_1+\ell_2,
+  \qquad
+  m=m_1+m_2.
+\]
+
+\sourcepage{5}
+Accordingly, the sum need include only pairs satisfying $m_1+m_2=m$:
+\begin{equation}
+  \ketc{\ell,m,\ell_1,\ell_2}
+  =\sum_{m_1+m_2=m}
+  f_{\ell m m_1m_2}
+  Y_{\ell_1}^{m_1}Y_{\ell_2}^{m_2}.
+  \label{eq:qam-coupled-expansion}
+\end{equation}
+Equivalently,
+\begin{equation}
+  \ketc{\ell,m,\ell_1,\ell_2}
+  =\sum_{m_1+m_2=m}
+  C_{m_1m_2m}^{\ell_1\ell_2\ell}
+  \ketc{\ell_1,\ell_2,m_1,m_2},
+  \label{eq:qam-cg-expansion}
+\end{equation}
+where
+\[
+  C_{m_1m_2m}^{\ell_1\ell_2\ell}
+  =\brac{\ell_1m_1;\ell_2m_2\mid\ell m}
+\]
+is a Clebsch--Gordan coefficient.
+
+The interpretation is that
+\[
+  \left|C_{m_1m_2m}^{\ell_1\ell_2\ell}\right|^2
+\]
+is the probability that, in a state with fixed $\ell,m,\ell_1,\ell_2$, measurements of the component projections give $m_1$ and $m_2$.
+
+For example, expand $\ketc{1,-1,1,1}$ in the uncoupled basis.  Since $m=-1$, the allowed pairs are $(m_1,m_2)=(0,-1)$ and $(-1,0)$:
+\[
+  \ketc{1,-1,1,1}
+  =\frac{1}{\sqrt2}\ketc{1,1,0,-1}
+  -\frac{1}{\sqrt2}\ketc{1,1,-1,0},
+\]
+with the signs following the convention used in the source notes.
