@@ -112,7 +112,7 @@ We next deal with the spatial variable, using the finite volume method.  Conside
 
 \begin{figure}[ht] 
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]{images/sndisc}
+    \includegraphics[keepaspectratio, width = 5.0 in]{images/deterministic/sndisc}
     \caption{Discrete ordinates spatial discretization.}
     \label{fig:sndisc}
 \end{figure}
@@ -210,7 +210,7 @@ Here, we provide a simple discrete ordinates code for computing the angular and 
 Currently, the code is limited to the DD and $S_4$ approximations and vacuum boundaries.  Convergence is tested for $\phi$ only.  The code returns the mesh-centered scalar flux and mesh-edge angular flux.  Within the solver, the notation follows the lecture notation relatively closely.
 
 \lstset{language=Octave,caption=Solution of Slab Problem via Sn, label=list:sn, morecomment=[l]{\%}}
-\lstinputlisting{code/sn.m}
+\lstinputlisting{code/deterministic/sn.m}
 
 % References
 \section*{Further Reading}

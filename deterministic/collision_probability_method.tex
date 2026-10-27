@@ -20,7 +20,7 @@ where the emission density $Q$ contains any external and scattering sources, all
 Let us assume the slab can be divided into a number of regions in which all cross-sections and external sources uniform, as in Figure \ref{fig:slab_spatial}.  
 \begin{figure}[t] 
     \centering
-    \includegraphics[keepaspectratio, width = 4.0 in]{images/cpmslab}
+    \includegraphics[keepaspectratio, width = 4.0 in]{images/deterministic/cpmslab}
     \caption{Slab discretization for CPM.}
     \label{fig:slab_spatial}
 \end{figure}
@@ -162,7 +162,7 @@ To derive these conditions would be beyond our intended scope, but the reader mi
 Here, we provide a simple code for computing the scalar flux in a slab consisting of several regions of uniform composition, given in Listing \ref{list:cpm}.  The fundamental components of the code are just those that compute $\tau$ and $P_{ii'}$ and should be readily understood.  The reciprocity relations are used to reduce some of the computation.  As in the Neumann iteration code of the last lecture, MATLAB's built in symbolic function for the exponential integrals is used.  This is very slow, and so the student is encouraged to find efficient and accurate numerical techniques to evaluate these functions.
 
 \lstset{language=Octave,caption=Solution of Slab Problem via CPM, label=list:cpm, morecomment=[l]{\%}}
-\lstinputlisting{code/cpm.m}
+\lstinputlisting{code/deterministic/cpm.m}
 
 \section*{Further Reading}
 
