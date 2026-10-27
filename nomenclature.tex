@@ -1,26 +1,193 @@
 \chapter{Nomenclature}
+\label{app:nomenclature}
 
-To facilitate understanding of the various terms used throughout the lecture materials, we provide here a list of variables, short definitions, and common units where applicable.  In very few cases, symbols are used more than once due to convention (e.g. $\phi$ for both flux and azimuthal angle).  Bold symbols indicate a vector quantity.
+To facilitate understanding of the various terms used throughout the lecture materials, we provide here a list of variables, short definitions, and common units where applicable.  Bold symbols indicate a vector quantity, and a hat indicates a unit vector.  Because these notes span nuclear physics, transport theory, and statistics, a few symbols are unavoidably used more than once (e.g., $\phi$ for both flux and azimuthal angle, $k$ for both the wave number and the multiplication factor, and $\sigma$ for both cross sections and standard deviations); the meaning is always clear from context.  The last two sections map this notation onto that of several standard references and suggest where to read further.
 
-\begin{table}[th]
- \caption{Fundamental quantities}
- \begin{center} 
+%------------------------------------------------------------------------------%
+\section*{Transport Quantities}
+
+\begin{center}
  {\small
- \begin{tabular*}{0.90\textwidth}{@{\extracolsep{\fill}} ccc } 
-  \toprule 
-   Symbol                            & Description   & Units  \\
-  \midrule 
-   $\psi(\vec{r},\hat{\Omega},E,t)$          & angular flux                  & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
-   $\psi^+(\vec{r},\hat{\Omega},E,t)$        & adjoint angular flux          & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
-   $\phi(\vec{r},E,t)$                       & scalar  flux                  & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
-   $\phi^+(\vec{r},E,t)$                     & adjoint scalar flux           & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
-   $\mathbf{j}(\vec{r},\hat{\Omega},E,t)$    & angular current density       & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
-   $\mathbf{ J}(\vec{r},E,t) $               & current density               & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
-   $J_{\pm}(\vec{r},E,t)$                    & partial current density       & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
-  \bottomrule 
- \end{tabular*} 
+ \begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}} lll }
+  \toprule
+   Symbol                                        & Description                   & Units  \\
+  \midrule
+   $\mathbf{r}$                                  & position                      & cm \\
+   $\hat{\bm{\Omega}}$ (also $\mathbf{\Omega}$)  & direction of travel           & --- \\
+   $\mu$                                         & direction cosine, $\cos\theta$ & --- \\
+   $E$, $v$                                      & energy, speed                 & eV, cm/s \\
+   $u$                                           & lethargy, $\ln(E_0/E)$        & --- \\
+   $t$                                           & time                          & s \\
+   $n(\mathbf{r},\hat{\bm{\Omega}},E,t)$         & angular density               & $\frac{\mathrm{n}}{\mathrm{cm^3-eV-ster}}$ \\
+   $\psi(\mathbf{r},\hat{\bm{\Omega}},E,t)$      & angular flux, $v n$           & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
+   $\psi^+(\mathbf{r},\hat{\bm{\Omega}},E,t)$    & adjoint angular flux          & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
+   $\phi(\mathbf{r},E,t)$                        & scalar flux                   & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
+   $\phi^+(\mathbf{r},E,t)$                      & adjoint scalar flux           & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
+   $\mathbf{j}(\mathbf{r},\hat{\bm{\Omega}},E,t)$ & angular current density      & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV-ster}}$  \\
+   $\mathbf{J}(\mathbf{r},E,t)$                  & current density               & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
+   $J_{\pm}(\mathbf{r},E,t)$                     & partial current density       & $\frac{\mathrm{n}}{\mathrm{cm^2-s-eV}}$  \\
+   $s$, $q$                                      & source density                & $\frac{\mathrm{n}}{\mathrm{cm^3-s-eV-ster}}$ \\
+   $k$                                           & multiplication factor (eigenvalue) & --- \\
+   $g$                                           & energy group index            & --- \\
+  \bottomrule
+ \end{tabular*}
  }
- \end{center} 
- \label{tbl:snmeshstudy}  
-\end{table}
+\end{center}
 
+%------------------------------------------------------------------------------%
+\section*{Cross Sections and Kinematics}
+
+\begin{center}
+ {\small
+ \begin{tabular}{lll}
+  \toprule
+   Symbol                                        & Description                   & Units  \\
+  \midrule
+   $\sigma_x(E)$                                 & microscopic cross section for reaction $x$ & b ($10^{-24}$ cm$^2$) \\
+   $N$                                           & atom density                  & atoms/(b-cm) \\
+   $\Sigma_x(\mathbf{r},E) = N\sigma_x$          & macroscopic cross section     & cm$^{-1}$ \\
+   $\Sigma_s(\hat{\bm{\Omega}}'\to\hat{\bm{\Omega}},E'\to E)$ & double-differential scattering &  $\frac{1}{\mathrm{cm-eV-ster}}$ \\
+   $\nu$                                         & mean neutrons per fission     & --- \\
+   $\chi(E)$                                     & fission spectrum              & eV$^{-1}$ \\
+   $A$                                           & target-to-neutron mass ratio  & --- \\
+   $\alpha$                                      & $\left((A-1)/(A+1)\right)^2$  & --- \\
+   $\theta$, $\theta_c$                          & scattering angle in the LAB and COM frames & --- \\
+   $P(E\to E')$                                  & energy transfer probability   & eV$^{-1}$ \\
+   $\xi$                                         & average logarithmic energy loss & --- \\
+   $\bar{\mu}$                                   & average LAB scattering cosine & --- \\
+  \bottomrule
+ \end{tabular}
+ }
+\end{center}
+
+%------------------------------------------------------------------------------%
+\section*{Nuclear Reaction Theory}
+
+In the nuclear data lectures, a subscript $\ell$ denotes the orbital angular momentum of a single-channel quantity; the multichannel generalization replaces $\ell$ by a channel index $c$.  Hats on the shift factor and penetrability distinguish them from the collision matrix $S_\ell$ and the Legendre polynomials $P_\ell$.  Note that $R_\ell(r)$ also denotes a radial wave function in \LECTURE{quantum_scattering}; elsewhere, $R_\ell(E)$ is the $R$-function.
+
+\begin{center}
+ {\small
+ \begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}} lll }
+  \toprule
+   Symbol                                        & Description                   & Units  \\
+  \midrule
+   $k$                                           & wave number                   & cm$^{-1}$ \\
+   $\ell$                                        & orbital angular momentum quantum number & --- \\
+   $a$                                           & channel radius                & fm \\
+   $\rho = kr$                                   & dimensionless radius          & --- \\
+   $\delta_\ell$                                 & phase shift                   & --- \\
+   $S_\ell$, $S_{cc'}$                           & collision matrix              & --- \\
+   $R_\ell(E)$                                   & $R$-function ($R$-matrix)     & --- \\
+   $E_\lambda$                                   & level (pole) energy           & eV \\
+   $\gamma_{\lambda\ell}$                        & reduced width amplitude       & eV$^{1/2}$ \\
+   $B_\ell$                                      & boundary constant             & --- \\
+   $\widehat{S}_\ell$                            & shift factor                  & --- \\
+   $\widehat{P}_\ell$                            & penetrability                 & --- \\
+   $\Delta_\ell$                                 & hard-sphere phase             & --- \\
+   $L_\ell^{\pm}$                                & external logarithmic derivatives & --- \\
+   $\Gamma_n$, $\Gamma_r$, $\Gamma$              & neutron, reaction, and total widths & eV \\
+  \bottomrule
+ \end{tabular*}
+ }
+\end{center}
+
+%------------------------------------------------------------------------------%
+\section*{Monte Carlo and Statistics}
+
+\begin{center}
+ {\small
+ \begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}} lll }
+  \toprule
+   Symbol                                        & Description                   & Units  \\
+  \midrule
+   $f(x)$, $F(x)$                                & probability density and cumulative distribution & --- \\
+   $\xi$                                         & random number uniform on $[0,1)$ & --- \\
+   $\mu$, $\sigma^2$                             & population mean and variance  & --- \\
+   $R(x_i)$                                      & tally score from history $i$  & varies \\
+   $\bar{R}$, $s^2$                              & sample mean and sample variance & varies \\
+   $N$                                           & number of histories           & --- \\
+   $RE$                                          & relative error, $\sigma_{\bar{R}}/\bar{R}$ & --- \\
+   $FOM$                                         & figure of merit, $1/(RE^2 \cdot \text{time})$ & s$^{-1}$ \\
+  \bottomrule
+ \end{tabular*}
+ }
+\end{center}
+
+%------------------------------------------------------------------------------%
+\section*{Notation in Other Texts}
+
+Notation for the same quantity varies across the standard references, and the differences are easy to trip over when reading alongside these notes.  The two most common pitfalls are (1) Duderstadt and Hamilton use $\phi$ for \emph{both} the angular and scalar flux, distinguished only by their arguments, and (2) Lewis and Miller and Bell and Glasstone use $\sigma$, not $\Sigma$, for \emph{macroscopic} cross sections.  The argument order also differs: some texts write $(\mathbf{r},E,\hat{\bm{\Omega}},t)$ rather than $(\mathbf{r},\hat{\bm{\Omega}},E,t)$.
+
+\editorial{Entries marked $\dagger$ should be checked against the editions on hand before release.}
+
+\begin{center}
+ {\small
+ \begin{tabular}{lllll}
+  \toprule
+   Quantity        & These notes & D\&H \cite{duderstadt1976nra} & L\&M \cite{lewis1993cmn} & B\&G \cite{bell1970nrt} \\
+  \midrule
+   angular density & $n$ & $n$ & --- & $N$$^\dagger$ \\
+   angular flux    & $\psi$ & $\phi$ & $\psi$ & $\Phi$ \\
+   scalar flux     & $\phi$ & $\phi$ & $\phi$ & $\phi$$^\dagger$ \\
+   direction       & $\hat{\bm{\Omega}}$ & $\hat{\bm{\Omega}}$ & $\hat{\bm{\Omega}}$ & $\mathbf{\Omega}$ \\
+   argument order  & $(\mathbf{r},\hat{\bm{\Omega}},E,t)$ & $(\mathbf{r},E,\hat{\bm{\Omega}},t)$ & $(\mathbf{r},\hat{\bm{\Omega}},E,t)$ & $(\mathbf{r},\mathbf{\Omega},E,t)$ \\
+   macro.\ total cross section & $\Sigma_t$ & $\Sigma_t$ & $\sigma_t$ & $\sigma$ \\
+   macro.\ scattering cross section & $\Sigma_s$ & $\Sigma_s$ & $\sigma_s$ & $\sigma$$^\dagger$ \\
+  \bottomrule
+ \end{tabular}
+ }
+\end{center}
+
+For resonance theory, the multichannel notation of Lane and Thomas \cite{lane1958rmt} is the de facto standard and is used (with minor changes) by the ENDF-6 formats manual \cite{trkov2018endf}.  The single-channel quantities of these notes map onto it as follows.
+
+\begin{center}
+ {\small
+ \begin{tabular}{llll}
+  \toprule
+   Quantity             & These notes              & Lane \& Thomas         & ENDF-6 \\
+  \midrule
+   collision matrix     & $S_\ell$, $S_{cc'}$      & $U_{cc'}$              & $U$ \\
+   $R$-function/matrix  & $R_\ell$                 & $R_{cc'}$              & $R$ \\
+   shift factor         & $\widehat{S}_\ell$       & $S_c$                  & $S_l$ \\
+   penetrability        & $\widehat{P}_\ell$       & $P_c$                  & $P_l$ \\
+   hard-sphere phase    & $\Delta_\ell$            & $\phi_c$            & $\phi_l$ \\
+   boundary constant    & $B_\ell$                 & $B_c$                  & $B$ \\
+   outgoing log.\ derivative & $L_\ell^+$          & $L_c = S_c + \ii P_c$  & $L = S + \ii P$ \\
+   reduced width amplitude & $\gamma_{\lambda\ell}$ & $\gamma_{\lambda c}$  & --- \\
+   channel radius       & $a$                      & $a_c$                  & $a$ \\
+  \bottomrule
+ \end{tabular}
+ }
+\end{center}
+
+%------------------------------------------------------------------------------%
+\section*{Where to Read Further}
+
+The following map pairs each part of the notes with references that treat the same material, often in more depth.  Most chapters also end with their own ``Further Reading'' section.
+
+\begin{center}
+ {\small
+ \begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}} l>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth} }
+  \toprule
+   Part & Topic & References \\
+  \midrule
+   I   & compound nucleus, partial waves, cross sections & Blatt and Weisskopf \cite{blatt1952tnp} \\
+       & $R$-matrix theory                     & Lane and Thomas \cite{lane1958rmt} \\
+       & resonance formalisms as evaluated     & ENDF-6 manual \cite{trkov2018endf} \\
+       & scattering kinematics                 & Duderstadt and Hamilton \cite{duderstadt1976nra} \\
+  \midrule
+   II  & the transport equation                & Duderstadt and Martin \cite{duderstadt1976tt}; Bell and Glasstone \cite{bell1970nrt} \\
+       & slowing down and multigroup methods   & Duderstadt and Hamilton \cite{duderstadt1976nra}; Stamm'ler and Abbate \cite{stammler1983mss}; H\'ebert \cite{hebert2009arp} \\
+       & integral transport and collision probabilities & H\'ebert \cite{hebert2009arp}; Stamm'ler and Abbate \cite{stammler1983mss} \\
+       & $P_N$, diffusion, and discrete ordinates & Lewis and Miller \cite{lewis1993cmn} \\
+       & iteration and acceleration            & Adams and Larsen \cite{adams2002fim}; Saad \cite{saad2003ims} \\
+       & time-dependent problems               & Henry \cite{henry1975nra} \\
+  \midrule
+   III & Monte Carlo fundamentals and tallies  & Brown \cite{brown2005fmc}; Lux and Koblinger \cite{lux1991mcp}; Dunn and Shultis \cite{dunn2012emc} \\
+  \midrule
+   IV  & adjoint, perturbation, and variational methods & Bell and Glasstone \cite{bell1970nrt}; Stacey \cite{stacey1974vmn} \\
+       & criticality safety                    & Knief \cite{knief1991ncs} \\
+  \bottomrule
+ \end{tabular*}
+ }
+\end{center}

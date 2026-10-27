@@ -90,18 +90,17 @@
 \include{nuclear_data_scattering/optical_model}
 \include{nuclear_data_scattering/r_matrix_theory}
 \include{nuclear_data_scattering/resonances_and_multiple_channels}
+\include{nuclear_data_scattering/scattering_kinematics}
 
 \part{Deterministic Methods}
 
 \include{transport_equation}
-\include{neutron_scattering}
 \include{neutron_slowing_down}
 \include{multigroup_method}
 \include{analytical_solutions}
 \include{the_integral_form}
 \include{collision_probability_method}
 \include{cpm_cylinder}
-%
 \include{pn_method_and_diffusion}
 \include{numerical_diffusion}
 \include{discrete_ordinates}
@@ -110,22 +109,12 @@
 \include{linear_acceleration}
 \include{time_dependent_transport}
 
-% \include{linearity_and_reciprocity}
-% \include{eigenvalue_problems}
-%\include{monte_carlo_1}
-% \include{random_numbers_and_collision_physics}
-% \include{tallies_and_statistics}
-
 \part{Monte Carlo Methods}
 
-% Several Monte Carlo source files exist in this repository, but the
-% previously active master did not include them as formal lectures.
-% Uncomment these as the fall 2026 Monte Carlo sequence is filled in.
-%\include{monte_carlo_1}
-%\include{random_numbers_and_collision_physics}
-%\include{tallies_and_statistics}
-% \include{advanced_variance_reduction}
-
+\include{monte_carlo/monte_carlo_introduction}
+\include{monte_carlo/random_numbers_and_collision_physics}
+\include{monte_carlo/tallies_and_statistics}
+\include{monte_carlo/automated_variance_reduction}
 
 \part{Additional Topics} 
 
@@ -133,20 +122,6 @@
 \include{variational_methods}
 \include{computational_geometry}
 \include{criticality_safety}
-%\include{equivalence_theory}
-%\include{krylov_methods}
-%\include{numerical_diffusion}
-%\include{linear_acceleration}
-%\include{advanced_sn_discretization}
-%\include{method_of_characteristics}
-%\include{coupling_transport_to_other_physics}
-%\include{homogenization}
-%\include{analytic_multigroup}
-%\include{nodal_diffusion}
-% \include{advanced_variance_reduction}
-
-
-
 
 \part{Bibliography and Appendices} 
 
@@ -165,7 +140,6 @@
 
 \appendix
 \renewcommand{\chaptername}{Appendix}
-%\include{nomenclature}
-%\include{diffusion}
+\include{nomenclature}
 
 \end{document}
