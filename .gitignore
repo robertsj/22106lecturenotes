@@ -32,3 +32,6 @@
 *.tdo
 *tex.backup
 *tex~
+*.bib.backup
+*~
+main.pdf
