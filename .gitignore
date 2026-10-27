@@ -35,3 +35,8 @@
 *.bib.backup
 *~
 main.pdf
+build/
+*.fls
+*.run.xml
+images/**/*.gnuplot
+images/**/*.table

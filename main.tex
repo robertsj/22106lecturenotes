@@ -1,8 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% LaTeX Template for 22.106 Notes
+% NE 806 (Neutronics) Lecture Notes
 % J. Roberts
-% Spring, 2011
-% Note, requires LATEST version of memoir class 
+% Derived from the MIT 22.106 notes (2011)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %---------------------------------------------------------------%
@@ -12,51 +11,8 @@
 \documentclass[letterpaper, 11pt, twoside, openany]{memoir}
 % NOTE: The option ``oneside'' is for one-sided printing and happens
 %       to reduce several blank pages that would otherwise arise.
-\usepackage{bm,xcolor,cancel}
-% This gives a bit more white space...possibly desirable.
-%\OnehalfSpace
+\input{preamble}
 
-\DefineNamedColor{named}{mitred}    {rgb}{0.6,0.2,0.2}
-\DefineNamedColor{named}{mitgray}   {rgb}{0.4,0.4,0.4}
-\DefineNamedColor{named}{darkgray}   {cmyk}{0,0,0,0.90}
-
-\usepackage{format106}
-\usepackage{mathtools,array}
-\usepackage[shortlabels]{enumitem}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,positioning,shapes.geometric}
-\usepackage{hyperref} 
-\newcommand{\cov}{{$\, \mathbf{C}_{\sigma\sigma} \,$}}
-\newcommand{\transp}{\mathsf{T}}
-
-
-\newcommand{\ISOA}  [2]{$\prescript{#2}{}{\text{#1}}^{}_{}$}
-\newcommand{\ISOAZ} [3]{$\prescript{#2}{#3}{\text{#1}}^{}_{}$}
-\newcommand{\ISOAZN}[4]{$\prescript{#2}{#3}{\text{#1}}^{}_{#4}$}
-\newcommand{\isoA}  [2]{\prescript{#2}{}{\text{#1}}^{}_{}}
-\newcommand{\isoAZ} [3]{\prescript{#2}{#3}{\text{#1}}^{}_{}}
-\newcommand{\isoAZN}[4]{\prescript{#2}{#3}{\text{#1}}^{}_{#4}}
-             
-\newcommand{\keff}{$k_{\text{eff}}$ }
-\newcommand{\ie}{\textit{i.e. }}
-\newcommand{\eg}{\textit{e.g. }}
-
-\newcommand{\LECTURE}[1]{Lecture~\ref{lec:#1}}
-\newcommand{\sourcepage}[1]{%
-  \par\medskip\noindent
-  \textcolor{black!45}{\rule{0.31\linewidth}{0.4pt}\hfill\textsc{Source page #1}\hfill\rule{0.31\linewidth}{0.4pt}}%
-  \par\smallskip
-}
-\newcommand{\marginnoteinline}[1]{\par\smallskip\noindent\textit{Margin note: #1}\par\smallskip}
-\newcommand{\editorial}[1]{\textcolor{blue!55!black}{\textit{[Editorial note: #1]}}}
-\newcommand{\uncertain}[1]{\textcolor{red!65!black}{\textit{[uncertain: #1]}}}
-\providecommand{\CN}{\mathrm{CN}}
-\providecommand{\dd}{\,\mathrm{d}}
-\providecommand{\ii}{\mathrm{i}}
-\providecommand{\ee}{\mathrm{e}}
-\renewcommand{\unit}[1]{\,\mathrm{#1}}
-\newcommand{\ketc}[1]{\lvert #1\rangle}
-\newcommand{\brac}[1]{\langle #1\rangle}
 %---------------------------------------------------------------%
 % DOCUMENT
 %---------------------------------------------------------------%

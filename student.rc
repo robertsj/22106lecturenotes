@@ -1,0 +1,8 @@
+# Student build: hides the transcription markup.  See .latexmkrc.
+use File::Path qw(make_path);
+$out_dir = 'build/student';
+$pre_tex_code = '\def\studentbuild{}';
+$pdflatex = 'pdflatex %O %P';
+# pdflatex cannot create the subdirectories that \include needs for
+# its .aux files, so make them up front.
+make_path("$out_dir/$_") for grep { -d $_ && glob("$_/*.tex") } glob('*');
